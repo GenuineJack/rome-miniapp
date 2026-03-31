@@ -36,13 +36,6 @@ const nextConfig: NextConfig = {
   },
   devIndicators: false,
   reactCompiler: true,
-  ...(process.env.DISABLE_TURBOPACK_ROOT
-    ? {}
-    : {
-        turbopack: {
-          root: "/monorepo/packages/service.miniapp-generator/",
-        },
-      }),
 };
 
 export default nextConfig;
