@@ -1,0 +1,2855 @@
+{
+  "generated": "2025-10-18T17:03:02.752Z",
+  "sdk": "neynar-sdk-neynar",
+  "tier": "neynar",
+  "importPrefix": "@/neynar-web-sdk/neynar",
+  "usePublishFarcasterAction": {
+    "path": "core",
+    "description": "Securely communicate and perform actions on behalf of users across different apps\n\nEnables an app to send data or trigger actions in another app on behalf of a mutual user\nby signing messages using the user's Farcaster signer. This is useful for cross-app\ncommunication where apps need to interact with each other's APIs on behalf of shared users.",
+    "file": "use-publish-farcaster-action.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use publish farcaster action",
+      "usepublishfarcasteraction"
+    ]
+  },
+  "useAppHostEvent": {
+    "path": "core",
+    "description": "Returns event object for app host events\n\nUsed if the app host intends to sign the event message instead of using Neynar-hosted signers.\nThis hook generates the event data structure needed to communicate app lifecycle changes\n(frame installation/removal, notification preferences) when using custom signing instead of\nNeynar's managed signers.\n\n**Special Behaviors:**\n- `notificationDetails` only present in response when event is `'notifications_enabled'`",
+    "file": "use-app-host-event.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use app host event", "useapphostevent"]
+  },
+  "useAppHostUserState": {
+    "path": "core",
+    "description": "Returns the current notification state for a specific user across all mini app domains in this app host\n\nFetches which mini app domains have notifications enabled for the user. Essential for building\nnotification management interfaces and conditional notification flows in multi-domain apps.\nShows complete notification status including domain, validity, and last update timestamp.",
+    "file": "use-app-host-user-state.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use app host user state",
+      "useapphostuserstate",
+      "user"
+    ]
+  },
+  "usePostAppHostEvent": {
+    "path": "core",
+    "description": "Post an app host event to the domain's webhook\n\nSubmits app lifecycle events (frame install/removal, notification enable/disable) to the\nconfigured webhook endpoint for the mini app domain. Supports two authentication methods:\ncustom-signed messages for advanced use cases, or Neynar-managed signers for simplified\nintegration. Essential for tracking user engagement and managing notification preferences.\n\n**Mutation Parameters:**\n\nPass parameters as the argument to `mutate()`. This is a union type - provide EITHER option 1 (signed_message) OR option 2 (signer_uuid):\n\n**Option 1: Using signed_message**\n- `signed_message` - JFS-signed message containing the event payload (can be string or object with header/payload/signature)\n- `app_domain` - Domain of the mini app\n\n**Option 2: Using signer_uuid**\n- `signer_uuid` - UUID of the signer (paired with API key)\n- `app_domain` - Domain of the mini app\n- `fid` - The unique identifier of a farcaster user or app\n- `event` - Event type: `\"frame_added\"` | `\"frame_removed\"` | `\"notifications_enabled\"` | `\"notifications_disabled\"`",
+    "file": "use-post-app-host-event.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use post app host event", "usepostapphostevent"]
+  },
+  "useAuthorizationUrl": {
+    "path": "core",
+    "description": "Fetches authorized url useful for SIWN login operation\n\n**Special Behaviors:**\n- Extracts and returns just the URL string from the response object for convenience\n- URL is stable and can be cached",
+    "file": "use-authorization-url.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use authorization url", "useauthorizationurl"]
+  },
+  "useDeveloperManagedAuth": {
+    "path": "core",
+    "description": "Retrieves information about a developer-managed signer address by Ethereum address",
+    "file": "use-developer-managed-auth.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "format",
+      "hook",
+      "use developer managed auth",
+      "usedevelopermanagedauth"
+    ]
+  },
+  "useRegisterAccount": {
+    "path": "core",
+    "description": "Creates a new Farcaster account with the provided signature and details",
+    "file": "use-register-account.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use register account", "useregisteraccount"]
+  },
+  "useRegisterAccountOnchain": {
+    "path": "core",
+    "description": "Creates a new Farcaster account with onchain registration",
+    "file": "use-register-account-onchain.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use register account onchain",
+      "useregisteraccountonchain"
+    ]
+  },
+  "useRegisterDeveloperManagedSignedKey": {
+    "path": "core",
+    "description": "Registers a signed key for developer-managed authentication",
+    "file": "use-register-developer-managed-signed-key.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use register developer managed signed key",
+      "useregisterdevelopermanagedsignedkey"
+    ]
+  },
+  "useBanList": {
+    "path": "core",
+    "description": "Fetches all FIDs that your app has banned",
+    "file": "use-ban-list.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use ban list", "usebanlist"]
+  },
+  "usePublishBans": {
+    "path": "core",
+    "description": "Bans a list of FIDs from the app associated with your API key\n\nBanned users, their casts and reactions will not appear in feeds.",
+    "file": "use-publish-bans.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use publish bans", "usepublishbans"]
+  },
+  "useDeleteBans": {
+    "path": "core",
+    "description": "Deletes a list of FIDs from the app associated with your API key\n\nUnbanned users, their casts and reactions will once again appear in feeds.",
+    "file": "use-delete-bans.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use delete bans", "usedeletebans"]
+  },
+  "useBlockList": {
+    "path": "core",
+    "description": "Fetches all FIDs that a user has blocked or has been blocked by\n\n**Special Behaviors:**\n- Requires either `blocker_fid` OR `blocked_fid` parameter (validated before query)\n- Results automatically flattened from pages for easier consumption",
+    "file": "use-block-list.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use block list", "useblocklist"]
+  },
+  "useBlockUser": {
+    "path": "core",
+    "description": "Adds a block for a given FID\n\nAutomatically invalidates block list and feed queries to keep UI in sync.",
+    "file": "use-block-user.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use block user", "useblockuser", "user"]
+  },
+  "useUnblockUser": {
+    "path": "core",
+    "description": "Deletes a block for a given FID\n\nAutomatically invalidates block list and feed queries to keep UI in sync.",
+    "file": "use-unblock-user.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use unblock user", "user", "useunblockuser"]
+  },
+  "useCast": {
+    "path": "core",
+    "description": "Gets information about an individual cast by passing in a Farcaster web URL or cast hash",
+    "file": "use-cast.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["format", "hook", "use cast", "usecast"]
+  },
+  "useBulkCasts": {
+    "path": "core",
+    "description": "Fetch multiple casts by hashes\n\nEfficiently fetches multiple casts in a single API call using their hashes.",
+    "file": "use-bulk-casts.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use bulk casts", "usebulkcasts"]
+  },
+  "useCastsByUser": {
+    "path": "core",
+    "description": "Retrieves casts posted by a specific user\n\n**Special Behaviors:**\n- Limit: Default 25, Maximum 150\n- `parent_url` and `channel_id` are mutually exclusive (provide one or neither, not both)",
+    "file": "use-casts-by-user.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use casts by user", "usecastsbyuser", "user"]
+  },
+  "usePopularCastsByUser": {
+    "path": "core",
+    "description": "Fetch popular casts by a user\n\nRetrieves the most popular casts from a specific user, ranked by engagement metrics\nsuch as likes, recasts, and replies. Returns a fixed-size array of top-performing casts.",
+    "file": "use-popular-casts-by-user.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use popular casts by user",
+      "usepopularcastsbyuser",
+      "user"
+    ]
+  },
+  "useRepliesAndRecastsByUser": {
+    "path": "core",
+    "description": "Retrieves replies and recasts for a user\n\n**Special Behaviors:**\n- Limit: Default 25, Maximum 50",
+    "file": "use-replies-and-recasts-by-user.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use replies and recasts by user",
+      "user",
+      "userepliesandrecastsbyuser"
+    ]
+  },
+  "useCastConversation": {
+    "path": "core",
+    "description": "Gets all casts related to a conversation surrounding a cast\n\nIncludes all ancestors of a cast up to the root parent in chronological order.\nIncludes all direct_replies to the cast up to the reply_depth specified.\n\n**Special Behaviors:**\n- Limit: Default 20, Maximum 50\n- `type` parameter is required ('hash' or 'url')",
+    "file": "use-cast-conversation.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use cast conversation", "usecastconversation"]
+  },
+  "useCastConversationSummary": {
+    "path": "core",
+    "description": "Generates an LLM-powered summary of a conversation thread\n\n**Special Behaviors:**\n- Limit: Default 20, Maximum 50 (number of casts to consider in summary up to target cast)",
+    "file": "use-cast-conversation-summary.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use cast conversation summary",
+      "usecastconversationsummary"
+    ]
+  },
+  "useCastReactions": {
+    "path": "core",
+    "description": "Retrieves users who reacted to a cast with pagination\n\n**Special Behaviors:**\n- Limit: Default 25, Maximum 100\n- `types` parameter is required (can be array with 'all', 'likes', or 'recasts')",
+    "file": "use-cast-reactions.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use cast reactions", "usecastreactions"]
+  },
+  "useCastQuotes": {
+    "path": "core",
+    "description": "Retrieves casts that quote (reference) a specific cast\n\n**Special Behaviors:**\n- Limit: Default 25, Maximum 100",
+    "file": "use-cast-quotes.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use cast quotes", "usecastquotes"]
+  },
+  "useCastSearch": {
+    "path": "core",
+    "description": "Search for casts based on a query string, with optional AND filters\n\n**Special Behaviors:**\n- Limit: Default 25, Maximum 100\n- Supports advanced operators: +, |, *, \", (), ~n, -, before:, after:",
+    "file": "use-cast-search.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use cast search", "usecastsearch"]
+  },
+  "useComposerActions": {
+    "path": "core",
+    "description": "Retrieves available Farcaster composer actions\n\n**Special Behaviors:**\n- Limit: Default 25, Maximum 25\n- `list` parameter is required ('top' or 'featured')",
+    "file": "use-composer-actions.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use composer actions", "usecomposeractions"]
+  },
+  "useEmbeddedUrlMetadata": {
+    "path": "core",
+    "description": "Fetch embedded URL metadata\n\nCrawls and retrieves metadata (title, description, images) for a URL to be embedded in a cast.\nUseful for generating rich previews of links before posting.",
+    "file": "use-embedded-url-metadata.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use embedded url metadata", "useembeddedurlmetadata"]
+  },
+  "usePublishCast": {
+    "path": "core",
+    "description": "Publish a new cast\n\nCreates and publishes a new cast to Farcaster. Supports text, embeds, channel posting,\nand replies. Automatically invalidates relevant feeds and conversations on success.",
+    "file": "use-publish-cast.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use publish cast", "usepublishcast"]
+  },
+  "useDeleteCast": {
+    "path": "core",
+    "description": "Delete a cast\n\nPermanently removes a cast from Farcaster. Automatically invalidates relevant feeds\nand the cast itself to update UI. This action cannot be undone.",
+    "file": "use-delete-cast.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use delete cast", "usedeletecast"]
+  },
+  "useLikeCast": {
+    "path": "core",
+    "description": "Like a cast\n\nAdds a like reaction to a cast. Automatically invalidates cast reactions and the cast\nitself to update UI with new like count and viewer context.",
+    "file": "use-like-cast.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use like cast", "uselikecast"]
+  },
+  "useUnlikeCast": {
+    "path": "core",
+    "description": "Unlike a cast\n\nRemoves a like reaction from a cast. Automatically invalidates cast reactions and the cast\nitself to update UI with the removed like and updated count.",
+    "file": "use-unlike-cast.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use unlike cast", "useunlikecast"]
+  },
+  "useChannels": {
+    "path": "core",
+    "description": "Returns a list of all channels with their details",
+    "file": "use-channels.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use channels", "usechannels"]
+  },
+  "useBulkChannels": {
+    "path": "core",
+    "description": "Fetches details of multiple channels in a single request\n\nMore performant than making multiple individual requests.\n\n**Special Behaviors:**\n- Array automatically truncated to 100 channels if exceeded (with console warning)\n- Not paginated (single request only)",
+    "file": "use-bulk-channels.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "truncate", "use bulk channels", "usebulkchannels"]
+  },
+  "useChannel": {
+    "path": "core",
+    "description": "Returns details of a channel",
+    "file": "use-channel.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use channel", "usechannel"]
+  },
+  "useChannelSearch": {
+    "path": "core",
+    "description": "Returns a list of channels based on ID or name",
+    "file": "use-channel-search.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use channel search", "usechannelsearch"]
+  },
+  "useTrendingChannels": {
+    "path": "core",
+    "description": "Returns a list of trending channels based on activity\n\n**Special Behaviors:**\n- Unusual limit: default 10 (most hooks default to 25), max 25",
+    "file": "use-trending-channels.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use trending channels", "usetrendingchannels"]
+  },
+  "useChannelMembers": {
+    "path": "core",
+    "description": "Fetches a list of members in a channel",
+    "file": "use-channel-members.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use channel members", "usechannelmembers"]
+  },
+  "useChannelFollowers": {
+    "path": "core",
+    "description": "Returns a list of followers for a specific channel",
+    "file": "use-channel-followers.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use channel followers", "usechannelfollowers"]
+  },
+  "useChannelInvites": {
+    "path": "core",
+    "description": "Fetches a list of invites, either in a channel or for a user\n\nIf both channel_id and invited_fid are provided, returns open channel invite for that user.\n\n**Special Behaviors:**\n- Not paginated in this hook (returns flat array, though SDK supports pagination)",
+    "file": "use-channel-invites.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use channel invites", "usechannelinvites"]
+  },
+  "useFollowChannel": {
+    "path": "core",
+    "description": "Follow a channel",
+    "file": "use-follow-channel.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use follow channel", "usefollowchannel"]
+  },
+  "useUnfollowChannel": {
+    "path": "core",
+    "description": "Unfollow a channel",
+    "file": "use-unfollow-channel.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use unfollow channel", "useunfollowchannel"]
+  },
+  "useFollowingFeed": {
+    "path": "core",
+    "description": "Fetch feed based on who a user is following\n\nRetrieves posts from users that the specified user follows. This is the primary\ntimeline experience similar to a social media feed.",
+    "file": "use-following-feed.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use following feed", "usefollowingfeed"]
+  },
+  "useForYouFeed": {
+    "path": "core",
+    "description": "Retrieve a personalized \"For You\" feed for a user\n\nFetches an algorithmic feed of recommended content personalized for the user.\nUses Neynar's algorithm to surface relevant posts based on user behavior and preferences.\n\n**Special Behaviors:**\n- Lower limit maximum (max: 50 vs 100 for other feeds)\n- Algorithm considers user's follows, interactions, and interests",
+    "file": "use-for-you-feed.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use for you feed", "useforyoufeed"]
+  },
+  "useTrendingFeed": {
+    "path": "core",
+    "description": "Fetch trending casts on global feed or channel feeds\n\nRetrieves currently trending content based on engagement metrics. Supports multiple\nproviders and time windows for flexible trending algorithms.\n\n**Special Behaviors:**\n- Fixed limit of 10 (default: 10, max: 10) - cannot be changed\n- `channel_id` and `parent_url` are mutually exclusive\n- `time_window` '7d' only available when channel_id or parent_url is provided\n- `provider_metadata` only available for 'mbd' provider",
+    "file": "use-trending-feed.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use trending feed", "usetrendingfeed"]
+  },
+  "useTrendingGlobalFeed": {
+    "path": "core",
+    "description": "Fetch global trending casts (same as useTrendingFeed without channel filters)\n\nRetrieves trending content across the entire Farcaster network, not limited to\nspecific channels. Use this for discovering what's popular globally.\n\n**Special Behaviors:**\n- Fixed limit of 10 (default: 10, max: 10) - cannot be changed\n- Do NOT use '7d' time_window (only available for channel feeds)\n- No channel or parent URL filtering",
+    "file": "use-trending-global-feed.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use trending global feed", "usetrendingglobalfeed"]
+  },
+  "useChannelFeed": {
+    "path": "core",
+    "description": "Fetch content from a specific channel with infinite scrolling\n\nRetrieves posts published to a specific channel, providing focused content\naround a particular topic or community. Ideal for channel-specific views\nand community-driven content discovery.",
+    "file": "use-channel-feed.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use channel feed", "usechannelfeed"]
+  },
+  "useChannelAndChildFeed": {
+    "path": "core",
+    "description": "Fetch content from a channel and its child channels with infinite scrolling\n\nRetrieves posts from both the specified parent channel and all its child channels,\nproviding comprehensive coverage of a channel hierarchy. Useful for topic-based\nfeeds that include related sub-communities.",
+    "file": "use-channel-and-child-feed.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use channel and child feed", "usechannelandchildfeed"]
+  },
+  "useMultiChannelFeed": {
+    "path": "core",
+    "description": "Fetch content from multiple channels with infinite scrolling\n\nRetrieves posts from multiple specified channels in a unified feed, allowing\nfor curated multi-topic content streams. Ideal for dashboard views or\ncustom channel combinations based on user preferences.",
+    "file": "use-multi-channel-feed.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use multi channel feed", "usemultichannelfeed"]
+  },
+  "useParentUrlFeed": {
+    "path": "core",
+    "description": "Hook for fetching content related to a specific parent URL with infinite scrolling\n\nRetrieves posts that reference or discuss a specific URL, enabling content discovery\naround external links, articles, or resources. Perfect for tracking conversations\nabout specific web content or building URL-centric discussion feeds.",
+    "file": "use-parent-url-feed.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use parent url feed", "useparenturlfeed"]
+  },
+  "useFramesFeed": {
+    "path": "core",
+    "description": "Hook for fetching frames-only content feed with infinite scrolling\n\nRetrieves posts that contain interactive frames, providing a specialized feed\nfor frame-based content discovery. Frames enable rich interactive experiences\nwithin posts, and this feed focuses exclusively on such content.",
+    "file": "use-frames-feed.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use frames feed", "useframesfeed"]
+  },
+  "useFilteredFeed": {
+    "path": "core",
+    "description": "Hook for fetching filtered content feed with infinite scrolling and custom parameters\n\nRetrieves posts based on flexible filtering criteria, providing the most versatile\nfeed option with support for complex content discovery needs. This is the general-purpose\nfeed endpoint that can be customized with various filtering parameters.",
+    "file": "use-filtered-feed.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use filtered feed", "usefilteredfeed"]
+  },
+  "useFnameAvailability": {
+    "path": "core",
+    "description": "Check if a given fname is available\n\nValidates whether a Farcaster name (fname) is available for registration.\nUseful for username availability checks during user onboarding or profile updates.\n\n**Special Behaviors:**\n- Query auto-disabled when fname is empty or whitespace-only\n- Returns boolean directly (extracts `available` field from response)",
+    "file": "use-fname-availability.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use fname availability", "usefnameavailability"]
+  },
+  "usePostFrameAction": {
+    "path": "core",
+    "description": "Post frame action\n\nSubmits a frame action to process user interactions with frames. This mutation\nhandles button clicks, input submissions, and other frame interactions, processing\nthe signed frame message and returning the next frame state or action result.",
+    "file": "use-post-frame-action.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use post frame action", "usepostframeaction"]
+  },
+  "usePostFrameActionDeveloperManaged": {
+    "path": "core",
+    "description": "Post frame action (developer managed)\n\nSubmits a frame action for developer-managed frames, providing more control\nover the frame action processing pipeline. This variant allows developers to\nhandle frame state and responses with custom logic rather than using Neynar's\ndefault frame handling.",
+    "file": "use-post-frame-action-developer-managed.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use post frame action developer managed",
+      "usepostframeactiondevelopermanaged"
+    ]
+  },
+  "useValidateFrameAction": {
+    "path": "core",
+    "description": "Validate frame action\n\nValidates a frame action without executing it. Useful for testing frame\ninteractions, debugging frame implementations, and ensuring frame URLs\nconform to the Frames specification.",
+    "file": "use-validate-frame-action.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use validate frame action", "usevalidateframeaction"]
+  },
+  "useFrameCatalog": {
+    "path": "core",
+    "description": "Fetch frame catalog\n\nRetrieves a paginated list of frames from the Neynar frame catalog with infinite\nscroll support. The catalog includes verified and popular frames available on the\nplatform. Results are automatically flattened across pages for easy rendering.",
+    "file": "use-frame-catalog.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use frame catalog", "useframecatalog"]
+  },
+  "useFrameMetaTags": {
+    "path": "core",
+    "description": "Fetch frame meta tags from URL\n\nExtracts frame meta tags from a given URL to determine if it contains a valid\nframe and retrieve its metadata. This is useful for frame validation, previews,\nand ensuring proper frame configuration.",
+    "file": "use-frame-meta-tags.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use frame meta tags", "useframemetatags"]
+  },
+  "useRelevantFrames": {
+    "path": "core",
+    "description": "Fetch relevant frames\n\nRetrieves frames that are relevant to the current user or context based on their\nactivity and social graph. This endpoint provides personalized frame recommendations\nwith context about which users in the network are engaging with each frame.",
+    "file": "use-relevant-frames.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use relevant frames", "userelevantframes"]
+  },
+  "useFrameSearch": {
+    "path": "core",
+    "description": "Search frames\n\nSearches for frames based on a query string with infinite scroll support.\nSupports searching by frame title, description, or other metadata with\nfuzzy matching and relevance ranking.",
+    "file": "use-frame-search.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use frame search", "useframesearch"]
+  },
+  "useFrameAnalytics": {
+    "path": "core",
+    "description": "Fetch frame analytics\n\nRetrieves comprehensive analytics data for frames, including interaction counts,\nperformance metrics, usage statistics, and time-series data.",
+    "file": "use-frame-analytics.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use frame analytics", "useframeanalytics"]
+  },
+  "usePublishNeynarFrame": {
+    "path": "core",
+    "description": "Publish Neynar frame\n\nPublishes a new frame to the Neynar frame registry. This makes the frame\ndiscoverable and available for interactions on the Neynar platform. The frame\nwill appear in catalog searches and can be promoted to users.",
+    "file": "use-publish-neynar-frame.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use publish neynar frame", "usepublishneynarframe"]
+  },
+  "useUpdateNeynarFrame": {
+    "path": "core",
+    "description": "Update Neynar frame\n\nUpdates an existing frame in the Neynar frame registry. Use this to modify\nframe metadata, URL, description, or other properties. Automatically invalidates\nrelated queries to keep the UI in sync.",
+    "file": "use-update-neynar-frame.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use update neynar frame", "useupdateneynarframe"]
+  },
+  "useDeleteNeynarFrame": {
+    "path": "core",
+    "description": "Delete Neynar frame\n\nRemoves a frame from the Neynar frame registry. This action cannot be undone\nand will make the frame unavailable for future interactions. The frame will be\nremoved from catalog listings and search results.",
+    "file": "use-delete-neynar-frame.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use delete neynar frame", "usedeleteneynarframe"]
+  },
+  "useNeynarFrameLookup": {
+    "path": "core",
+    "description": "Lookup Neynar frame\n\nLooks up a specific frame in the Neynar frame registry by UUID or URL.\nReturns detailed frame information including metadata, status, and configuration.",
+    "file": "use-neynar-frame-lookup.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "format",
+      "hook",
+      "use neynar frame lookup",
+      "useneynarframelookup"
+    ]
+  },
+  "useNotificationTokens": {
+    "path": "core",
+    "description": "Fetch notification tokens\n\nRetrieves notification tokens for frame interactions. These tokens are used\nto send push notifications to users who have interacted with frames. Each token\nrepresents a user's opt-in to receive notifications from your frame.",
+    "file": "use-notification-tokens.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use notification tokens", "usenotificationtokens"]
+  },
+  "usePublishFrameNotifications": {
+    "path": "core",
+    "description": "Send push notifications to app users\n\nSends push notifications to users who have enabled notifications for your app. Use for programmatic notifications triggered by app logic (game events, replies, achievements). For batch/marketing notifications, use the Neynar Developer Portal at dev.neynar.com/apps instead.",
+    "file": "use-publish-frame-notifications.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "notification",
+      "notifications",
+      "push notification",
+      "push",
+      "alert",
+      "notify",
+      "send notification",
+      "use publish frame notifications",
+      "usepublishframenotifications"
+    ]
+  },
+  "useUser": {
+    "path": "core",
+    "description": "Fetches information about a user based on FID",
+    "file": "use-user.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["format", "hook", "use user", "user", "useuser"]
+  },
+  "useBulkUsers": {
+    "path": "core",
+    "description": "Fetches information about multiple users based on FIDs\n\nEfficiently fetches multiple users in a single API call. More performant than\nmaking multiple individual requests.\n\n**Special Behaviors:**\n- Array automatically truncated to 100 FIDs if exceeded (with console warning)\n- Not paginated (single request only)",
+    "file": "use-bulk-users.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "format",
+      "hook",
+      "truncate",
+      "use bulk users",
+      "usebulkusers",
+      "user"
+    ]
+  },
+  "useUserByUsername": {
+    "path": "core",
+    "description": "Get a user by their username\n\nFetches detailed user information using a username (handle). See USER TYPE REFERENCE\nabove for complete User object structure.\n\n**Special Behaviors:**\n- Username lookup is case-insensitive\n- '@' prefix is automatically stripped if provided",
+    "file": "use-user-by-username.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "format",
+      "hook",
+      "use user by username",
+      "user",
+      "useuserbyusername"
+    ]
+  },
+  "useUserSearch": {
+    "path": "core",
+    "description": "Search users by display name or username with infinite scroll\n\nSearches across usernames and display names with pagination support.\nSee USER TYPE REFERENCE above for User structure.\n\n**Special Behaviors:**\n- Query automatically disabled if search string is empty/whitespace\n- Unusual pagination: default limit is 5 (not 25), max is 10",
+    "file": "use-user-search.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use user search", "user", "useusersearch"]
+  },
+  "useUserFollowers": {
+    "path": "core",
+    "description": "Get user followers with infinite scroll pagination\n\nFetches users who follow the specified user. Each follower object contains\na complete User object (see USER TYPE REFERENCE above).",
+    "file": "use-user-followers.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use user followers", "user", "useuserfollowers"]
+  },
+  "useUserFollowing": {
+    "path": "core",
+    "description": "Get users that a user is following with infinite scroll pagination\n\nFetches users that the specified user follows with TanStack Query infinite scroll support.\nResults are paginated and can be loaded incrementally as needed. Includes viewer context\nfor relationship information when available.",
+    "file": "use-user-following.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "format",
+      "hook",
+      "use user following",
+      "user",
+      "useuserfollowing"
+    ]
+  },
+  "useUserActiveChannels": {
+    "path": "core",
+    "description": "Get user's active channels\n\nFetches channels where the user is actively participating, either as a member,\nmoderator, or frequent contributor. This provides insight into the user's community\ninvolvement and interests within the Farcaster ecosystem.",
+    "file": "use-user-active-channels.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use user active channels",
+      "user",
+      "useuseractivechannels"
+    ]
+  },
+  "useBulkUsersByAddress": {
+    "path": "core",
+    "description": "Get users by their wallet addresses\n\nEfficiently fetches users associated with cryptocurrency wallet addresses.\nSupports multiple address types including Ethereum addresses, ENS domains,\nand other blockchain addresses. Useful for wallet-based user discovery.",
+    "file": "use-bulk-users-by-address.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use bulk users by address",
+      "usebulkusersbyaddress",
+      "user"
+    ]
+  },
+  "useFollowUser": {
+    "path": "core",
+    "description": "Follow a user mutation hook\n\nProvides a mutation function to follow a user on Farcaster. Automatically\ninvalidates related queries to keep the UI in sync. Requires a signer UUID\nfor authentication and the target user's FID.",
+    "file": "use-follow-user.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use follow user", "usefollowuser", "user"]
+  },
+  "useUnfollowUser": {
+    "path": "core",
+    "description": "Unfollow a user mutation hook\n\nProvides a mutation function to unfollow a user on Farcaster. Automatically\ninvalidates related queries to keep the UI in sync. Requires a signer UUID\nfor authentication and the target user's FID.",
+    "file": "use-unfollow-user.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use unfollow user", "user", "useunfollowuser"]
+  },
+  "useMuteList": {
+    "path": "core",
+    "description": "Fetches all FIDs that a user has muted",
+    "file": "use-mute-list.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use mute list", "usemutelist"]
+  },
+  "useMuteUser": {
+    "path": "core",
+    "description": "Adds a mute for a given FID\n\n**IMPORTANT**: This is an allowlisted API. Reach out to Neynar if you need access.\n\nWhen a user is muted, their posts will no longer appear in the muting user's feeds\nand notifications. Automatically invalidates mute lists, feeds, and user queries to update UI.",
+    "file": "use-mute-user.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use mute user", "usemuteuser", "user"]
+  },
+  "useUnmuteUser": {
+    "path": "core",
+    "description": "Deletes a mute for a given FID\n\n**IMPORTANT**: This is an allowlisted API. Reach out to Neynar if you need access.\n\nWhen a user is unmuted, their posts will start appearing again in the unmuting\nuser's feeds and notifications. Automatically invalidates mute lists, feeds,\nand user queries to update UI.",
+    "file": "use-unmute-user.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use unmute user", "user", "useunmuteuser"]
+  },
+  "useNotifications": {
+    "path": "core",
+    "description": "Returns a list of notifications for a specific FID\n\nFetches notifications for a user with infinite scroll pagination. The response\nrespects the user's mutes and blocks. Supports filtering by notification type\nand experimental features for enhanced ranking.",
+    "file": "use-notifications.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use notifications", "usenotifications"]
+  },
+  "useNotificationsByParentUrl": {
+    "path": "core",
+    "description": "Returns a list of notifications for a user in specific parent_urls\n\nRetrieves notifications related to specific parent URLs with infinite scroll\npagination. Useful for tracking activity in Frames, external content, or app URLs.\nThe response respects the user's mutes and blocks.",
+    "file": "use-notifications-by-parent-url.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use notifications by parent url",
+      "usenotificationsbyparenturl"
+    ]
+  },
+  "useChannelNotifications": {
+    "path": "core",
+    "description": "Returns a list of notifications for a user in specific channels\n\nRetrieves notifications related to specific channels with infinite scroll\npagination. Useful for tracking activity in channels the user follows or moderates.\nThe response respects the user's mutes and blocks.",
+    "file": "use-channel-notifications.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use channel notifications", "usechannelnotifications"]
+  },
+  "useMarkNotificationsAsSeen": {
+    "path": "core",
+    "description": "Mark notifications as seen mutation hook\n\nProvides a mutation function to mark notifications as seen/read. Automatically\ninvalidates all notification queries to keep the UI in sync. Supports marking\nall notifications or filtering by specific notification type.\n\n**Authorization Methods:**\n1. Provide a valid signer_uuid in the request body (most common)\n2. Provide a valid, signed \"Bearer\" token in the request's Authorization header",
+    "file": "use-mark-notifications-as-seen.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use mark notifications as seen",
+      "usemarknotificationsasseen"
+    ]
+  },
+  "useNotificationCampaignStats": {
+    "path": "core",
+    "description": "Retrieve notification delivery and opened stats for notification campaigns\n\nFetches delivery and engagement statistics for notification campaigns. Can retrieve\nstats for a specific campaign or all campaigns. Useful for tracking notification\ncampaign performance and user engagement metrics.",
+    "file": "use-notification-campaign-stats.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use notification campaign stats",
+      "usenotificationcampaignstats"
+    ]
+  },
+  "useDeployFungible": {
+    "path": "core",
+    "description": "Deploy fungible token mutation hook\n\nProvides a mutation function to deploy a new fungible token contract on-chain.\nReturns a TanStack Query mutation with loading states and error handling.\nAutomatically invalidates relevant token queries upon success.",
+    "file": "use-deploy-fungible.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use deploy fungible", "usedeployfungible"]
+  },
+  "useRelevantFungibleOwners": {
+    "path": "core",
+    "description": "Fetch a list of relevant owners for an on chain asset\n\nShows token holders as \"X, Y, Z and N others you know own this asset\" when viewer_fid provided,\nor top token holders across the network when viewer_fid is omitted.",
+    "file": "use-relevant-fungible-owners.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use relevant fungible owners",
+      "userelevantfungibleowners"
+    ]
+  },
+  "useSendFungibles": {
+    "path": "core",
+    "description": "Send fungibles to users mutation hook\n\nProvides a mutation function to transfer fungible tokens to multiple recipients.\nSupports sending to users by FID or wallet address. Returns a TanStack Query\nmutation with loading states and detailed transfer results.",
+    "file": "use-send-fungibles.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use send fungibles", "usesendfungibles"]
+  },
+  "useMintNft": {
+    "path": "core",
+    "description": "Mint NFT mutation hook\n\nProvides a mutation function to mint NFTs to a specified recipient.\nSupports minting to users by FID or wallet address with custom metadata.\nReturns a TanStack Query mutation with loading states and minting results.",
+    "file": "use-mint-nft.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use mint nft", "usemintnft"]
+  },
+  "useSimulateNftMint": {
+    "path": "core",
+    "description": "Simulate NFT mint mutation hook\n\nProvides a mutation function to simulate NFT minting without actually executing\nthe transaction. This is useful for estimating gas costs, validating parameters,\nand ensuring the mint will succeed before committing to the transaction.",
+    "file": "use-simulate-nft-mint.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use simulate nft mint", "usesimulatenftmint"]
+  },
+  "useNftMint": {
+    "path": "core",
+    "description": "Calls the NFT mint route handler (POST /api/nft/mint).\n\nDesigned to work with createNftMintHandler from @/neynar-web-sdk/nextjs. Invalidates onchain and user queries on success.",
+    "file": "use-nft-mint.llm.md",
+    "category": "NFT",
+    "type": "hook",
+    "keywords": ["nft", "mint", "hook", "use nft mint", "usenftmint"]
+  },
+  "useNftPreview": {
+    "path": "core",
+    "description": "Calls the NFT preview route handler (POST /api/nft/preview).\n\nDesigned to work with createNftPreviewHandler from @/neynar-web-sdk/nextjs. Generates a preview image before minting.",
+    "file": "use-nft-preview.llm.md",
+    "category": "NFT",
+    "type": "hook",
+    "keywords": [
+      "nft",
+      "preview",
+      "image",
+      "hook",
+      "use nft preview",
+      "usenftpreview"
+    ]
+  },
+  "useNftPrice": {
+    "path": "core",
+    "description": "Fetches the mint price for a collection via GET /api/nft/price.\n\nDesigned to work with createNftPriceHandler from @/neynar-web-sdk/nextjs. Returns total cost in ETH including Neynar fees and gas.",
+    "file": "use-nft-price.llm.md",
+    "category": "NFT",
+    "type": "hook",
+    "keywords": [
+      "nft",
+      "price",
+      "cost",
+      "estimate",
+      "hook",
+      "use nft price",
+      "usenftprice"
+    ]
+  },
+  "NftMintButton": {
+    "path": "core",
+    "description": "One-click NFT mint button component.\n\nCalls POST /api/nft/mint via useNftMint. Handles idle, minting, success, and error states. Requires createNftMintHandler at app/api/nft/mint/route.ts.",
+    "file": "mint-nft-button.llm.md",
+    "category": "NFT",
+    "type": "component",
+    "keywords": ["nft", "mint", "button", "component", "NftMintButton"]
+  },
+  "NftPreviewMintFlow": {
+    "path": "core",
+    "description": "Two-step NFT flow component: generate preview then confirm & mint.\n\nHandles generating, previewing, minting, success, and error states. Requires both createNftPreviewHandler and createNftMintHandler.",
+    "file": "preview-mint-flow.llm.md",
+    "category": "NFT",
+    "type": "component",
+    "keywords": [
+      "nft",
+      "preview",
+      "mint",
+      "flow",
+      "component",
+      "NftPreviewMintFlow"
+    ]
+  },
+  "useUserReactions": {
+    "path": "core",
+    "description": "Fetches reactions for a given user with infinite scroll pagination\n\nRetrieves all reactions (likes and recasts) made by a specific user. Each reaction\nincludes the complete cast that was reacted to.",
+    "file": "use-user-reactions.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use user reactions", "user", "useuserreactions"]
+  },
+  "usePublishReaction": {
+    "path": "core",
+    "description": "Post a reaction (like or recast) to a given cast\n\nIn order to post a reaction, the `signer_uuid` must be approved.",
+    "file": "use-publish-reaction.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use publish reaction", "usepublishreaction"]
+  },
+  "useDeleteReaction": {
+    "path": "core",
+    "description": "Delete a reaction (like or recast) to a cast\n\nIn order to delete a reaction, the `signer_uuid` must be approved.",
+    "file": "use-delete-reaction.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use delete reaction", "usedeletereaction"]
+  },
+  "useSigners": {
+    "path": "core",
+    "description": "Fetches a list of signers for a custody address\n\n**Special Behaviors:**\n- Requires SIWE authentication (both message and signature are mandatory)\n- Not paginated (returns all signers in single response)\n- SIWE message must follow EIP-4361 standard",
+    "file": "use-signers.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use signers", "usesigners"]
+  },
+  "useSignerLookup": {
+    "path": "core",
+    "description": "Gets information status of a signer by passing in a signer_uuid\n\nFetches detailed status information for a specific signer by its UUID. The signer UUID\nis paired with your API key and cannot be used with a different API key.\n\n**Special Behaviors:**\n- Query automatically enabled only when signer_uuid is provided\n- signer_uuid is paired with API key, can't use a uuid made with a different API key",
+    "file": "use-signer-lookup.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["format", "hook", "use signer lookup", "usesignerlookup"]
+  },
+  "useDeveloperManagedSignerLookup": {
+    "path": "core",
+    "description": "Fetches the status of a developer managed signer by public key\n\nRetrieves status information for a developer-managed signer using its Ed25519 public key.\nDeveloper-managed signers give you more control over key management compared to standard signers.\n\n**Special Behaviors:**\n- Query automatically enabled only when public_key is provided",
+    "file": "use-developer-managed-signer-lookup.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "format",
+      "hook",
+      "use developer managed signer lookup",
+      "usedevelopermanagedsignerlookup"
+    ]
+  },
+  "useRegisterSignedKey": {
+    "path": "core",
+    "description": "Registers an app FID, deadline and a signature\n\nRegisters a signed key with an app FID and deadline. Returns the signer status with an\napproval URL that users can visit to approve the signer. This is a critical step in the\nsigner authentication flow.",
+    "file": "use-register-signed-key.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use register signed key", "useregistersignedkey"]
+  },
+  "useCreateAndRegisterSignedKey": {
+    "path": "core",
+    "description": "Creates a signer and returns the signer status\n\nConvenience mutation that creates a new signer and registers it in a single operation.\nThis combines signer creation with key registration, returning the signer status and\napproval URL.\n\n**Special Behaviors:**\n- While testing please reuse the signer, it costs money to approve a signer\n- Combines create + register operations into one API call",
+    "file": "use-create-and-register-signed-key.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use create and register signed key",
+      "usecreateandregistersignedkey"
+    ]
+  },
+  "useBuyStorage": {
+    "path": "core",
+    "description": "Rent storage units for a user for one year\n\n**Special Behaviors:**\n- Storage is rented for one year from purchase date\n- Idempotency: Use the `idem` parameter with the same value on retry attempts to prevent duplicate purchases\n- Returns updated storage allocations after successful purchase",
+    "file": "use-buy-storage.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use buy storage", "usebuystorage"]
+  },
+  "useStorageAllocations": {
+    "path": "core",
+    "description": "Fetches storage allocations for a given user\n\nShows how much storage capacity a user has purchased and when it expires.\nEach storage unit provides capacity for 5000 casts, 2500 reactions, and 2500 links.",
+    "file": "use-storage-allocations.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use storage allocations", "usestorageallocations"]
+  },
+  "useStorageUsage": {
+    "path": "core",
+    "description": "Fetches storage usage for a given user\n\nShows how much of the user's allocated storage capacity is currently being used\nacross casts, reactions, links, and other Farcaster actions. Use this to determine\nwhen a user is approaching their storage limits and may need to purchase more.",
+    "file": "use-storage-usage.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use storage usage", "usestorageusage"]
+  },
+  "useStorageStatus": {
+    "path": "core",
+    "description": "Combined storage status hook\n\nProvides a convenient way to get both storage allocations and usage data in a single hook.\nExecutes both queries in parallel for optimal performance. This is useful for dashboard\nviews where you need to show both capacity and current usage together.",
+    "file": "use-storage-status.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use storage status", "usestoragestatus"]
+  },
+  "useSubscribedTo": {
+    "path": "core",
+    "description": "Fetch what FIDs and contracts a FID is subscribed to\n\n**Special Behaviors:**\n- Not paginated (returns all subscriptions in single request)\n- Only supports \"fabric_stp\" provider",
+    "file": "use-subscribed-to.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use subscribed to", "usesubscribedto"]
+  },
+  "useSubscribers": {
+    "path": "core",
+    "description": "Fetch subscribers for a given FID's contracts. Doesn't return addresses that don't have an FID.\n\n**Special Behaviors:**\n- Not paginated (returns all subscribers in single request)\n- Only returns addresses that have an associated FID",
+    "file": "use-subscribers.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use subscribers", "usesubscribers"]
+  },
+  "useSubscriptionCheck": {
+    "path": "core",
+    "description": "Check if a wallet address is subscribed to a given STP (Hypersub) contract.\n\n**Special Behaviors:**\n- Not paginated (returns all results in single request)\n- Max 350 addresses per request\n- Addresses must be comma-separated string format",
+    "file": "use-subscription-check.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "format",
+      "hook",
+      "use subscription check",
+      "usesubscriptioncheck"
+    ]
+  },
+  "useSubscriptions": {
+    "path": "core",
+    "description": "Fetch created subscriptions for a given FID's.\n\n**Special Behaviors:**\n- Not paginated (returns all created subscriptions in single request)\n- Only supports \"fabric_stp\" provider",
+    "file": "use-subscriptions.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use subscriptions", "usesubscriptions"]
+  },
+  "useCreateTransactionPayFrame": {
+    "path": "core",
+    "description": "Creates a transaction pay frame that can be used to collect payments through Farcaster\n\nEnables secure blockchain payment flows directly within Farcaster frames with full\ntransparency of transaction details and costs.\n\n**Special Behaviors:**\n- API enforces `transaction.to.amount > 0` (returns error if not met)\n- API requires `config.line_items` to have at least one item\n- Idempotency key (`idem`) prevents duplicate frame creation on retries",
+    "file": "use-create-transaction-pay-frame.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use create transaction pay frame",
+      "usecreatetransactionpayframe"
+    ]
+  },
+  "useTransactionPayFrame": {
+    "path": "core",
+    "description": "Retrieves details of a previously created transaction payment frame by its ID",
+    "file": "use-transaction-pay-frame.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use transaction pay frame", "usetransactionpayframe"]
+  },
+  "useWebhookLookup": {
+    "path": "core",
+    "description": "Fetch a webhook\n\nRetrieves detailed information about a specific webhook including its configuration,\nsubscription filters, and current status.",
+    "file": "use-webhook-lookup.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["format", "hook", "use webhook lookup", "usewebhooklookup"]
+  },
+  "usePublishWebhook": {
+    "path": "core",
+    "description": "Create a new webhook\n\nPublishes a new webhook with the specified configuration. The webhook will begin\nreceiving events based on its subscription filters once active.",
+    "file": "use-publish-webhook.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use publish webhook", "usepublishwebhook"]
+  },
+  "useUpdateWebhook": {
+    "path": "core",
+    "description": "Update existing webhook\n\nModifies an existing webhook's configuration including name, URL, and subscription filters.\nThe webhook will continue operating with the new configuration after update.",
+    "file": "use-update-webhook.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use update webhook", "useupdatewebhook"]
+  },
+  "useDeleteWebhook": {
+    "path": "core",
+    "description": "Delete a webhook\n\nPermanently removes a webhook and stops all event delivery to its endpoint.\nThis action cannot be undone.",
+    "file": "use-delete-webhook.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use delete webhook", "usedeletewebhook"]
+  },
+  "useUpdateWebhookActiveStatus": {
+    "path": "core",
+    "description": "Update webhook active status\n\nToggles a webhook's active status without modifying its configuration.\nInactive webhooks will not receive event deliveries.",
+    "file": "use-update-webhook-active-status.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use update webhook active status",
+      "useupdatewebhookactivestatus"
+    ]
+  },
+  "User": {
+    "path": "core",
+    "description": "User interface",
+    "file": "user.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "user"]
+  },
+  "UserProfile": {
+    "path": "core",
+    "description": "UserProfile interface",
+    "file": "user-profile.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "user", "user profile", "userprofile"]
+  },
+  "UserProfileBio": {
+    "path": "core",
+    "description": "UserProfileBio interface",
+    "file": "user-profile-bio.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "user", "user profile bio", "userprofilebio"]
+  },
+  "UserProfileBanner": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "user-profile-banner.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "user",
+      "user profile banner",
+      "userprofilebanner"
+    ]
+  },
+  "UserVerifiedAddresses": {
+    "path": "core",
+    "description": "UserVerifiedAddresses interface",
+    "file": "user-verified-addresses.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "user",
+      "user verified addresses",
+      "userverifiedaddresses"
+    ]
+  },
+  "UserVerifiedAddressesPrimary": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "user-verified-addresses-primary.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "user",
+      "user verified addresses primary",
+      "userverifiedaddressesprimary"
+    ]
+  },
+  "UserVerifiedAccountsInner": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "user-verified-accounts-inner.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "user",
+      "user verified accounts inner",
+      "userverifiedaccountsinner"
+    ]
+  },
+  "UserAuthAddressesInner": {
+    "path": "core",
+    "description": "UserAuthAddressesInner interface",
+    "file": "user-auth-addresses-inner.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "user",
+      "user auth addresses inner",
+      "userauthaddressesinner"
+    ]
+  },
+  "UserViewerContext": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "user-viewer-context.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "user",
+      "user viewer context",
+      "userviewercontext"
+    ]
+  },
+  "UserExperimental": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "user-experimental.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "user", "user experimental", "userexperimental"]
+  },
+  "UserPro": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "user-pro.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "user", "user pro", "userpro"]
+  },
+  "UserDehydrated": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "user-dehydrated.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "user", "user dehydrated", "userdehydrated"]
+  },
+  "UserResponse": {
+    "path": "core",
+    "description": "UserResponse interface",
+    "file": "user-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "user", "user response", "userresponse"]
+  },
+  "BulkUsersResponse": {
+    "path": "core",
+    "description": "BulkUsersResponse interface",
+    "file": "bulk-users-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "bulk users response",
+      "bulkusersresponse",
+      "interface",
+      "user"
+    ]
+  },
+  "UserSearchResponse": {
+    "path": "core",
+    "description": "UserSearchResponse interface",
+    "file": "user-search-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "user",
+      "user search response",
+      "usersearchresponse"
+    ]
+  },
+  "UsersResponse": {
+    "path": "core",
+    "description": "UsersResponse interface",
+    "file": "users-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "user", "users response", "usersresponse"]
+  },
+  "BulkUsersByAddressResponse": {
+    "path": "core",
+    "description": "BulkUsersByAddressResponse interface",
+    "file": "bulk-users-by-address-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "bulk users by address response",
+      "bulkusersbyaddressresponse",
+      "interface",
+      "user"
+    ]
+  },
+  "UsersActiveChannelsResponse": {
+    "path": "core",
+    "description": "UsersActiveChannelsResponse interface",
+    "file": "users-active-channels-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "user",
+      "users active channels response",
+      "usersactivechannelsresponse"
+    ]
+  },
+  "Location": {
+    "path": "core",
+    "description": "Coordinates and place names for a location",
+    "file": "location.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "location"]
+  },
+  "LocationAddress": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "location-address.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "location address", "locationaddress"]
+  },
+  "Cast": {
+    "path": "core",
+    "description": "Cast interface",
+    "file": "cast.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["cast", "interface"]
+  },
+  "CastResponse": {
+    "path": "core",
+    "description": "CastResponse interface",
+    "file": "cast-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["cast response", "castresponse", "interface"]
+  },
+  "BulkCastsResponse": {
+    "path": "core",
+    "description": "BulkCastsResponse interface",
+    "file": "bulk-casts-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["bulk casts response", "bulkcastsresponse", "interface"]
+  },
+  "CastsResponse": {
+    "path": "core",
+    "description": "CastsResponse interface",
+    "file": "casts-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["casts response", "castsresponse", "interface"]
+  },
+  "CastsSearchResponse": {
+    "path": "core",
+    "description": "CastsSearchResponse interface",
+    "file": "casts-search-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["casts search response", "castssearchresponse", "interface"]
+  },
+  "PostCastResponse": {
+    "path": "core",
+    "description": "PostCastResponse interface",
+    "file": "post-cast-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "post cast response", "postcastresponse"]
+  },
+  "OperationResponse": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "operation-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "operation response", "operationresponse"]
+  },
+  "CastReactions": {
+    "path": "core",
+    "description": "CastReactions interface",
+    "file": "cast-reactions.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["cast reactions", "castreactions", "interface"]
+  },
+  "CastReplies": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "cast-replies.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["cast replies", "castreplies", "interface"]
+  },
+  "CastViewerContext": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "cast-viewer-context.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["cast viewer context", "castviewercontext", "interface"]
+  },
+  "CastNotificationType": {
+    "path": "core",
+    "description": "CastNotificationType type",
+    "file": "cast-notification-type.llm.md",
+    "category": "Core",
+    "type": "type",
+    "keywords": ["cast notification type", "castnotificationtype", "type"]
+  },
+  "CastEmbeddedParentAuthor": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "cast-embedded-parent-author.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "cast embedded parent author",
+      "castembeddedparentauthor",
+      "interface"
+    ]
+  },
+  "CastDehydrated": {
+    "path": "core",
+    "description": "CastDehydrated interface",
+    "file": "cast-dehydrated.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["cast dehydrated", "castdehydrated", "interface"]
+  },
+  "CastEmbedded": {
+    "path": "core",
+    "description": "CastEmbedded interface",
+    "file": "cast-embedded.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["cast embedded", "castembedded", "interface"]
+  },
+  "CastId": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "cast-id.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["cast id", "castid", "interface"]
+  },
+  "CastAndConversations": {
+    "path": "core",
+    "description": "CastAndConversations interface",
+    "file": "cast-and-conversations.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["cast and conversations", "castandconversations", "interface"]
+  },
+  "CastsMetricsResponse": {
+    "path": "core",
+    "description": "CastsMetricsResponse interface",
+    "file": "casts-metrics-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["casts metrics response", "castsmetricsresponse", "interface"]
+  },
+  "CastsMetrics": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "casts-metrics.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["casts metrics", "castsmetrics", "interface"]
+  },
+  "CastComposerActionsListResponse": {
+    "path": "core",
+    "description": "CastComposerActionsListResponse interface",
+    "file": "cast-composer-actions-list-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "cast composer actions list response",
+      "castcomposeractionslistresponse",
+      "interface"
+    ]
+  },
+  "CastEmbedCrawlResponse": {
+    "path": "core",
+    "description": "CastEmbedCrawlResponse interface",
+    "file": "cast-embed-crawl-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "cast embed crawl response",
+      "castembedcrawlresponse",
+      "interface"
+    ]
+  },
+  "CastComposerActionsListResponseActionsInner": {
+    "path": "core",
+    "description": "CastComposerActionsListResponseActionsInner interface",
+    "file": "cast-composer-actions-list-response-actions-inner.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "cast composer actions list response actions inner",
+      "castcomposeractionslistresponseactionsinner",
+      "interface"
+    ]
+  },
+  "Channel": {
+    "path": "core",
+    "description": "Channel interface",
+    "file": "channel.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["channel", "interface"]
+  },
+  "ChannelDehydrated": {
+    "path": "core",
+    "description": "ChannelDehydrated interface",
+    "file": "channel-dehydrated.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["channel dehydrated", "channeldehydrated", "interface"]
+  },
+  "ChannelOrChannelDehydrated": {
+    "path": "core",
+    "description": "ChannelOrChannelDehydrated type",
+    "file": "channel-or-channel-dehydrated.llm.md",
+    "category": "Core",
+    "type": "type",
+    "keywords": [
+      "channel or channel dehydrated",
+      "channelorchanneldehydrated",
+      "type"
+    ]
+  },
+  "ChannelResponse": {
+    "path": "core",
+    "description": "ChannelResponse interface",
+    "file": "channel-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["channel response", "channelresponse", "interface"]
+  },
+  "ChannelResponseBulk": {
+    "path": "core",
+    "description": "ChannelResponseBulk interface",
+    "file": "channel-response-bulk.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["channel response bulk", "channelresponsebulk", "interface"]
+  },
+  "ChannelListResponse": {
+    "path": "core",
+    "description": "ChannelListResponse interface",
+    "file": "channel-list-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["channel list response", "channellistresponse", "interface"]
+  },
+  "ChannelSearchResponse": {
+    "path": "core",
+    "description": "ChannelSearchResponse interface",
+    "file": "channel-search-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "channel search response",
+      "channelsearchresponse",
+      "interface"
+    ]
+  },
+  "TrendingChannelResponse": {
+    "path": "core",
+    "description": "TrendingChannelResponse interface",
+    "file": "trending-channel-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "trending channel response",
+      "trendingchannelresponse"
+    ]
+  },
+  "ChannelMember": {
+    "path": "core",
+    "description": "ChannelMember interface",
+    "file": "channel-member.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["channel member", "channelmember", "interface"]
+  },
+  "ChannelMemberListResponse": {
+    "path": "core",
+    "description": "ChannelMemberListResponse interface",
+    "file": "channel-member-list-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "channel member list response",
+      "channelmemberlistresponse",
+      "interface"
+    ]
+  },
+  "ChannelUserContext": {
+    "path": "core",
+    "description": "Adds context on the viewer\\'s or author\\'s role in the channel.",
+    "file": "channel-user-context.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "channel user context",
+      "channelusercontext",
+      "interface",
+      "user"
+    ]
+  },
+  "ChannelExternalLink": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "channel-external-link.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["channel external link", "channelexternallink", "interface"]
+  },
+  "ChannelMemberRole": {
+    "path": "core",
+    "description": "ChannelMemberRole type",
+    "file": "channel-member-role.llm.md",
+    "category": "Core",
+    "type": "type",
+    "keywords": ["channel member role", "channelmemberrole", "type"]
+  },
+  "ChannelMemberUser": {
+    "path": "core",
+    "description": "ChannelMemberUser type",
+    "file": "channel-member-user.llm.md",
+    "category": "Core",
+    "type": "type",
+    "keywords": ["channel member user", "channelmemberuser", "type", "user"]
+  },
+  "ChannelMemberChannel": {
+    "path": "core",
+    "description": "ChannelMemberChannel type",
+    "file": "channel-member-channel.llm.md",
+    "category": "Core",
+    "type": "type",
+    "keywords": ["channel member channel", "channelmemberchannel", "type"]
+  },
+  "ChannelMemberInvite": {
+    "path": "core",
+    "description": "ChannelMemberInvite interface",
+    "file": "channel-member-invite.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["channel member invite", "channelmemberinvite", "interface"]
+  },
+  "ChannelMemberInviteListResponse": {
+    "path": "core",
+    "description": "ChannelMemberInviteListResponse interface",
+    "file": "channel-member-invite-list-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "channel member invite list response",
+      "channelmemberinvitelistresponse",
+      "interface"
+    ]
+  },
+  "ChannelActivity": {
+    "path": "core",
+    "description": "ChannelActivity interface",
+    "file": "channel-activity.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["channel activity", "channelactivity", "interface"]
+  },
+  "FeedResponse": {
+    "path": "core",
+    "description": "FeedResponse interface",
+    "file": "feed-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["feed response", "feedresponse", "interface"]
+  },
+  "Notification": {
+    "path": "core",
+    "description": "Notification interface",
+    "file": "notification.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "notification"]
+  },
+  "NotificationsResponse": {
+    "path": "core",
+    "description": "NotificationsResponse interface",
+    "file": "notifications-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "notifications response", "notificationsresponse"]
+  },
+  "AppHostEventType": {
+    "path": "core",
+    "description": "AppHostEventType type",
+    "file": "app-host-event-type.llm.md",
+    "category": "Core",
+    "type": "type",
+    "keywords": ["app host event type", "apphosteventtype", "type"]
+  },
+  "AppHostGetEventResponse": {
+    "path": "core",
+    "description": "AppHostGetEventResponse interface",
+    "file": "app-host-get-event-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "app host get event response",
+      "apphostgeteventresponse",
+      "interface"
+    ]
+  },
+  "AppHostGetEventResponseNotificationDetails": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "app-host-get-event-response-notification-details.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "app host get event response notification details",
+      "apphostgeteventresponsenotificationdetails",
+      "interface"
+    ]
+  },
+  "AppHostPostEventReqBody": {
+    "path": "core",
+    "description": "AppHostPostEventReqBody type",
+    "file": "app-host-post-event-req-body.llm.md",
+    "category": "Core",
+    "type": "type",
+    "keywords": [
+      "app host post event req body",
+      "apphostposteventreqbody",
+      "type"
+    ]
+  },
+  "AppHostPostEventResponse": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "app-host-post-event-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "app host post event response",
+      "apphostposteventresponse",
+      "interface"
+    ]
+  },
+  "AppHostUserStateResponse": {
+    "path": "core",
+    "description": "AppHostUserStateResponse interface",
+    "file": "app-host-user-state-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "app host user state response",
+      "apphostuserstateresponse",
+      "interface",
+      "user"
+    ]
+  },
+  "AuthorizationUrlResponse": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "authorization-url-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "authorization url response",
+      "authorizationurlresponse",
+      "interface"
+    ]
+  },
+  "RegisterUserResponse": {
+    "path": "core",
+    "description": "RegisterUserResponse interface",
+    "file": "register-user-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "register user response",
+      "registeruserresponse",
+      "user"
+    ]
+  },
+  "RegisterUserOnChainResponse": {
+    "path": "core",
+    "description": "RegisterUserOnChainResponse interface",
+    "file": "register-user-on-chain-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "register user on chain response",
+      "registeruseronchainresponse",
+      "user"
+    ]
+  },
+  "NonceResponse": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "nonce-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "nonce response", "nonceresponse"]
+  },
+  "BanRecord": {
+    "path": "core",
+    "description": "BanRecord interface",
+    "file": "ban-record.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["ban record", "banrecord", "interface"]
+  },
+  "BanListResponse": {
+    "path": "core",
+    "description": "BanListResponse interface",
+    "file": "ban-list-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["ban list response", "banlistresponse", "interface"]
+  },
+  "BanResponse": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "ban-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["ban response", "banresponse", "interface"]
+  },
+  "BlockRecord": {
+    "path": "core",
+    "description": "BlockRecord interface",
+    "file": "block-record.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["block record", "blockrecord", "interface"]
+  },
+  "BlockListResponse": {
+    "path": "core",
+    "description": "BlockListResponse interface",
+    "file": "block-list-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["block list response", "blocklistresponse", "interface"]
+  },
+  "BlockReqBody": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "block-req-body.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["block req body", "blockreqbody", "interface"]
+  },
+  "ReactionWithCastInfo": {
+    "path": "core",
+    "description": "ReactionWithCastInfo interface",
+    "file": "reaction-with-cast-info.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "reaction with cast info", "reactionwithcastinfo"]
+  },
+  "ReactionWithUserInfo": {
+    "path": "core",
+    "description": "ReactionWithUserInfo interface",
+    "file": "reaction-with-user-info.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "reaction with user info",
+      "reactionwithuserinfo",
+      "user"
+    ]
+  },
+  "ReactionsResponse": {
+    "path": "core",
+    "description": "ReactionsResponse interface",
+    "file": "reactions-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "reactions response", "reactionsresponse"]
+  },
+  "ReactionsCastResponse": {
+    "path": "core",
+    "description": "ReactionsCastResponse interface",
+    "file": "reactions-cast-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "reactions cast response",
+      "reactionscastresponse"
+    ]
+  },
+  "ReactionForCast": {
+    "path": "core",
+    "description": "ReactionForCast interface",
+    "file": "reaction-for-cast.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "reaction for cast", "reactionforcast"]
+  },
+  "FnameAvailabilityResponse": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "fname-availability-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "fname availability response",
+      "fnameavailabilityresponse",
+      "interface"
+    ]
+  },
+  "Frame": {
+    "path": "core",
+    "description": "Frame type",
+    "file": "frame.llm.md",
+    "category": "Core",
+    "type": "type",
+    "keywords": ["frame", "type"]
+  },
+  "FrameAction": {
+    "path": "core",
+    "description": "FrameAction interface",
+    "file": "frame-action.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["frame action", "frameaction", "interface"]
+  },
+  "FrameActionReqBody": {
+    "path": "core",
+    "description": "FrameActionReqBody interface",
+    "file": "frame-action-req-body.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["frame action req body", "frameactionreqbody", "interface"]
+  },
+  "FrameSignaturePacket": {
+    "path": "core",
+    "description": "The Mini app Signature Packet (https://docs.farcaster.xyz/developers/frames/spec#frame-signature-packet)",
+    "file": "frame-signature-packet.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["frame signature packet", "framesignaturepacket", "interface"]
+  },
+  "ValidateFrameActionResponse": {
+    "path": "core",
+    "description": "ValidateFrameActionResponse interface",
+    "file": "validate-frame-action-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "validate frame action response",
+      "validateframeactionresponse"
+    ]
+  },
+  "ValidatedFrameAction": {
+    "path": "core",
+    "description": "ValidatedFrameAction interface",
+    "file": "validated-frame-action.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "validated frame action", "validatedframeaction"]
+  },
+  "FrameCatalogResponse": {
+    "path": "core",
+    "description": "FrameCatalogResponse interface",
+    "file": "frame-catalog-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["frame catalog response", "framecatalogresponse", "interface"]
+  },
+  "FrameValidateAnalyticsResponse": {
+    "path": "core",
+    "description": "FrameValidateAnalyticsResponse type",
+    "file": "frame-validate-analytics-response.llm.md",
+    "category": "Core",
+    "type": "type",
+    "keywords": [
+      "frame validate analytics response",
+      "framevalidateanalyticsresponse",
+      "type"
+    ]
+  },
+  "FrameValidateListResponse": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "frame-validate-list-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "frame validate list response",
+      "framevalidatelistresponse",
+      "interface"
+    ]
+  },
+  "DeleteFrameResponse": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "delete-frame-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["delete frame response", "deleteframeresponse", "interface"]
+  },
+  "FrameNotificationTokens": {
+    "path": "core",
+    "description": "FrameNotificationTokens interface",
+    "file": "frame-notification-tokens.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "frame notification tokens",
+      "framenotificationtokens",
+      "interface"
+    ]
+  },
+  "FrameNotificationTokensNotificationTokensInner": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "frame-notification-tokens-notification-tokens-inner.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "frame notification tokens notification tokens inner",
+      "framenotificationtokensnotificationtokensinner",
+      "interface"
+    ]
+  },
+  "FrameV2WithFullAuthor": {
+    "path": "core",
+    "description": "Mini app v2 object with full user object",
+    "file": "frame-v2with-full-author.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "frame v2with full author",
+      "framev2withfullauthor",
+      "interface"
+    ]
+  },
+  "FetchRelevantFrames200ResponseRelevantFramesInner": {
+    "path": "core",
+    "description": "FetchRelevantFrames200ResponseRelevantFramesInner interface",
+    "file": "fetch-relevant-frames200response-relevant-frames-inner.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "fetch relevant frames200response relevant frames inner",
+      "fetchrelevantframes200responserelevantframesinner",
+      "interface"
+    ]
+  },
+  "SendFrameNotificationsResponse": {
+    "path": "core",
+    "description": "SendFrameNotificationsResponse interface",
+    "file": "send-frame-notifications-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "send frame notifications response",
+      "sendframenotificationsresponse"
+    ]
+  },
+  "FarcasterActionReqBody": {
+    "path": "core",
+    "description": "FarcasterActionReqBody interface",
+    "file": "farcaster-action-req-body.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "farcaster action req body",
+      "farcasteractionreqbody",
+      "interface"
+    ]
+  },
+  "FarcasterActionReqBodyAction": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "farcaster-action-req-body-action.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "farcaster action req body action",
+      "farcasteractionreqbodyaction",
+      "interface"
+    ]
+  },
+  "FarcasterActionResponse": {
+    "path": "core",
+    "description": "Farcaster action response\n\nDynamic response from publishing a Farcaster action.\nThe SDK returns a generic object with dynamic properties based on the action type.\n\n**Properties:**\n- `[key: string]: unknown` - Dynamic properties based on action type",
+    "file": "farcaster-action-response.llm.md",
+    "category": "Core",
+    "type": "type",
+    "keywords": ["farcaster action response", "farcasteractionresponse", "type"]
+  },
+  "Signer": {
+    "path": "core",
+    "description": "Signer interface",
+    "file": "signer.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "signer"]
+  },
+  "SignerListResponse": {
+    "path": "core",
+    "description": "SignerListResponse interface",
+    "file": "signer-list-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "signer list response", "signerlistresponse"]
+  },
+  "DeveloperManagedSigner": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "developer-managed-signer.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "developer managed signer",
+      "developermanagedsigner",
+      "interface"
+    ]
+  },
+  "StorageAllocationsResponse": {
+    "path": "core",
+    "description": "StorageAllocationsResponse interface",
+    "file": "storage-allocations-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "storage allocations response",
+      "storageallocationsresponse"
+    ]
+  },
+  "StorageUsageResponse": {
+    "path": "core",
+    "description": "StorageUsageResponse interface",
+    "file": "storage-usage-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "storage usage response", "storageusageresponse"]
+  },
+  "SubscribedToResponse": {
+    "path": "core",
+    "description": "SubscribedToResponse interface",
+    "file": "subscribed-to-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "subscribed to response", "subscribedtoresponse"]
+  },
+  "SubscribersResponse": {
+    "path": "core",
+    "description": "SubscribersResponse interface",
+    "file": "subscribers-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "subscribers response", "subscribersresponse"]
+  },
+  "SubscriptionCheckResponse": {
+    "path": "core",
+    "description": "SubscriptionCheckResponse interface",
+    "file": "subscription-check-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "subscription check response",
+      "subscriptioncheckresponse"
+    ]
+  },
+  "SubscriptionsResponse": {
+    "path": "core",
+    "description": "SubscriptionsResponse interface",
+    "file": "subscriptions-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "subscriptions response", "subscriptionsresponse"]
+  },
+  "SubscribedTo": {
+    "path": "core",
+    "description": "SubscribedTo interface",
+    "file": "subscribed-to.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "subscribed to", "subscribedto"]
+  },
+  "Subscriber": {
+    "path": "core",
+    "description": "Subscriber interface",
+    "file": "subscriber.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "subscriber"]
+  },
+  "Subscription": {
+    "path": "core",
+    "description": "Subscription interface",
+    "file": "subscription.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "subscription"]
+  },
+  "TransactionFrameResponse": {
+    "path": "core",
+    "description": "TransactionFrameResponse interface",
+    "file": "transaction-frame-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "transaction frame response",
+      "transactionframeresponse"
+    ]
+  },
+  "TransactionFrame": {
+    "path": "core",
+    "description": "TransactionFrame type",
+    "file": "transaction-frame.llm.md",
+    "category": "Core",
+    "type": "type",
+    "keywords": ["transaction frame", "transactionframe", "type"]
+  },
+  "TransactionSendFungiblesResponse": {
+    "path": "core",
+    "description": "TransactionSendFungiblesResponse interface",
+    "file": "transaction-send-fungibles-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "transaction send fungibles response",
+      "transactionsendfungiblesresponse"
+    ]
+  },
+  "FramePayTransactionReqBody": {
+    "path": "core",
+    "description": "FramePayTransactionReqBody interface",
+    "file": "frame-pay-transaction-req-body.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "frame pay transaction req body",
+      "framepaytransactionreqbody",
+      "interface"
+    ]
+  },
+  "Webhook": {
+    "path": "core",
+    "description": "Webhook interface",
+    "file": "webhook.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "webhook"]
+  },
+  "WebhookResponse": {
+    "path": "core",
+    "description": "WebhookResponse interface",
+    "file": "webhook-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "webhook response", "webhookresponse"]
+  },
+  "WebhookListResponse": {
+    "path": "core",
+    "description": "WebhookListResponse interface",
+    "file": "webhook-list-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "webhook list response", "webhooklistresponse"]
+  },
+  "WebhookSubscription": {
+    "path": "core",
+    "description": "WebhookSubscription interface",
+    "file": "webhook-subscription.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "webhook subscription", "webhooksubscription"]
+  },
+  "WebhookSubscriptionFilters": {
+    "path": "core",
+    "description": "WebhookSubscriptionFilters interface",
+    "file": "webhook-subscription-filters.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "webhook subscription filters",
+      "webhooksubscriptionfilters"
+    ]
+  },
+  "WebhookSecret": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "webhook-secret.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "webhook secret", "webhooksecret"]
+  },
+  "WebhookPostReqBody": {
+    "path": "core",
+    "description": "WebhookPostReqBody interface",
+    "file": "webhook-post-req-body.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "webhook post req body", "webhookpostreqbody"]
+  },
+  "WebhookPutReqBody": {
+    "path": "core",
+    "description": "WebhookPutReqBody interface",
+    "file": "webhook-put-req-body.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "webhook put req body", "webhookputreqbody"]
+  },
+  "WebhookDeleteReqBody": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "webhook-delete-req-body.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "webhook delete req body", "webhookdeletereqbody"]
+  },
+  "WebhookPatchReqBody": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "webhook-patch-req-body.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "webhook patch req body", "webhookpatchreqbody"]
+  },
+  "DeployFungibleResponse": {
+    "path": "core",
+    "description": "DeployFungibleResponse interface",
+    "file": "deploy-fungible-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "deploy fungible response",
+      "deployfungibleresponse",
+      "interface"
+    ]
+  },
+  "RelevantFungibleOwnersResponse": {
+    "path": "core",
+    "description": "RelevantFungibleOwnersResponse interface",
+    "file": "relevant-fungible-owners-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "relevant fungible owners response",
+      "relevantfungibleownersresponse"
+    ]
+  },
+  "MintNft200Response": {
+    "path": "core",
+    "description": "Response for NFT minting operation.",
+    "file": "mint-nft200response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "mint nft200response", "mintnft200response"]
+  },
+  "SimulateNftMintResponse": {
+    "path": "core",
+    "description": "Calldata simulations for NFT minting.",
+    "file": "simulate-nft-mint-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "simulate nft mint response",
+      "simulatenftmintresponse"
+    ]
+  },
+  "BalanceResponse": {
+    "path": "core",
+    "description": "BalanceResponse interface",
+    "file": "balance-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["balance response", "balanceresponse", "interface"]
+  },
+  "Embed": {
+    "path": "core",
+    "description": "Embed type",
+    "file": "embed.llm.md",
+    "category": "Core",
+    "type": "type",
+    "keywords": ["embed", "type"]
+  },
+  "EmbedUrl": {
+    "path": "core",
+    "description": "EmbedUrl interface",
+    "file": "embed-url.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["embed url", "embedurl", "interface"]
+  },
+  "EmbedUrlMetadata": {
+    "path": "core",
+    "description": "EmbedUrlMetadata interface",
+    "file": "embed-url-metadata.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["embed url metadata", "embedurlmetadata", "interface"]
+  },
+  "EmbedCast": {
+    "path": "core",
+    "description": "EmbedCast interface",
+    "file": "embed-cast.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["embed cast", "embedcast", "interface"]
+  },
+  "Conversation": {
+    "path": "core",
+    "description": "Conversation interface",
+    "file": "conversation.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["conversation", "interface"]
+  },
+  "ConversationSummary": {
+    "path": "core",
+    "description": "ConversationSummary interface",
+    "file": "conversation-summary.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["conversation summary", "conversationsummary", "interface"]
+  },
+  "Follower": {
+    "path": "core",
+    "description": "Follower interface",
+    "file": "follower.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["follower", "interface"]
+  },
+  "FollowersResponse": {
+    "path": "core",
+    "description": "FollowersResponse interface",
+    "file": "followers-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["followers response", "followersresponse", "interface"]
+  },
+  "FollowResponse": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "follow-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["follow response", "followresponse", "interface"]
+  },
+  "BulkFollowResponse": {
+    "path": "core",
+    "description": "BulkFollowResponse interface",
+    "file": "bulk-follow-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["bulk follow response", "bulkfollowresponse", "interface"]
+  },
+  "RelevantFollowersResponse": {
+    "path": "core",
+    "description": "RelevantFollowersResponse interface",
+    "file": "relevant-followers-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "relevant followers response",
+      "relevantfollowersresponse"
+    ]
+  },
+  "BestFriendsResponse": {
+    "path": "core",
+    "description": "BestFriendsResponse interface",
+    "file": "best-friends-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["best friends response", "bestfriendsresponse", "interface"]
+  },
+  "MuteRecord": {
+    "path": "core",
+    "description": "MuteRecord interface",
+    "file": "mute-record.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "mute record", "muterecord"]
+  },
+  "MuteReqBody": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "mute-req-body.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "mute req body", "mutereqbody"]
+  },
+  "MuteListResponse": {
+    "path": "core",
+    "description": "MuteListResponse interface",
+    "file": "mute-list-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "mute list response", "mutelistresponse"]
+  },
+  "MuteResponse": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "mute-response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "mute response", "muteresponse"]
+  },
+  "NextCursor": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "next-cursor.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "next cursor", "nextcursor"]
+  },
+  "TextRange": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "text-range.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "text range", "textrange"]
+  },
+  "ErrorRes": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "error-res.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["error res", "errorres", "interface"]
+  },
+  "UserFIDResponse": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "user-fidresponse.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "user", "user fidresponse", "userfidresponse"]
+  },
+  "NotificationType": {
+    "path": "core",
+    "description": "NotificationType type",
+    "file": "notification-type.llm.md",
+    "category": "Core",
+    "type": "type",
+    "keywords": ["notification type", "notificationtype", "type"]
+  },
+  "ReactionType": {
+    "path": "core",
+    "description": "ReactionType type",
+    "file": "reaction-type.llm.md",
+    "category": "Core",
+    "type": "type",
+    "keywords": ["reaction type", "reactiontype", "type"]
+  },
+  "VerificationChainId": {
+    "path": "core",
+    "description": "VerificationChainId type",
+    "file": "verification-chain-id.llm.md",
+    "category": "Core",
+    "type": "type",
+    "keywords": ["type", "verification chain id", "verificationchainid"]
+  },
+  "VerificationType": {
+    "path": "core",
+    "description": "VerificationType type",
+    "file": "verification-type.llm.md",
+    "category": "Core",
+    "type": "type",
+    "keywords": ["type", "verification type", "verificationtype"]
+  },
+  "PostCastReqBodyEmbeds": {
+    "path": "core",
+    "description": "PostCastReqBodyEmbeds type",
+    "file": "post-cast-req-body-embeds.llm.md",
+    "category": "Core",
+    "type": "type",
+    "keywords": ["post cast req body embeds", "postcastreqbodyembeds", "type"]
+  },
+  "UpdateUserReqBodyLocation": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "update-user-req-body-location.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "update user req body location",
+      "updateuserreqbodylocation",
+      "user"
+    ]
+  },
+  "UpdateUserReqBodyVerifiedAccounts": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "update-user-req-body-verified-accounts.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "update user req body verified accounts",
+      "updateuserreqbodyverifiedaccounts",
+      "user"
+    ]
+  },
+  "RegisterUserReqBodyMetadata": {
+    "path": "core",
+    "description": "RegisterUserReqBodyMetadata interface",
+    "file": "register-user-req-body-metadata.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "register user req body metadata",
+      "registeruserreqbodymetadata",
+      "user"
+    ]
+  },
+  "RegisterUserOnChainReqBodyPreRegistrationCallsInner": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "register-user-on-chain-req-body-pre-registration-calls-inner.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "register user on chain req body pre registration calls inner",
+      "registeruseronchainreqbodypreregistrationcallsinner",
+      "user"
+    ]
+  },
+  "RegisterUserOnChainReqBodyRegistration": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "register-user-on-chain-req-body-registration.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "register user on chain req body registration",
+      "registeruseronchainreqbodyregistration",
+      "user"
+    ]
+  },
+  "RegisterUserOnChainReqBodySignersInner": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "register-user-on-chain-req-body-signers-inner.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "register user on chain req body signers inner",
+      "registeruseronchainreqbodysignersinner",
+      "user"
+    ]
+  },
+  "SignedKeyRequestSponsor": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "signed-key-request-sponsor.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "signed key request sponsor",
+      "signedkeyrequestsponsor"
+    ]
+  },
+  "SendFrameNotificationsReqBodyFilters": {
+    "path": "core",
+    "description": "Filters to apply to the target_fids set. All filters are additive, so only users matching all filters will be notified.",
+    "file": "send-frame-notifications-req-body-filters.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "send frame notifications req body filters",
+      "sendframenotificationsreqbodyfilters"
+    ]
+  },
+  "SendFrameNotificationsReqBodyNotification": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "send-frame-notifications-req-body-notification.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "send frame notifications req body notification",
+      "sendframenotificationsreqbodynotification"
+    ]
+  },
+  "MintNftRequest": {
+    "path": "core",
+    "description": "Request body for NFT minting operation.",
+    "file": "mint-nft-request.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "mint nft request", "mintnftrequest"]
+  },
+  "FramePayTransactionReqBodyTransaction": {
+    "path": "core",
+    "description": "FramePayTransactionReqBodyTransaction interface",
+    "file": "frame-pay-transaction-req-body-transaction.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "frame pay transaction req body transaction",
+      "framepaytransactionreqbodytransaction",
+      "interface"
+    ]
+  },
+  "TransactionSendFungiblesRecipient": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "transaction-send-fungibles-recipient.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "transaction send fungibles recipient",
+      "transactionsendfungiblesrecipient"
+    ]
+  },
+  "FetchCastQuotes200Response": {
+    "path": "core",
+    "description": "FetchCastQuotes200Response interface",
+    "file": "fetch-cast-quotes200response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "fetch cast quotes200response",
+      "fetchcastquotes200response",
+      "interface"
+    ]
+  },
+  "FetchFrameMetaTagsFromUrl200Response": {
+    "path": "core",
+    "description": "The mini app object containing the meta tags",
+    "file": "fetch-frame-meta-tags-from-url200response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "fetch frame meta tags from url200response",
+      "fetchframemetatagsfromurl200response",
+      "interface"
+    ]
+  },
+  "FetchRelevantFrames200Response": {
+    "path": "core",
+    "description": "FetchRelevantFrames200Response interface",
+    "file": "fetch-relevant-frames200response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "fetch relevant frames200response",
+      "fetchrelevantframes200response",
+      "interface"
+    ]
+  },
+  "FetchUserInteractions200Response": {
+    "path": "core",
+    "description": "FetchUserInteractions200Response interface",
+    "file": "fetch-user-interactions200response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "fetch user interactions200response",
+      "fetchuserinteractions200response",
+      "interface",
+      "user"
+    ]
+  },
+  "FetchUserReciprocalFollowers200Response": {
+    "path": "core",
+    "description": "FetchUserReciprocalFollowers200Response interface",
+    "file": "fetch-user-reciprocal-followers200response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "fetch user reciprocal followers200response",
+      "fetchuserreciprocalfollowers200response",
+      "interface",
+      "user"
+    ]
+  },
+  "GetNotificationCampaignStats200Response": {
+    "path": "core",
+    "description": "GetNotificationCampaignStats200Response interface",
+    "file": "get-notification-campaign-stats200response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "get notification campaign stats200response",
+      "getnotificationcampaignstats200response",
+      "interface"
+    ]
+  },
+  "RegisterSignedKeyForDeveloperManagedAuthAddress200Response": {
+    "path": "core",
+    "description": "Neynar API\nThe Neynar API allows you to interact with the Farcaster protocol among other things. See the [Neynar docs](https://docs.neynar.com/reference) for more details.\n\nThe version of the OpenAPI document: 3.34.0\nContact: team@neynar.com\n\nNOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).\nhttps://openapi-generator.tech\nDo not edit the class manually.",
+    "file": "register-signed-key-for-developer-managed-auth-address200response.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "register signed key for developer managed auth address200response",
+      "registersignedkeyfordevelopermanagedauthaddress200response"
+    ]
+  },
+  "NeynarFrame": {
+    "path": "core",
+    "description": "NeynarFrame interface",
+    "file": "neynar-frame.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "neynar frame", "neynarframe"]
+  },
+  "NeynarFramePage": {
+    "path": "core",
+    "description": "NeynarFramePage interface",
+    "file": "neynar-frame-page.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": ["interface", "neynar frame page", "neynarframepage"]
+  },
+  "TransactionFrameConfig": {
+    "path": "core",
+    "description": "TransactionFrameConfig interface",
+    "file": "transaction-frame-config.llm.md",
+    "category": "Core",
+    "type": "interface",
+    "keywords": [
+      "interface",
+      "transaction frame config",
+      "transactionframeconfig"
+    ]
+  },
+  "neynarQueryKeys": {
+    "path": "core",
+    "description": "neynarQueryKeys function",
+    "file": "neynar-query-keys.llm.md",
+    "category": "Core",
+    "type": "function",
+    "keywords": ["function", "neynar query keys", "neynarquerykeys"]
+  },
+  "ExperimentalCastCard": {
+    "path": "core",
+    "description": "ExperimentalCastCard - A comprehensive Farcaster cast display component\n\n⚠️ **EXPERIMENTAL**: This component is under active development and may change.\n\nDisplays a Farcaster cast with full support for:\n- Author information (avatar, display name, username, power badge)\n- Cast text content with proper text wrapping\n- Image and link embeds\n- Nested/quoted casts (recursive rendering)\n- Engagement metrics (likes, recasts, replies)\n- Interactive click handlers for cast and author\n\nBuilt using",
+    "file": "experimental-cast-card.llm.md",
+    "category": "Core",
+    "type": "component",
+    "keywords": [
+      "component",
+      "experimental cast card",
+      "experimentalcastcard",
+      "format"
+    ]
+  }
+}

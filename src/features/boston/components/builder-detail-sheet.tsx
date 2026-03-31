@@ -1,0 +1,324 @@
+"use client";
+
+import { useRef, useState, useEffect, useCallback } from "react";
+import { Builder, Spot, BUILDER_CATEGORY_ICONS, BuilderCategory } from "@/features/boston/types";
+import { getSpotsByBuilder } from "@/db/actions/boston-actions";
+import { SpotCard } from "@/features/boston/components/spot-card";
+import { BuilderAvatar } from "@/features/boston/components/builder-card";
+
+type BuilderDetailSheetProps = {
+  builder: Builder | null;
+  onClose: () => void;
+  onSpotClick?: (spot: Spot) => void;
+  onViewBuilderSpots?: (fid: number, username: string) => void;
+};
+
+export function BuilderDetailSheet({
+  builder,
+  onClose,
+  onSpotClick,
+  onViewBuilderSpots,
+}: BuilderDetailSheetProps) {
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const touchStartY = useRef<number | null>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [translateY, setTranslateY] = useState(0);
+  const [isAnimatingOut, setIsAnimatingOut] = useState(false);
+  const [builderSpots, setBuilderSpots] = useState<Spot[]>([]);
+  const [spotsLoading, setSpotsLoading] = useState(false);
+
+  useEffect(() => {
+    if (builder) {
+      setTranslateY(0);
+      setIsAnimatingOut(false);
+      setSpotsLoading(true);
+      getSpotsByBuilder(builder.fid, 5).then((data) => {
+        setBuilderSpots(data);
+        setSpotsLoading(false);
+      });
+    }
+  }, [builder]);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    };
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setIsAnimatingOut(true);
+    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    closeTimerRef.current = setTimeout(() => {
+      setIsAnimatingOut(false);
+      setTranslateY(0);
+      onClose();
+    }, 200);
+  }, [onClose]);
+
+  // Escape key to dismiss
+  useEffect(() => {
+    if (!builder) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") handleClose();
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [builder, handleClose]);
+
+  function handleTouchStart(e: React.TouchEvent) {
+    touchStartY.current = e.touches[0].clientY;
+  }
+
+  function handleTouchMove(e: React.TouchEvent) {
+    if (touchStartY.current === null) return;
+    const delta = e.touches[0].clientY - touchStartY.current;
+    if (delta > 0) setTranslateY(delta);
+  }
+
+  function handleTouchEnd() {
+    if (translateY > 100) {
+      handleClose();
+    } else {
+      setTranslateY(0);
+    }
+    touchStartY.current = null;
+  }
+
+  if (!builder) return null;
+
+  const categoryIcon = builder.category
+    ? BUILDER_CATEGORY_ICONS[builder.category as BuilderCategory] ?? "✦"
+    : null;
+
+  return (
+    <>
+      {/* Backdrop */}
+      <div className="fixed inset-0 z-40 bg-black/50" onClick={handleClose} />
+
+      {/* Sheet */}
+      <div
+        ref={sheetRef}
+        className="fixed bottom-0 left-0 right-0 z-50 rounded-t-lg overflow-hidden"
+        style={{
+          background: "#fff",
+          maxHeight: "82vh",
+          transform: `translateY(${isAnimatingOut ? "100%" : `${translateY}px`})`,
+          transition: isAnimatingOut
+            ? "transform 0.2s ease-in"
+            : translateY === 0
+            ? "transform 0.2s ease-out"
+            : "none",
+        }}
+      >
+        {/* Drag handle */}
+        <div
+          className="flex justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div className="w-10 h-1 rounded-full bg-[#e0e0e0]" />
+        </div>
+
+        <div
+          className="px-4 pb-6 overflow-y-auto"
+          style={{ maxHeight: "calc(82vh - 40px)" }}
+          onTouchStart={(e) => {
+            const el = e.currentTarget;
+            if (el.scrollTop === 0) handleTouchStart(e);
+          }}
+          onTouchMove={(e) => {
+            const el = e.currentTarget;
+            if (el.scrollTop === 0) handleTouchMove(e);
+          }}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Identity block */}
+          <div className="flex items-start gap-4 mb-4">
+            <BuilderAvatar builder={builder} size={64} />
+
+            <div className="flex-1 min-w-0 pt-1">
+              <div className="flex items-center gap-1.5 flex-wrap mb-0.5">
+                <h2
+                  className="text-lg font-bold leading-tight"
+                  style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+                >
+                  {builder.displayName}
+                </h2>
+                {builder.verified && (
+                  <span
+                    className="inline-flex items-center justify-center w-4 h-4 rounded-full text-white shrink-0"
+                    style={{ background: "#1871bd", fontSize: "9px", fontWeight: "900" }}
+                    aria-label="Verified"
+                  >
+                    ✓
+                  </span>
+                )}
+              </div>
+
+              <p
+                className="text-xs leading-none mb-2"
+                style={{ fontFamily: "var(--font-sans)", color: "#1871bd" }}
+              >
+                @{builder.username}
+              </p>
+
+              <div className="flex items-center gap-2 flex-wrap">
+                {builder.category && categoryIcon && (
+                  <span
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-widest"
+                    style={{ fontFamily: "var(--font-sans)", background: "#091f2f", color: "#fff" }}
+                  >
+                    {categoryIcon} {builder.category}
+                  </span>
+                )}
+                {builder.neighborhood && (
+                  <span
+                    className="text-[10px]"
+                    style={{ fontFamily: "var(--font-sans)", color: "#828282" }}
+                  >
+                    📍 {builder.neighborhood}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="mb-4" style={{ borderTop: "1px solid #e0e0e0" }} />
+
+          {/* Bio */}
+          {builder.bio && (
+            <p
+              className="text-sm italic leading-relaxed mb-4"
+              style={{ fontFamily: "var(--font-serif)", color: "#58585b" }}
+            >
+              &ldquo;{builder.bio}&rdquo;
+            </p>
+          )}
+
+          {/* Project block */}
+          {builder.projectName && (
+            <div className="mb-4">
+              <p
+                className="text-[9px] font-bold uppercase tracking-widest mb-1"
+                style={{ fontFamily: "var(--font-sans)", color: "#828282" }}
+              >
+                Building
+              </p>
+              <div className="flex items-center justify-between gap-3">
+                <p
+                  className="text-sm font-bold"
+                  style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+                >
+                  {builder.projectName}
+                </p>
+                {builder.projectUrl && (
+                  <a
+                    href={builder.projectUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[10px] font-bold uppercase tracking-widest shrink-0 hover:underline"
+                    style={{ fontFamily: "var(--font-sans)", color: "#1871bd" }}
+                  >
+                    ↗ visit
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Divider */}
+          <div className="mb-4" style={{ borderTop: "1px solid #e0e0e0" }} />
+
+          {/* Spots section */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-3">
+              <p
+                className="text-[9px] font-bold uppercase tracking-widest"
+                style={{ fontFamily: "var(--font-sans)", color: "#828282" }}
+              >
+                Spots in the guide
+              </p>
+              {/* Show "See all" when we've hit the fetch limit — there may be more */}
+              {builderSpots.length >= 5 && (
+                <button
+                  onClick={() => {
+                    onViewBuilderSpots?.(builder.fid, builder.username);
+                    handleClose();
+                  }}
+                  className="text-[10px] font-bold uppercase tracking-widest hover:underline focus:outline-none"
+                  style={{ fontFamily: "var(--font-sans)", color: "#1871bd", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                >
+                  See all →
+                </button>
+              )}
+            </div>
+
+            {spotsLoading ? (
+              <div className="flex flex-col gap-2">
+                {[1, 2].map((i) => (
+                  <div key={i} className="rounded-sm bg-[#e0e0e0] animate-pulse" style={{ height: "80px" }} />
+                ))}
+              </div>
+            ) : builderSpots.length === 0 ? (
+              <p
+                className="text-xs italic"
+                style={{ fontFamily: "var(--font-serif)", color: "#828282" }}
+              >
+                No spots yet. They&apos;re busy building.
+              </p>
+            ) : (
+              <div className="flex flex-col gap-2">
+                {builderSpots.map((spot) => (
+                  <SpotCard
+                    key={spot.id}
+                    spot={spot}
+                    onClick={(s) => {
+                      handleClose();
+                      onSpotClick?.(s);
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex gap-3">
+            <a
+              href={`https://farcaster.xyz/${builder.username}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 py-3 rounded-sm text-xs font-bold uppercase tracking-widest text-center transition-colors duration-150 hover:opacity-90"
+              style={{
+                fontFamily: "var(--font-sans)",
+                background: "#1871bd",
+                color: "#fff",
+                minHeight: "44px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textDecoration: "none",
+              }}
+            >
+              View on Farcaster
+            </a>
+            <button
+              onClick={handleClose}
+              className="px-4 py-3 rounded-sm text-xs font-bold uppercase tracking-widest border-2 border-[#091f2f] transition-colors duration-150 focus:outline-none"
+              style={{
+                fontFamily: "var(--font-sans)",
+                color: "#091f2f",
+                minHeight: "44px",
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

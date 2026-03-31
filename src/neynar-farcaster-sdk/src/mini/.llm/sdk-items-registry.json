@@ -1,0 +1,119 @@
+{
+  "generated": "2025-11-07T21:20:29.169Z",
+  "sdk": "neynar-sdk-mini-core",
+  "tier": "mini-core",
+  "importPrefix": "@/neynar-farcaster-sdk/mini",
+  "useFarcasterUser": {
+    "path": "mini-app",
+    "description": "Hook to access Farcaster user state",
+    "file": "use-farcaster-user.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["hook", "use farcaster user", "usefarcasteruser", "user"]
+  },
+  "useSDKReady": {
+    "path": "mini-app",
+    "description": "Hook to check if Farcaster SDK is ready",
+    "file": "use-sdkready.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["hook", "use sdkready", "usesdkready"]
+  },
+  "InitializeFarcasterMiniApp": {
+    "path": "mini-app",
+    "description": "InitializeFarcasterMiniApp component",
+    "file": "initialize-farcaster-mini-app.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": [
+      "component",
+      "initialize farcaster mini app",
+      "initializefarcasterminiapp"
+    ]
+  },
+  "useInitializeFarcasterApp": {
+    "path": "mini-app",
+    "description": "Initialize Farcaster SDK and populate user atoms\n\nCall this hook once at the app root level (in your main App component).\n\nHandles:\n- SDK initialization (sdk.actions.ready())\n- Back button setup (if creator context)\n- User context loading from Farcaster SDK\n- Error handling for guest users",
+    "file": "use-initialize-farcaster-app.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": [
+      "component",
+      "hook",
+      "use initialize farcaster app",
+      "useinitializefarcasterapp"
+    ]
+  },
+  "UserAvatar": {
+    "path": "mini-app",
+    "description": "UserAvatar - Displays a user's profile picture with fallback to initials\n\nA flexible avatar component that works with both Farcaster SDK users and Neynar API users.\nUses type guards to safely handle different property name formats (camelCase vs snake_case).",
+    "file": "user-avatar.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": [
+      "avatar",
+      "component",
+      "format",
+      "user",
+      "user avatar",
+      "useravatar"
+    ]
+  },
+  "getMiniAppMetadata": {
+    "path": "mini-app",
+    "description": "getMiniAppMetadata function",
+    "file": "get-mini-app-metadata.llm.md",
+    "category": "Mini App",
+    "type": "function",
+    "keywords": ["function", "get mini app metadata", "getminiappmetadata"]
+  },
+  "StandardMiniLayout": {
+    "path": "mini-app",
+    "description": "StandardMiniLayout - Layout for standard (non-game) mini apps\n\nFeatures:\n- Fixed floating header with backdrop blur\n- Scrollable content area\n- Full width\n- Padding included\n\nUsage:\n```tsx\n<StandardMiniLayout>\n<YourAppContent />\n</StandardMiniLayout>\n```",
+    "file": "standard-mini-layout.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["component", "standard mini layout", "standardminilayout"]
+  },
+  "MiniappHeader": {
+    "path": "mini-app",
+    "description": "MiniappHeader component",
+    "file": "miniapp-header.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["component", "miniapp header", "miniappheader"]
+  },
+  "ShareButton": {
+    "path": "mini-app",
+    "description": "ShareButton - A button for sharing the mini app on Farcaster via cast composition.\n\nCRITICAL: Uses publicConfig.homeUrl internally to ensure share URLs always point to the production domain (*.neynar.app) rather than dev/preview URLs.\n\nFeatures:\n- Pre-built button with loading state\n- Automatic production URL construction\n- Customizable text, path, and styling\n- Success/cancel callbacks",
+    "file": "share-button.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": [
+      "component",
+      "share",
+      "share button",
+      "sharebutton",
+      "cast",
+      "farcaster",
+      "social"
+    ]
+  },
+  "useShare": {
+    "path": "mini-app",
+    "description": "useShare - Hook for sharing the mini app on Farcaster via cast composition.\n\nCRITICAL: Uses publicConfig.homeUrl internally to ensure share URLs always point to the production domain (*.neynar.app) rather than dev/preview URLs.\n\nReturns a share() function that opens the Farcaster cast composer with the app link embedded.",
+    "file": "use-share.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "share",
+      "use share",
+      "useshare",
+      "cast",
+      "farcaster",
+      "social",
+      "composeCast"
+    ]
+  }
+}

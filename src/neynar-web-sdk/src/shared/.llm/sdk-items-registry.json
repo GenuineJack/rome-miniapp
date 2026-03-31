@@ -1,0 +1,22 @@
+{
+  "generated": "2025-10-18T17:03:01.105Z",
+  "sdk": "neynar-sdk-shared",
+  "tier": "shared",
+  "importPrefix": "@/neynar-web-sdk",
+  "truncateEmail": {
+    "path": "shared",
+    "description": "Truncate email address if it's too long",
+    "file": "truncate-email.llm.md",
+    "category": "Shared",
+    "type": "function",
+    "keywords": ["function", "truncate", "truncate email", "truncateemail"]
+  },
+  "truncateText": {
+    "path": "shared",
+    "description": "Truncate any text to a maximum length",
+    "file": "truncate-text.llm.md",
+    "category": "Shared",
+    "type": "function",
+    "keywords": ["function", "truncate", "truncate text", "truncatetext"]
+  }
+}

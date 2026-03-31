@@ -1,0 +1,119 @@
+@import "@neynar/ui/styles";
+/* Google Fonts are loaded via next/font in layout.tsx */
+
+/* ============================================
+   BOSTON DESIGN SYSTEM — Tailwind v4 theme tokens
+   ============================================ */
+@theme {
+  /* Font families — connected to next/font CSS variables */
+  --font-sans: var(--font-montserrat), Arial, sans-serif;
+  --font-serif: var(--font-lora), Georgia, serif;
+  --font-mono: var(--font-geist-mono), monospace;
+
+  /* Boston color palette */
+  --color-navy: #091f2f;
+  --color-boston-blue: #1871bd;
+  --color-boston-blue-light: #288be4;
+  --color-boston-red: #d22d23;
+  --color-boston-coral: #fb4d42;
+  --color-boston-yellow: #fcb61a;
+  --color-boston-gray-50: #f3f3f3;
+  --color-boston-gray-100: #e0e0e0;
+  --color-boston-gray-200: #c8c8c8;
+  --color-boston-gray-400: #828282;
+  --color-boston-gray-text: #58585b;
+}
+
+:root {
+  --font-sans: var(--font-montserrat), Arial, sans-serif;
+  --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-lora), Georgia, serif;
+  /* Boston Community Guide Design System */
+  /* Primary colors */
+  --primary: #091f2f;
+  --primary-navy: #091f2f;
+  --primary-blue: #1871bd;
+  --primary-blue-light: #288be4;
+
+  /* Alert and featured colors */
+  --alert-red: #d22d23;
+  --badge-yellow: #fcb61a;
+  --hover-coral: #fb4d42;
+
+  /* Neutral colors */
+  --white: #ffffff;
+  --card-bg: #f3f3f3;
+  --border-gray: #e0e0e0;
+  --text-secondary: #828282;
+  --body-text: #58585b;
+
+  /* Legacy support */
+  --accent: #1871bd;
+  --background: #091f2f;
+  --foreground: #ffffff;
+
+}
+
+.dark {
+  /* Boston Community Guide Design System - Dark Mode */
+  --primary: #091f2f;
+  --primary-navy: #091f2f;
+  --primary-blue: #1871bd;
+  --primary-blue-light: #288be4;
+
+  --alert-red: #d22d23;
+  --badge-yellow: #fcb61a;
+  --hover-coral: #fb4d42;
+
+  --white: #ffffff;
+  --card-bg: #f3f3f3;
+  --border-gray: #e0e0e0;
+  --text-secondary: #828282;
+  --body-text: #58585b;
+
+  --accent: #1871bd;
+  --background: #091f2f;
+  --foreground: #ffffff;
+}
+
+/* Hide scrollbar while keeping scroll functionality */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Also alias for components using scrollbar-hide (Tailwind plugin convention) */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ============================================
+   FOCUS RINGS
+   - Only show on keyboard navigation (not mouse clicks)
+   - Uses :focus-visible so touch/mouse users are unaffected
+   ============================================ */
+
+/* Default outline off (we add our own via focus-visible) */
+*:focus {
+  outline: none;
+}
+
+/* Keyboard focus ring — visible, brand-colored */
+*:focus-visible {
+  outline: 2px solid #1871bd;
+  outline-offset: 2px;
+}
+
+/* Dark backgrounds — white ring instead */
+.bg-\[\#091f2f\] *:focus-visible,
+[style*="background: #091f2f"] *:focus-visible,
+[style*="background:#091f2f"] *:focus-visible {
+  outline-color: rgba(255, 255, 255, 0.7);
+}

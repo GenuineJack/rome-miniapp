@@ -1,0 +1,70 @@
+{
+  "generated": "2025-11-07T21:59:24.637Z",
+  "sdk": "neynar-sdk-audio",
+  "tier": "audio",
+  "importPrefix": "@/neynar-farcaster-sdk/audio",
+  "isMutedAtom": {
+    "path": "mini-app",
+    "description": "Global mute state\nPersisted to localStorage as 'game-audio-muted'",
+    "file": "is-muted-atom.llm.md",
+    "category": "Mini App",
+    "type": "function",
+    "keywords": ["function", "is muted atom", "ismutedatom"]
+  },
+  "sfxVolumeAtom": {
+    "path": "mini-app",
+    "description": "Sound effects volume (0.0 - 1.0)\nPersisted to localStorage as 'game-sfx-volume'",
+    "file": "sfx-volume-atom.llm.md",
+    "category": "Mini App",
+    "type": "function",
+    "keywords": ["function", "sfx volume atom", "sfxvolumeatom"]
+  },
+  "musicVolumeAtom": {
+    "path": "mini-app",
+    "description": "Music volume (0.0 - 1.0)\nPersisted to localStorage as 'game-music-volume'",
+    "file": "music-volume-atom.llm.md",
+    "category": "Mini App",
+    "type": "function",
+    "keywords": ["function", "music volume atom", "musicvolumeatom"]
+  },
+  "AudioControl": {
+    "path": "mini-app",
+    "description": "AudioControl component",
+    "file": "audio-control.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["audio control", "audiocontrol", "component"]
+  },
+  "MuteButton": {
+    "path": "mini-app",
+    "description": "MuteButton component",
+    "file": "mute-button.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["button", "component", "mute button", "mutebutton"]
+  },
+  "useSfx": {
+    "path": "mini-app",
+    "description": "No description available",
+    "file": "use-sfx.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["hook", "use sfx", "usesfx"]
+  },
+  "useSong": {
+    "path": "mini-app",
+    "description": "No description available",
+    "file": "use-song.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["hook", "use song", "usesong"]
+  },
+  "sfx": {
+    "path": "mini-app",
+    "description": "sfx function",
+    "file": "sfx.llm.md",
+    "category": "Mini App",
+    "type": "function",
+    "keywords": ["function", "sfx"]
+  }
+}

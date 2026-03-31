@@ -1,0 +1,13 @@
+{
+  "name": "Boston",
+  "shortName": "Boston",
+  "subtitle": "City mapped by your community",
+  "description": "A community-curated guide to Boston neighborhoods, spots, builders, and events. Every recommendation has a Farcaster user behind it.",
+  "shortDescription": "Boston curated by the people who live here",
+  "primaryCategory": "social",
+  "tags": ["boston", "community", "map", "local", "neighborhoods"],
+  "splashBackgroundColor": "#091f2f",
+  "tagline": "Curated by your community",
+  "requiredChains": ["eip155:8453", "eip155:1"],
+  "shareButtonTitle": "Explore Boston"
+}

@@ -1,0 +1,709 @@
+{
+  "generated": "2025-11-07T21:59:11.090Z",
+  "sdk": "neynar-sdk-game",
+  "tier": "game",
+  "importPrefix": "@/neynar-farcaster-sdk/game",
+  "ActionButtons": {
+    "path": "mini-app",
+    "description": "ActionButtons - Pre-built action button group for games\n\nProvides 1-2 action buttons (jump, shoot, etc.) with dual input support.\nShows keyboard shortcuts on hover when keyboardHints prop is provided.\nLabels can be text, icons, or any React node.",
+    "file": "action-buttons.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["action buttons", "actionbuttons", "button", "component"]
+  },
+  "ActionButtonsProps": {
+    "path": "mini-app",
+    "description": "ActionButtonsProps type",
+    "file": "action-buttons-props.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["action buttons props", "actionbuttonsprops", "button", "type"]
+  },
+  "ComboIndicator": {
+    "path": "mini-app",
+    "description": "Shows combo multiplier with pulse animation\n\nDisplays \"2x COMBO!\", \"3x COMBO!\", etc. with a pulse effect when the\ncombo increases. Automatically hides when combo is 0.",
+    "file": "combo-indicator.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["combo indicator", "comboindicator", "component"]
+  },
+  "ComboIndicatorProps": {
+    "path": "mini-app",
+    "description": "ComboIndicatorProps type",
+    "file": "combo-indicator-props.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["combo indicator props", "comboindicatorprops", "type"]
+  },
+  "CountdownAnimation": {
+    "path": "mini-app",
+    "description": "Full-screen countdown animation (3... 2... 1... GO!)\n\nDisplays a full-screen overlay with animated countdown.\nAuto-removes from DOM when complete.",
+    "file": "countdown-animation.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["component", "countdown animation", "countdownanimation"]
+  },
+  "CountdownAnimationProps": {
+    "path": "mini-app",
+    "description": "CountdownAnimationProps type",
+    "file": "countdown-animation-props.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["countdown animation props", "countdownanimationprops", "type"]
+  },
+  "DirectionalPad": {
+    "path": "mini-app",
+    "description": "DirectionalPad - Pre-built directional control component\n\nProvides arrow buttons for directional movement in games.\nAutomatically handles both touch and mouse input.\nShows keyboard shortcuts on hover when keyboardHints prop is provided.",
+    "file": "directional-pad.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["component", "directional pad", "directionalpad"]
+  },
+  "DirectionalPadProps": {
+    "path": "mini-app",
+    "description": "DirectionalPadProps type",
+    "file": "directional-pad-props.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["directional pad props", "directionalpadprops", "type"]
+  },
+  "FlashOverlay": {
+    "path": "mini-app",
+    "description": "FlashOverlay component",
+    "file": "flash-overlay.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["component", "flash overlay", "flashoverlay"]
+  },
+  "FlashOverlayProps": {
+    "path": "mini-app",
+    "description": "FlashOverlayProps type",
+    "file": "flash-overlay-props.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["flash overlay props", "flashoverlayprops", "type"]
+  },
+  "FloatingText": {
+    "path": "mini-app",
+    "description": "Floating text component\n\nRenders floating score popups from useScorePopup hook.\nShows \"+100\" or \"-50\" style text that floats up and fades out.",
+    "file": "floating-text.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["component", "floating text", "floatingtext"]
+  },
+  "FloatingTextProps": {
+    "path": "mini-app",
+    "description": "FloatingTextProps type",
+    "file": "floating-text-props.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["floating text props", "floatingtextprops", "type"]
+  },
+  "ParticleEmitter": {
+    "path": "mini-app",
+    "description": "Particle emitter component\n\nRenders particles from useParticles hook.\nEach particle is rendered as a colored circle that moves and fades out.",
+    "file": "particle-emitter.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["component", "particle emitter", "particleemitter"]
+  },
+  "ParticleEmitterProps": {
+    "path": "mini-app",
+    "description": "ParticleEmitterProps type",
+    "file": "particle-emitter-props.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["particle emitter props", "particleemitterprops", "type"]
+  },
+  "ScreenShakeContainer": {
+    "path": "mini-app",
+    "description": "Screen shake container component\n\nWraps game content and applies shake transform from useScreenShake hook.\nOnly applies transform when isShaking is true.",
+    "file": "screen-shake-container.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["component", "screen shake container", "screenshakecontainer"]
+  },
+  "ScreenShakeContainerProps": {
+    "path": "mini-app",
+    "description": "ScreenShakeContainerProps type",
+    "file": "screen-shake-container-props.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": [
+      "screen shake container props",
+      "screenshakecontainerprops",
+      "type"
+    ]
+  },
+  "GameBoard": {
+    "path": "mini-app",
+    "description": "GameBoard - Container for game content and controls\n\nCreates a two-section layout within a tab:\n- Game area (fills available space)\n- Controls section (fixed at bottom)\n\nUsage:\n```tsx\n<GameBoard controls={<YourControls />}>\n<YourGameCanvas />\n</GameBoard>\n```",
+    "file": "game-board.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["component", "game board", "gameboard"]
+  },
+  "GameMiniLayout": {
+    "path": "mini-app",
+    "description": "GameMiniLayout - Layout for game-based mini apps\n\nFeatures:\n- Static header (not floating, part of layout flow)\n- Full-height layout (no scrolling)\n- Built-in Tabs from",
+    "file": "game-mini-layout.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["component", "game mini layout", "gameminilayout"]
+  },
+  "BuffIcon": {
+    "path": "mini-app",
+    "description": "Buff icon component\n\nDisplays buff/debuff icons with progress ring showing time remaining.\nColor-coded: green for positive buffs, red for negative debuffs.",
+    "file": "buff-icon.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["buff icon", "bufficon", "component"]
+  },
+  "BuffIconProps": {
+    "path": "mini-app",
+    "description": "BuffIconProps type",
+    "file": "buff-icon-props.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["buff icon props", "bufficonprops", "type"]
+  },
+  "InventoryGrid": {
+    "path": "mini-app",
+    "description": "Inventory grid component\n\nVisual inventory display with grid layout and custom item rendering.\nSupports item click handling.",
+    "file": "inventory-grid.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["component", "inventory grid", "inventorygrid"]
+  },
+  "InventoryGridProps": {
+    "path": "mini-app",
+    "description": "InventoryGridProps type",
+    "file": "inventory-grid-props.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["inventory grid props", "inventorygridprops", "type"]
+  },
+  "PowerUpIndicator": {
+    "path": "mini-app",
+    "description": "Power-up indicator component\n\nDisplays active power-ups with circular progress ring showing time remaining.\nStacks horizontally.",
+    "file": "power-up-indicator.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["component", "power up indicator", "powerupindicator"]
+  },
+  "PowerUpIndicatorProps": {
+    "path": "mini-app",
+    "description": "PowerUpIndicatorProps type",
+    "file": "power-up-indicator-props.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["power up indicator props", "powerupindicatorprops", "type"]
+  },
+  "ProgressBar": {
+    "path": "mini-app",
+    "description": "Linear progress bar with optional percentage label\n\nDisplays progress as a percentage of max value with smooth transitions.\nSupports striped and animated variants.",
+    "file": "progress-bar.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["component", "progress bar", "progressbar"]
+  },
+  "ProgressBarProps": {
+    "path": "mini-app",
+    "description": "ProgressBarProps type",
+    "file": "progress-bar-props.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["progress bar props", "progressbarprops", "type"]
+  },
+  "ProgressTimer": {
+    "path": "mini-app",
+    "description": "Circular or linear progress indicator with time display\n\nCombines visual progress with formatted time display.\nUse with useCountdown or useStopwatch hooks.",
+    "file": "progress-timer.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["component", "format", "progress timer", "progresstimer"]
+  },
+  "ProgressTimerProps": {
+    "path": "mini-app",
+    "description": "ProgressTimerProps type",
+    "file": "progress-timer-props.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["progress timer props", "progresstimerprops", "type"]
+  },
+  "ScoreDisplay": {
+    "path": "mini-app",
+    "description": "Animated score counter with smooth count-up animation\n\nAnimates from the previous value to the new value using an ease-out\ncubic easing function. Pure JavaScript animation with no dependencies.",
+    "file": "score-display.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["component", "score display", "scoredisplay"]
+  },
+  "ScoreDisplayProps": {
+    "path": "mini-app",
+    "description": "ScoreDisplayProps type",
+    "file": "score-display-props.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["score display props", "scoredisplayprops", "type"]
+  },
+  "Timer": {
+    "path": "mini-app",
+    "description": "Formatted time display component\n\nDisplays time in various formats. This is a presentation component\n(doesn't manage state - just displays the provided milliseconds).\nUse with useCountdown or useStopwatch hooks.",
+    "file": "timer.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["component", "format", "timer"]
+  },
+  "TimerProps": {
+    "path": "mini-app",
+    "description": "TimerProps type",
+    "file": "timer-props.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["timer props", "timerprops", "type"]
+  },
+  "ControlsHelper": {
+    "path": "mini-app",
+    "description": "Keyboard/touch control overlay component\n\nShows list of keyboard/touch controls in a semi-transparent overlay.\nFormatted like \"Arrow Keys - Move player\".",
+    "file": "controls-helper.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["component", "controls helper", "controlshelper"]
+  },
+  "ControlsHelperProps": {
+    "path": "mini-app",
+    "description": "ControlsHelperProps type",
+    "file": "controls-helper-props.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["controls helper props", "controlshelperprops", "type"]
+  },
+  "TutorialOverlay": {
+    "path": "mini-app",
+    "description": "Tutorial overlay component\n\nFull-screen tutorial UI with step counter, navigation, and element highlighting.\nDarkens screen except highlighted element, shows tooltip with instructions.",
+    "file": "tutorial-overlay.llm.md",
+    "category": "Mini App",
+    "type": "component",
+    "keywords": ["component", "tutorial overlay", "tutorialoverlay"]
+  },
+  "TutorialOverlayProps": {
+    "path": "mini-app",
+    "description": "TutorialOverlayProps type",
+    "file": "tutorial-overlay-props.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["tutorial overlay props", "tutorialoverlayprops", "type"]
+  },
+  "useFlashEffect": {
+    "path": "mini-app",
+    "description": "Full-screen flash effect hook\n\nCreates full-screen color flash for damage, power-ups, or transitions.\nFades in quickly, then fades out slowly.",
+    "file": "use-flash-effect.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["hook", "use flash effect", "useflasheffect"]
+  },
+  "useParticles": {
+    "path": "mini-app",
+    "description": "Particle emitter hook for visual effects\n\nCreates particles for confetti, explosions, sparkles, etc.\nParticles move based on velocity and gravity, fading out over time.",
+    "file": "use-particles.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["hook", "use particles", "useparticles"]
+  },
+  "Particle": {
+    "path": "mini-app",
+    "description": "Particle type",
+    "file": "particle.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["particle", "type"]
+  },
+  "EmitConfig": {
+    "path": "mini-app",
+    "description": "EmitConfig type",
+    "file": "emit-config.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["emit config", "emitconfig", "type"]
+  },
+  "usePulse": {
+    "path": "mini-app",
+    "description": "Pulse/scale animation utility for UI elements\n\nPulses element when trigger value changes.\nAnimates scale from 1.0 → 1.2 → 1.0 over ~300ms.",
+    "file": "use-pulse.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["hook", "use pulse", "usepulse"]
+  },
+  "useScorePopup": {
+    "path": "mini-app",
+    "description": "Floating score popup hook\n\nCreates floating \"+100\" style text that fades up and disappears.\nAutomatically cleans up after animation completes (~1000ms).",
+    "file": "use-score-popup.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["hook", "use score popup", "usescorepopup"]
+  },
+  "ScorePopup": {
+    "path": "mini-app",
+    "description": "ScorePopup type",
+    "file": "score-popup.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["score popup", "scorepopup", "type"]
+  },
+  "useScreenShake": {
+    "path": "mini-app",
+    "description": "Screen shake effect for impact feedback (camera/viewport shake)\n\nGenerates randomized X/Y offset values that decay over time, creating a camera shake\neffect for high-impact moments. Uses requestAnimationFrame for smooth 60 FPS animation.\nIntensity controls shake magnitude (1-10 range, auto-clamped). Duration specifies\nshake length in milliseconds. Offsets decay linearly to zero.\n\n## Implementation Pattern\nApply offset to game container transform. Use ScreenShakeContainer component\nfor pre-built integration with proper styling.\n\n## Performance\nUses single requestAnimationFrame loop. Automatically cleans up on unmount.\nMultiple shake calls override previous shake (doesn't stack).",
+    "file": "use-screen-shake.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["component", "hook", "use screen shake", "usescreenshake"]
+  },
+  "useGameLoop": {
+    "path": "mini-app",
+    "description": "Provides a 60 FPS game loop for frame-based games\n\nCalls the callback function at a specified frame rate (default 60 FPS).\nAutomatically pauses when the game is paused via `useGamePaused()`.\nUses requestAnimationFrame for smooth, browser-optimized timing.",
+    "file": "use-game-loop.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["hook", "use game loop", "usegameloop"]
+  },
+  "useInitializeGame": {
+    "path": "mini-app",
+    "description": "Initialize game configuration and action handlers\n\nThis hook combines game config initialization and action handler setup.\nCall this once at the top level of your game component.",
+    "file": "use-initialize-game.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": [
+      "component",
+      "hook",
+      "use initialize game",
+      "useinitializegame"
+    ]
+  },
+  "gameConfigAtom": {
+    "path": "mini-app",
+    "description": "Global game configuration atom\nShared state that game hooks (like useScore) need to read",
+    "file": "game-config-atom.llm.md",
+    "category": "Mini App",
+    "type": "function",
+    "keywords": ["function", "game config atom", "gameconfigatom"]
+  },
+  "useBuffs": {
+    "path": "mini-app",
+    "description": "Temporary stat buffs/debuffs hook (global)\n\nTracks temporary stat modifiers with automatic expiration.\nCalculates combined multipliers for stacking buffs.\nState is shared globally across all components that use this hook.",
+    "file": "use-buffs.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["component", "hook", "use buffs", "usebuffs"]
+  },
+  "Buff": {
+    "path": "mini-app",
+    "description": "Buff type",
+    "file": "buff.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["buff", "type"]
+  },
+  "useInventory": {
+    "path": "mini-app",
+    "description": "Simple inventory system hook (global)\n\nStores collected items with deduplication by ID.\nState is shared globally across all components that use this hook.",
+    "file": "use-inventory.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["component", "hook", "use inventory", "useinventory"]
+  },
+  "usePowerUps": {
+    "path": "mini-app",
+    "description": "Power-up management hook (global)\n\nManages active power-ups with duration timers.\nAuto-deactivates when timer expires.\nState is shared globally across all components that use this hook.",
+    "file": "use-power-ups.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["component", "hook", "use power ups", "usepowerups"]
+  },
+  "PowerUpDefinition": {
+    "path": "mini-app",
+    "description": "PowerUpDefinition type",
+    "file": "power-up-definition.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["power up definition", "powerupdefinition", "type"]
+  },
+  "ActivePowerUp": {
+    "path": "mini-app",
+    "description": "ActivePowerUp type",
+    "file": "active-power-up.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["active power up", "activepowerup", "type"]
+  },
+  "useTutorial": {
+    "path": "mini-app",
+    "description": "Multi-step tutorial system hook\n\nManages tutorial flow with navigation, progress tracking, and completion callbacks.",
+    "file": "use-tutorial.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["hook", "use tutorial", "usetutorial"]
+  },
+  "TutorialStep": {
+    "path": "mini-app",
+    "description": "TutorialStep type",
+    "file": "tutorial-step.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["tutorial step", "tutorialstep", "type"]
+  },
+  "useCheckpoint": {
+    "path": "mini-app",
+    "description": "Manual save points system with persistent storage\n\nStores multiple labeled checkpoints organized by type/category to localStorage.\nState is shared globally and persists across page reloads. Perfect for save points\nin roguelikes, puzzle games, or any game needing multiple save states organized by\ndifficulty, mode, campaign, etc.\n\n## Recommended Pattern: Wrap in a Domain-Specific Hook\n\nInstead of using this hook directly, wrap it in a feature-specific hook:\n\n```typescript\n// src/features/rpg/use-game-checkpoint.ts\nimport { useCheckpoint } from \"@/neynar-farcaster-sdk/mini\";\n\ntype GameState = { health: number; score: number };\n\nexport function useGameCheckpoint() {\nconst { saveCheckpoint, loadCheckpoint, listCheckpoints, deleteCheckpoint, clearCheckpointType } = useCheckpoint();\n\nreturn {\nsave: (data: GameState, label?: string) => saveCheckpoint(\"rpg-game\", data, label),\nload: (label: string) => loadCheckpoint<GameState>(\"rpg-game\", label),\nlist: () => listCheckpoints(\"rpg-game\"),\ndelete: (label: string) => deleteCheckpoint(\"rpg-game\", label),\nclear: () => clearCheckpointType(\"rpg-game\"),\n};\n}\n\n// In your component\nconst checkpoint = useGameCheckpoint();\ncheckpoint.save({ health: 100, score: 50 }, \"before-boss\");\nconst saved = checkpoint.load(\"before-boss\"); // Typed as GameState | null\n```\n\n**Benefits:**\n- Type string (\"rpg-game\") defined once\n- GameState type enforced automatically\n- Simpler API (`.save()` vs `saveCheckpoint()`)\n- Clear, focused hook for specific use case\n\n## Storage Structure\nCheckpoints are organized as:\n```\n{\n\"hard-mode\": [checkpoint1, checkpoint2, ...],\n\"easy-mode\": [checkpoint1, checkpoint2, ...],\n}\n```\n\nEach array maintains chronological order (oldest first, newest last).",
+    "file": "use-checkpoint.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["component", "hook", "use checkpoint", "usecheckpoint"]
+  },
+  "CheckpointInfo": {
+    "path": "mini-app",
+    "description": "CheckpointInfo type",
+    "file": "checkpoint-info.llm.md",
+    "category": "Mini App",
+    "type": "type",
+    "keywords": ["checkpoint info", "checkpointinfo", "type"]
+  },
+  "useCombo": {
+    "path": "mini-app",
+    "description": "Combo multiplier system for consecutive actions (global)\n\nTracks consecutive actions and builds a multiplier. Auto-resets if no action\noccurs within the specified time window. State is shared globally across all\ncomponents that use this hook.\n\n## Configuration\n- `setMaxComboTime(ms)` - Set timeout window (default: 1000ms)\n- `setMultiplierFn(fn)` - Customize multiplier calculation (default: linear)\n\n## Multiplier Modes\n- **Linear**: `(combo) => Math.max(1, combo)` - Multiplier equals combo count\n- **Tiered**: Jumps at thresholds (e.g., 1x → 2x",
+    "file": "use-combo.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["component", "hook", "use combo", "usecombo"]
+  },
+  "useCountdown": {
+    "path": "mini-app",
+    "description": "Countdown timer that counts down from a specified duration (global)\n\nAutomatically pauses when the game is paused via `useGamePaused()`.\nCalls onComplete callback when timer reaches 0.\nMust call start() to begin countdown (doesn't auto-start).\nUses Jotai atoms for global state.",
+    "file": "use-countdown.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["hook", "use countdown", "usecountdown"]
+  },
+  "useActiveGameActions": {
+    "path": "mini-app",
+    "description": "Get the currently active game actions\n\nReturns a Set of GameAction keys that are currently pressed.\nUseful for visual feedback like highlighting active buttons.",
+    "file": "use-active-game-actions.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["hook", "use active game actions", "useactivegameactions"]
+  },
+  "useSetActiveGameActions": {
+    "path": "mini-app",
+    "description": "Set the active game actions\n\nUpdates which keys/buttons are currently pressed.\nTypically used internally by useInitializeGame.",
+    "file": "use-set-active-game-actions.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use set active game actions",
+      "usesetactivegameactions"
+    ]
+  },
+  "useGameControlsEnabled": {
+    "path": "mini-app",
+    "description": "Check if game controls are enabled\n\nReturns whether keyboard and touch controls are currently active.\nWhen false, useInitializeGame will not respond to input.",
+    "file": "use-game-controls-enabled.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["hook", "use game controls enabled", "usegamecontrolsenabled"]
+  },
+  "useSetGameControlsEnabled": {
+    "path": "mini-app",
+    "description": "Enable or disable game controls\n\nUse this to disable controls during animations, cutscenes, or loading.\nAutomatically integrates with useInitializeGame.",
+    "file": "use-set-game-controls-enabled.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use set game controls enabled",
+      "usesetgamecontrolsenabled"
+    ]
+  },
+  "useGamePaused": {
+    "path": "mini-app",
+    "description": "Check if game is paused\n\nReturns the current pause state of the game.",
+    "file": "use-game-paused.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["hook", "use game paused", "usegamepaused"]
+  },
+  "useSetGamePaused": {
+    "path": "mini-app",
+    "description": "Set game pause state\n\nPause or resume the game. This is just state management - you need to\nimplement the actual pause logic (stopping game loop, etc).",
+    "file": "use-set-game-paused.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["hook", "use set game paused", "usesetgamepaused"]
+  },
+  "useGameOver": {
+    "path": "mini-app",
+    "description": "Check if game is over\n\nReturns whether the game has ended (win or lose).",
+    "file": "use-game-over.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["hook", "use game over", "usegameover"]
+  },
+  "useSetGameOver": {
+    "path": "mini-app",
+    "description": "Set game over state\n\nMark the game as finished. Useful for triggering game over UI,\ndisabling controls, showing scores, etc.",
+    "file": "use-set-game-over.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["hook", "use set game over", "usesetgameover"]
+  },
+  "useGameLoading": {
+    "path": "mini-app",
+    "description": "Check if game is loading\n\nReturns whether the game is in a loading state.",
+    "file": "use-game-loading.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["hook", "use game loading", "usegameloading"]
+  },
+  "useSetGameLoading": {
+    "path": "mini-app",
+    "description": "Set game loading state\n\nIndicate loading status for assets, level data, etc.",
+    "file": "use-set-game-loading.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["hook", "use set game loading", "usesetgameloading"]
+  },
+  "useGameActionHandlers": {
+    "path": "mini-app",
+    "description": "Get game action handlers\n\nReturns the globally stored handlers created by useInitializeGame.\nUse this in child components to access button/key handlers.",
+    "file": "use-game-action-handlers.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": [
+      "component",
+      "hook",
+      "use game action handlers",
+      "usegameactionhandlers"
+    ]
+  },
+  "useSetGameActionHandlers": {
+    "path": "mini-app",
+    "description": "Set game action handlers\n\nStore handlers globally. This is used internally by useInitializeGame.\nYou should NOT need to call this directly in your game code.",
+    "file": "use-set-game-action-handlers.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use set game action handlers",
+      "usesetgameactionhandlers"
+    ]
+  },
+  "useLocalStorageState": {
+    "path": "mini-app",
+    "description": "State that persists to localStorage\n\nWorks exactly like useState but syncs to localStorage automatically.\nUses Jotai's atomWithStorage internally with namespaced keys.\n\n## Recommended Pattern: Wrap in a Domain-Specific Hook\n\nInstead of using this hook directly, wrap it in a feature-specific hook:\n\n```typescript\n// src/features/game/use-high-score.ts\nimport { useLocalStorageState } from \"@/neynar-farcaster-sdk/mini\";\n\nexport function useHighScore() {\nreturn useLocalStorageState<number>(\"high-score\", 0);\n}\n\n// In your component\nconst [highScore, setHighScore] = useHighScore();\nif (score > highScore) {\nsetHighScore(score); // Automatically saves to localStorage\n}\n```\n\n**Benefits:**\n- Storage key defined once\n- Type enforced automatically\n- Clear, focused hook for specific use case\n- Easy to mock in tests",
+    "file": "use-local-storage-state.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": [
+      "component",
+      "hook",
+      "use local storage state",
+      "uselocalstoragestate"
+    ]
+  },
+  "useScore": {
+    "path": "mini-app",
+    "description": "Global score management hook using Jotai atoms\n\nManages score state globally with helper functions to manipulate the score.\nScore is shared across all components that use this hook.\nReads allowNegativeScore config from gameConfigAtom (set via useInitializeGame).",
+    "file": "use-score.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["component", "hook", "use score", "usescore"]
+  },
+  "useStopwatch": {
+    "path": "mini-app",
+    "description": "Stopwatch timer that counts up from 0 (global)\n\nAutomatically pauses when the game is paused via `useGamePaused()`.\nMust call start() to begin counting (doesn't auto-start).\nUses Jotai atoms for global state.",
+    "file": "use-stopwatch.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["hook", "use stopwatch", "usestopwatch"]
+  },
+  "useStreak": {
+    "path": "mini-app",
+    "description": "Win streak tracking hook (global)\n\nTracks current win streak and best streak ever achieved using Jotai atoms.\nWins increment the streak, losses reset it to 0.",
+    "file": "use-streak.llm.md",
+    "category": "Mini App",
+    "type": "hook",
+    "keywords": ["hook", "use streak", "usestreak"]
+  },
+  "randomInt": {
+    "path": "mini-app",
+    "description": "Random number utilities for games\n\nPure functions for generating random values, picking from arrays,\nshuffling, and weighted random selection.",
+    "file": "random-int.llm.md",
+    "category": "Mini App",
+    "type": "function",
+    "keywords": ["function", "random int", "randomint"]
+  },
+  "randomChoice": {
+    "path": "mini-app",
+    "description": "Pick random element from array",
+    "file": "random-choice.llm.md",
+    "category": "Mini App",
+    "type": "function",
+    "keywords": ["function", "random choice", "randomchoice"]
+  },
+  "shuffle": {
+    "path": "mini-app",
+    "description": "Shuffle array (Fisher-Yates algorithm)\nReturns new array, doesn't modify original",
+    "file": "shuffle.llm.md",
+    "category": "Mini App",
+    "type": "function",
+    "keywords": ["function", "shuffle"]
+  },
+  "weightedRandom": {
+    "path": "mini-app",
+    "description": "Pick item based on weights",
+    "file": "weighted-random.llm.md",
+    "category": "Mini App",
+    "type": "function",
+    "keywords": ["function", "weighted random", "weightedrandom"]
+  },
+  "clamp": {
+    "path": "mini-app",
+    "description": "Common game math utilities\n\nPure functions for clamping, interpolation, distance calculation,\nand angle conversions.",
+    "file": "clamp.llm.md",
+    "category": "Mini App",
+    "type": "function",
+    "keywords": ["clamp", "function"]
+  },
+  "lerp": {
+    "path": "mini-app",
+    "description": "Linear interpolation between start and end",
+    "file": "lerp.llm.md",
+    "category": "Mini App",
+    "type": "function",
+    "keywords": ["function", "lerp"]
+  },
+  "distance": {
+    "path": "mini-app",
+    "description": "Calculate distance between two points",
+    "file": "distance.llm.md",
+    "category": "Mini App",
+    "type": "function",
+    "keywords": ["distance", "function"]
+  },
+  "degreesToRadians": {
+    "path": "mini-app",
+    "description": "Convert degrees to radians",
+    "file": "degrees-to-radians.llm.md",
+    "category": "Mini App",
+    "type": "function",
+    "keywords": ["degrees to radians", "degreestoradians", "function"]
+  },
+  "radiansToDegrees": {
+    "path": "mini-app",
+    "description": "Convert radians to degrees",
+    "file": "radians-to-degrees.llm.md",
+    "category": "Mini App",
+    "type": "function",
+    "keywords": ["function", "radians to degrees", "radianstodegrees"]
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "generated": "2025-10-18T17:03:04.251Z",
+  "sdk": "neynar-sdk-nextjs",
+  "tier": "nextjs",
+  "importPrefix": "@/neynar-web-sdk/nextjs",
+  "createCoinGeckoApiHandler": {
+    "path": "core",
+    "description": "Creates CoinGecko-specific API handlers with an instantiated CoinGecko SDK client\n\nThis is a CoinGecko-specific wrapper around the generic createRouter that:\n- Maps to all CoinGecko SDK methods via dependency injection\n- Provides type safety for Coingecko client\n- Handles CoinGecko-specific error responses\n- Includes sensible CoinGecko-specific CORS defaults",
+    "file": "create-coin-gecko-api-handler.llm.md",
+    "category": "Core",
+    "type": "function",
+    "keywords": [
+      "create coin gecko api handler",
+      "createcoingeckoapihandler",
+      "function"
+    ]
+  },
+  "createNeynarApiHandler": {
+    "path": "core",
+    "description": "Creates Neynar-specific API handlers with an instantiated Neynar SDK client\n\nThis is a Neynar-specific wrapper around the generic createRouter that:\n- Provides sensible Neynar-specific CORS defaults\n- Maps to all 126 Neynar SDK methods via dependency injection\n- Provides type safety for NeynarAPIClient\n- Handles Neynar-specific error responses",
+    "file": "create-neynar-api-handler.llm.md",
+    "category": "Core",
+    "type": "function",
+    "keywords": [
+      "create neynar api handler",
+      "createneynarapihandler",
+      "function"
+    ]
+  },
+  "createRouter": {
+    "path": "shared",
+    "description": "Creates HTTP route handlers for API endpoints\n\nThis is the main factory function that creates Next.js API route handlers.\nIt takes a map of routes (already bound to their dependencies) and returns\nhandlers for each HTTP method that can be used directly in Next.js API routes.\n\nHOW IT WORKS:\n1. You define routes in a RouteMap (e.g., \"GET /users\" -> handler function)\n2. This factory creates HTTP method handlers (GET, POST, etc.)\n3. When a request comes in, it matches the route and calls your handler\n4. Your handler receives request parameters and returns the result\n5. The response is normalized and returned with proper CORS headers",
+    "file": "create-router.llm.md",
+    "category": "Shared",
+    "type": "function",
+    "keywords": ["create router", "createrouter", "function"]
+  },
+  "MethodHandlers": {
+    "path": "shared",
+    "description": "Collection of route handlers grouped by HTTP method",
+    "file": "method-handlers.llm.md",
+    "category": "Shared",
+    "type": "interface",
+    "keywords": ["interface", "method handlers", "methodhandlers"]
+  },
+  "RouteMap": {
+    "path": "shared",
+    "description": "Route matcher that maps URL patterns to handlers\nPattern format: \"{METHOD} {path}\" where METHOD is HTTP method and path is the route",
+    "file": "route-map.llm.md",
+    "category": "Shared",
+    "type": "interface",
+    "keywords": ["format", "interface", "route map", "routemap"]
+  },
+  "createNftMintHandler": {
+    "path": "nft",
+    "description": "Creates a POST handler for the NFT mint route.\n\nHandles the full mint lifecycle: mint token on-chain, generate image (or use pre-generated preview), upload metadata. Supports both mystery mint and preview-first patterns.",
+    "file": "create-nft-mint-handler.llm.md",
+    "category": "NFT",
+    "type": "function",
+    "keywords": ["nft", "mint", "handler", "createNftMintHandler", "function"]
+  },
+  "createNftPreviewHandler": {
+    "path": "nft",
+    "description": "Creates a POST handler for the NFT preview route (preview-first pattern).\n\nGenerates an AI image preview and stores it server-side. Used alongside createNftMintHandler with previewStorage.",
+    "file": "create-nft-preview-handler.llm.md",
+    "category": "NFT",
+    "type": "function",
+    "keywords": [
+      "nft",
+      "preview",
+      "handler",
+      "createNftPreviewHandler",
+      "function"
+    ]
+  },
+  "generateNftImage": {
+    "path": "nft",
+    "description": "Generate an NFT image using AI via the Neynar API.\n\nServer-side utility with built-in exponential backoff retries.",
+    "file": "generate-nft-image.llm.md",
+    "category": "NFT",
+    "type": "function",
+    "keywords": [
+      "nft",
+      "image",
+      "generate",
+      "ai",
+      "generateNftImage",
+      "function"
+    ]
+  },
+  "mintNft": {
+    "path": "nft",
+    "description": "Mint an NFT via the Neynar API (synchronous mode).\n\nServer-side utility that mints a token to a Farcaster user by FID. Returns transaction hash and token IDs.",
+    "file": "mint-nft.llm.md",
+    "category": "NFT",
+    "type": "function",
+    "keywords": ["nft", "mint", "onchain", "mintNft", "function"]
+  },
+  "uploadNftMetadata": {
+    "path": "nft",
+    "description": "Upload NFT token metadata via the Neynar API.\n\nServer-side utility with built-in retries. Uploads name, description, image, and attributes for a minted token.",
+    "file": "upload-nft-metadata.llm.md",
+    "category": "NFT",
+    "type": "function",
+    "keywords": ["nft", "metadata", "upload", "uploadNftMetadata", "function"]
+  },
+  "estimateNftMintCost": {
+    "path": "nft",
+    "description": "Estimate the total cost of minting an NFT including Neynar fees and gas.\n\nUses the Neynar simulate endpoint and viem gas estimation. Returns total cost in ETH.",
+    "file": "create-nft-mint-handler.llm.md",
+    "category": "NFT",
+    "type": "function",
+    "keywords": [
+      "nft",
+      "price",
+      "cost",
+      "estimate",
+      "gas",
+      "estimateNftMintCost",
+      "function"
+    ]
+  },
+  "createNftPriceHandler": {
+    "path": "nft",
+    "description": "Creates a GET handler for the NFT price route.\n\nReturns the mint cost in ETH for a given collection and quantity. Uses estimateNftMintCost internally.",
+    "file": "create-nft-price-handler.llm.md",
+    "category": "NFT",
+    "type": "function",
+    "keywords": [
+      "nft",
+      "price",
+      "cost",
+      "handler",
+      "createNftPriceHandler",
+      "function"
+    ]
+  }
+}

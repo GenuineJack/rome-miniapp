@@ -1,0 +1,370 @@
+{
+  "generated": "2025-10-18T17:03:03.572Z",
+  "sdk": "neynar-sdk-coingecko",
+  "tier": "coingecko",
+  "importPrefix": "@/neynar-web-sdk/coingecko",
+  "useAssetPlatforms": {
+    "path": "core",
+    "description": "Fetches comprehensive list of all supported blockchain asset platforms\n\nThis hook provides information about blockchain networks and platforms supported\nby CoinGecko, including chain identifiers, native coins, and platform metadata.\nEssential for building multi-chain applications and understanding supported networks.\n\nThe asset platform data includes Ethereum, Binance Smart Chain, Polygon, Avalanche,\nand many other blockchain networks with their respective chain IDs and native tokens.",
+    "file": "use-asset-platforms.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["format", "hook", "use asset platforms", "useassetplatforms"]
+  },
+  "useCoinsCategories": {
+    "path": "core",
+    "description": "Get coins categories with market data\n\nFetches comprehensive category information from CoinGecko including market cap,\n24-hour changes, volume data, and top coins for each category. Categories represent\ndifferent sectors or types of cryptocurrencies (e.g., \"DeFi\", \"NFT\", \"Gaming\").",
+    "file": "use-coins-categories.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["format", "hook", "use coins categories", "usecoinscategories"]
+  },
+  "useCoinsCategoriesList": {
+    "path": "core",
+    "description": "Get coins categories list (simple)\n\nFetches a simplified list of all available coin categories without market data.\nThis endpoint is optimized for dropdown menus, filters, and other UI components\nthat need category names and IDs but don't require market information. The data\nis cached for 24 hours as category lists are relatively stable.",
+    "file": "use-coins-categories-list.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "component",
+      "format",
+      "hook",
+      "use coins categories list",
+      "usecoinscategorieslist"
+    ]
+  },
+  "useCoinsList": {
+    "path": "core",
+    "description": "Get comprehensive list of all supported coins\n\nFetches the complete list of coins supported by CoinGecko API. This endpoint provides\nthe basic coin information including ID, symbol, and name that can be used for other\nAPI calls. Cached for 24 hours as the coin list is relatively stable.",
+    "file": "use-coins-list.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["format", "hook", "use coins list", "usecoinslist"]
+  },
+  "useCoinsMarkets": {
+    "path": "core",
+    "description": "Get coins market data with infinite scroll pagination\n\nFetches market data for coins with comprehensive pricing, volume, and ranking information.\nUses infinite query pattern for efficient pagination, loading additional pages as needed.\nData is cached for 2 minutes due to the real-time nature of market information.",
+    "file": "use-coins-markets.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["format", "hook", "use coins markets", "usecoinsmarkets"]
+  },
+  "useCoin": {
+    "path": "core",
+    "description": "Get comprehensive information for a specific coin\n\nFetches detailed coin information including description, links, market data,\ncommunity statistics, developer metrics, and more. This is the primary endpoint\nfor getting complete coin details. Data is cached for 5 minutes to balance\nfreshness with performance.",
+    "file": "use-coin.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["format", "hook", "use coin", "usecoin"]
+  },
+  "useCoinMarketChart": {
+    "path": "core",
+    "description": "Get historical market chart data for a coin\n\nFetches historical price, market cap, and volume data for charting and analysis.\nReturns time series data in arrays of [timestamp, value] pairs. Data granularity\nautomatically adjusts based on the requested time period. Cached for 1 minute\ndue to the real-time nature of market data.",
+    "file": "use-coin-market-chart.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use coin market chart", "usecoinmarketchart"]
+  },
+  "useCoinMarketChartRange": {
+    "path": "core",
+    "description": "Get historical market data for a custom date range\n\nFetches historical price, market cap, and volume data between specific timestamps.\nUseful for analyzing performance during specific time periods or events.\nData granularity automatically adjusts based on the range duration. Historical\ndata is cached for 5 minutes as it's relatively stable.",
+    "file": "use-coin-market-chart-range.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use coin market chart range",
+      "usecoinmarketchartrange"
+    ]
+  },
+  "useCoinOHLC": {
+    "path": "core",
+    "description": "Get OHLC (Open, High, Low, Close) candlestick data for a coin\n\nFetches Open, High, Low, Close price data suitable for candlestick charts and\ntechnical analysis. Each data point represents aggregated price action for the\nspecified time period. Data granularity depends on the requested days parameter.\nCached for 5 minutes to balance freshness with performance.\n\nData granularity by period:\n- 1 day: 30-minute intervals\n- 7-30 days: 4-hour intervals\n- 31-90 days: 12-hour intervals\n- 91+ days: 1-day intervals",
+    "file": "use-coin-ohlc.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use coin ohlc", "usecoinohlc"]
+  },
+  "useCompaniesPublicTreasury": {
+    "path": "core",
+    "description": "Fetches public treasury holdings data for companies holding Bitcoin or Ethereum\n\nThis hook provides comprehensive data about companies that hold cryptocurrency in their\npublic treasuries, including total holdings, current values, and market dominance metrics.\nData is cached for 1 hour and optimized for performance with proper error handling.",
+    "file": "use-companies-public-treasury.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use companies public treasury",
+      "usecompaniespublictreasury"
+    ]
+  },
+  "useDerivatives": {
+    "path": "core",
+    "description": "Get comprehensive derivatives market overview with ticker data\n\nThis hook fetches the complete derivatives market landscape including open interest,\ntrading volumes, and individual ticker information across all supported exchanges.\nEssential for derivatives market analysis and portfolio tracking.",
+    "file": "use-derivatives.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["format", "hook", "use derivatives", "usederivatives"]
+  },
+  "useDerivativesExchanges": {
+    "path": "core",
+    "description": "Get paginated list of derivatives exchanges with trading metrics\n\nThis hook fetches a comprehensive directory of cryptocurrency derivatives exchanges\nincluding trading volumes, open interest, and the number of trading pairs available.\nPerfect for exchange comparison and market analysis.",
+    "file": "use-derivatives-exchanges.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use derivatives exchanges", "usederivativesexchanges"]
+  },
+  "useDerivativesExchange": {
+    "path": "core",
+    "description": "Get comprehensive details for a specific derivatives exchange\n\nThis hook fetches complete information about a derivatives exchange including\nall available trading pairs, ticker data, open interest, and exchange metrics.\nIdeal for detailed exchange analysis and trading pair discovery.",
+    "file": "use-derivatives-exchange.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "format",
+      "hook",
+      "use derivatives exchange",
+      "usederivativesexchange"
+    ]
+  },
+  "useDerivativesExchangesList": {
+    "path": "core",
+    "description": "Get simplified list of all derivatives exchange IDs and names for dropdowns and selection\n\nThis hook provides a lightweight endpoint for fetching basic derivatives exchange information,\noptimized for use in form dropdowns, autocomplete components, and selection lists.\nContains only essential data for UI components without heavy trading metrics.",
+    "file": "use-derivatives-exchanges-list.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "component",
+      "format",
+      "hook",
+      "use derivatives exchanges list",
+      "usederivativesexchangeslist"
+    ]
+  },
+  "useExchangeRates": {
+    "path": "core",
+    "description": "Get Bitcoin exchange rates against multiple fiat and cryptocurrency currencies\n\nThis hook fetches real-time BTC exchange rates from CoinGecko API, providing\nconversion rates for financial calculations, price displays, and multi-currency support.\nThe data includes both fiat currencies (USD, EUR, JPY) and cryptocurrencies (ETH, LTC).",
+    "file": "use-exchange-rates.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use exchange rates", "useexchangerates"]
+  },
+  "useExchanges": {
+    "path": "core",
+    "description": "Get list of all supported cryptocurrency exchanges with comprehensive market data\n\nThis hook fetches exchanges from CoinGecko API with trust scores, trading volumes,\nestablishment information, and ranking data for market analysis and comparison.",
+    "file": "use-exchanges.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["format", "hook", "use exchanges", "useexchanges"]
+  },
+  "useExchange": {
+    "path": "core",
+    "description": "Get comprehensive details for a specific cryptocurrency exchange\n\nThis hook fetches complete exchange information including basic details,\nsocial media links, trust metrics, trading volume data, and operational status.",
+    "file": "use-exchange.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["format", "hook", "use exchange", "useexchange"]
+  },
+  "useExchangesList": {
+    "path": "core",
+    "description": "Get simplified list of all exchange IDs and names for dropdowns and selection\n\nThis hook provides a lightweight endpoint for fetching basic exchange information,\noptimized for use in form dropdowns, autocomplete components, and selection lists.\nData is cached for 24 hours due to its static nature.",
+    "file": "use-exchanges-list.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "component",
+      "format",
+      "hook",
+      "use exchanges list",
+      "useexchangeslist"
+    ]
+  },
+  "useExchangeTickers": {
+    "path": "core",
+    "description": "Get trading pairs and ticker data for a specific cryptocurrency exchange\n\nThis hook fetches real-time ticker information for all trading pairs on an exchange,\nincluding prices, volumes, spreads, and trust scores for each market. Essential\nfor building trading interfaces and market analysis tools.",
+    "file": "use-exchange-tickers.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["format", "hook", "use exchange tickers", "useexchangetickers"]
+  },
+  "useExchangeVolumeChart": {
+    "path": "core",
+    "description": "Get historical trading volume chart data for a specific cryptocurrency exchange\n\nThis hook fetches time-series volume data for creating charts and analyzing\nexchange trading activity patterns over specified time periods. Essential\nfor market analysis dashboards and exchange comparison tools.",
+    "file": "use-exchange-volume-chart.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use exchange volume chart", "useexchangevolumechart"]
+  },
+  "useExchangeVolumeChartRange": {
+    "path": "core",
+    "description": "Get historical trading volume chart data for a specific exchange within a custom date range\n\nThis hook fetches time-series volume data for a specific time period defined by\nUnix timestamps, allowing for precise historical analysis and custom chart ranges.\nPerfect for detailed analysis and comparison tools.",
+    "file": "use-exchange-volume-chart-range.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use exchange volume chart range",
+      "useexchangevolumechartrange"
+    ]
+  },
+  "useGlobal": {
+    "path": "core",
+    "description": "Get global cryptocurrency market data\n\nFetches comprehensive global cryptocurrency market statistics from CoinGecko.\nThis includes total market capitalization, trading volumes, number of active\ncryptocurrencies, ICO statistics, and market dominance percentages across\ndifferent currencies. Data is cached for 5 minutes for optimal performance.",
+    "file": "use-global.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use global", "useglobal"]
+  },
+  "useGlobalMarketCapChart": {
+    "path": "core",
+    "description": "Get global market capitalization historical chart data\n\nFetches time series data for global cryptocurrency market capitalization and trading volume.\nReturns arrays of timestamp-value pairs that can be used to create charts showing\nmarket trends over time. Data is available for various time periods and can be\ndenominated in different base currencies.",
+    "file": "use-global-market-cap-chart.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use global market cap chart",
+      "useglobalmarketcapchart"
+    ]
+  },
+  "useGlobalDefi": {
+    "path": "core",
+    "description": "Get global DeFi-focused market data\n\nFetches the same global cryptocurrency data as useGlobal but with a separate\ncache key optimized for DeFi-specific use cases. This allows different components\nto cache and refresh DeFi-related global metrics independently from general\nglobal market data, providing better cache granularity for DeFi applications.\n\nUses the same CoinGecko /global endpoint but maintains separate query cache\nfor scenarios where DeFi components need different refresh intervals or\ncache invalidation strategies than general market overview components.",
+    "file": "use-global-defi.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["component", "hook", "use global defi", "useglobaldefi"]
+  },
+  "useKeyInfo": {
+    "path": "core",
+    "description": "Fetches comprehensive API key information including plan details and usage statistics\n\nThis hook provides essential information about your CoinGecko API key including:\n- Current subscription plan and tier\n- Monthly call credits and limits\n- Current usage statistics and remaining calls\n- Plan-specific features and rate limits\n\nEssential for building usage monitoring dashboards, quota management systems,\nand ensuring API compliance within your application's rate limits.",
+    "file": "use-key-info.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["format", "hook", "use key info", "usekeyinfo"]
+  },
+  "useNFT": {
+    "path": "core",
+    "description": "Fetches comprehensive data for a specific NFT collection\n\nThis hook provides detailed information about an individual NFT collection including\nfloor prices, trading volumes, market caps, collection statistics, and metadata.\nPerfect for NFT collection pages, portfolio tracking, and market analysis.",
+    "file": "use-nft.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["format", "hook", "use nft", "usenft"]
+  },
+  "useNFTsList": {
+    "path": "core",
+    "description": "Fetches a paginated list of NFT collections with filtering and sorting options\n\nThis hook provides a comprehensive list of NFT collections with basic metadata,\nideal for building NFT marketplace interfaces, collection browsers, and search\nfunctionality. Supports filtering by blockchain network and custom sorting.",
+    "file": "use-nfts-list.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use nfts list", "usenftslist"]
+  },
+  "useNFTsMarkets": {
+    "path": "core",
+    "description": "Fetches comprehensive NFT market data with trading metrics and performance indicators\n\nThis hook provides detailed market information for NFT collections including\nfloor prices, trading volumes, market caps, and percentage changes. Essential\nfor building NFT trading interfaces, market analysis tools, and portfolio dashboards.",
+    "file": "use-nfts-markets.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["format", "hook", "use nfts markets", "usenftsmarkets"]
+  },
+  "useOnchainCategories": {
+    "path": "core",
+    "description": "Fetches available onchain DeFi categories for protocol classification\n\nThis hook provides comprehensive data about DeFi protocol categories including\npool counts, total value locked (TVL), and 24-hour volume metrics. Categories\nhelp organize different types of DeFi protocols like DEXs, lending, derivatives, etc.\nData is cached for 1 hour for optimal performance.",
+    "file": "use-onchain-categories.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use onchain categories", "useonchaincategories"]
+  },
+  "useOnchainCategoryPools": {
+    "path": "core",
+    "description": "Fetches pools belonging to a specific DeFi category\n\nThis hook retrieves all liquidity pools that belong to a particular DeFi category,\nproviding detailed pool information including token pairs, reserves, volume, and\nprice changes. Essential for analyzing specific sectors of the DeFi ecosystem.\nData refreshes every 5 minutes to provide up-to-date pool metrics.",
+    "file": "use-onchain-category-pools.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "format",
+      "hook",
+      "use onchain category pools",
+      "useonchaincategorypools"
+    ]
+  },
+  "useOnchainNetworks": {
+    "path": "core",
+    "description": "Fetches supported blockchain networks for onchain data queries\n\nThis hook provides comprehensive information about all blockchain networks\nsupported by CoinGecko's onchain API, including network identifiers, native\ntokens, pool counts, and volume metrics. Essential for network selection\nand cross-chain analysis. Data is cached for 24 hours as network info changes infrequently.",
+    "file": "use-onchain-networks.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["format", "hook", "use onchain networks", "useonchainnetworks"]
+  },
+  "useOnchainNetworkNewPools": {
+    "path": "core",
+    "description": "Fetches newly created pools for a specific blockchain network\n\nThis hook retrieves the most recently created liquidity pools on a given network,\nproviding early insights into new trading opportunities and emerging tokens.\nPerfect for discovering new projects and monitoring DeFi ecosystem growth.\nData refreshes every minute to capture the latest pool creations.",
+    "file": "use-onchain-network-new-pools.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use onchain network new pools",
+      "useonchainnetworknewpools"
+    ]
+  },
+  "usePing": {
+    "path": "core",
+    "description": "Test CoinGecko API connectivity\n\nPings the CoinGecko API to verify service availability and connection status.\nThis endpoint is commonly used for health checks and debugging connectivity issues.\nReturns a simple message indicating the API is responsive.\n\n**API Endpoint:** `GET /ping`",
+    "file": "use-ping.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use ping", "useping"]
+  },
+  "useSearch": {
+    "path": "core",
+    "description": "Performs comprehensive search across coins, exchanges, categories, and NFTs\n\nThis hook provides real-time search functionality across all CoinGecko data types\nwith built-in validation, debouncing recommendations, and comprehensive error handling.",
+    "file": "use-search.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["hook", "use search", "usesearch"]
+  },
+  "useSimplePrice": {
+    "path": "core",
+    "description": "Fetches current price data for multiple cryptocurrencies across multiple currencies\n\nThis is the most efficient hook for getting real-time price information without\nthe overhead of comprehensive market data. Ideal for price tickers, portfolio displays,\nand applications requiring frequent price updates with minimal data transfer.\n\nThe hook automatically handles comma-separated ID formatting and provides intelligent\ncaching with 30-second stale time to balance data freshness with API efficiency.",
+    "file": "use-simple-price.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["format", "hook", "use simple price", "usesimpleprice"]
+  },
+  "useSupportedVsCurrencies": {
+    "path": "core",
+    "description": "Fetches the complete list of supported currencies for CoinGecko price queries\n\nReturns all available target currencies that can be used in vs_currencies parameters\nfor price conversion. This includes fiat currencies (USD, EUR, GBP), major cryptocurrencies\n(BTC, ETH), and various commodities and other assets supported by CoinGecko.\n\nThe data is cached for 24 hours as the list of supported currencies rarely changes,\nmaking this an efficient way to validate currency inputs and build currency selectors.",
+    "file": "use-supported-vs-currencies.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": [
+      "hook",
+      "use supported vs currencies",
+      "usesupportedvscurrencies"
+    ]
+  },
+  "useTokenPrice": {
+    "path": "core",
+    "description": "Fetches current price data for tokens by their contract addresses on specific blockchain networks\n\nThis hook enables price lookups for any ERC-20 token or equivalent on supported blockchain networks\nusing contract addresses instead of CoinGecko coin IDs. Essential for DeFi applications, DEX interfaces,\nand any application dealing with tokens that may not have established CoinGecko listings.\n\nSupports all major blockchain networks including Ethereum, Polygon, Binance Smart Chain, Avalanche,\nand many others. The hook automatically handles network-specific contract address formatting and\nprovides the same market data options as the main price endpoint.",
+    "file": "use-token-price.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["format", "hook", "use token price", "usetokenprice"]
+  },
+  "useTokenList": {
+    "path": "core",
+    "description": "Hook to fetch a complete token list for a specific blockchain platform.\n\nThis hook retrieves standardized ERC-20 token information including contract addresses,\nsymbols, names, decimals, and logo URIs for the specified asset platform.\nToken lists are commonly used by DEXs and DeFi protocols for token discovery and verification.\n\n**Rate Limits**: This endpoint is included in CoinGecko API rate limits\n**Caching**: Data is cached for 24 hours as token lists are relatively stable\n**Error Handling**: Failed requests are automatically retried with exponential backoff",
+    "file": "use-token-list.llm.md",
+    "category": "Core",
+    "type": "hook",
+    "keywords": ["format", "hook", "use token list", "usetokenlist"]
+  },
+  "coinGeckoQueryKeys": {
+    "path": "core",
+    "description": "coinGeckoQueryKeys function",
+    "file": "coin-gecko-query-keys.llm.md",
+    "category": "Core",
+    "type": "function",
+    "keywords": ["coin gecko query keys", "coingeckoquerykeys", "function"]
+  }
+}
