@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Spot, CategoryFilter, NEIGHBORHOODS } from "@/features/boston/types";
 import { SpotCard } from "@/features/boston/components/spot-card";
 import { CategoryFilterBar } from "@/features/boston/components/category-filter";
@@ -35,6 +35,22 @@ export function ExploreTab({
   onSelectSpot,
 }: ExploreTabProps) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [mapCollapsed, setMapCollapsed] = useState(false);
+  const spotListRef = useRef<HTMLDivElement>(null);
+
+  const handleScroll = useCallback(() => {
+    const el = spotListRef.current;
+    if (!el) return;
+    if (el.scrollTop > 80 && !mapCollapsed) setMapCollapsed(true);
+    if (el.scrollTop < 20 && mapCollapsed) setMapCollapsed(false);
+  }, [mapCollapsed]);
+
+  useEffect(() => {
+    const el = spotListRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", handleScroll, { passive: true });
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
 
   // Derive filtered list from props + search query
   const filtered = spots.filter((s) => {
@@ -66,8 +82,37 @@ export function ExploreTab({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Map — reduced height */}
-      <MapView spots={filtered} onSpotClick={onSelectSpot} />
+      {/* Map — collapsible */}
+      <div
+        style={{
+          height: mapCollapsed ? "0px" : "clamp(180px, 30vh, 240px)",
+          overflow: "hidden",
+          transition: "height 0.3s ease",
+        }}
+      >
+        <MapView spots={filtered} onSpotClick={onSelectSpot} />
+      </div>
+
+      {/* Show map bar when collapsed */}
+      {mapCollapsed && (
+        <button
+          onClick={() => setMapCollapsed(false)}
+          className="w-full flex items-center justify-center py-1.5 shrink-0"
+          style={{
+            background: "#091f2f",
+            fontFamily: "var(--font-sans)",
+            fontSize: "9px",
+            fontWeight: "700",
+            textTransform: "uppercase",
+            letterSpacing: "0.15em",
+            color: "#fff",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          ▲ Show Map
+        </button>
+      )}
 
       {/* Neighborhood filter banner */}
       {activeNeighborhood && (
@@ -167,7 +212,7 @@ export function ExploreTab({
       </div>
 
       {/* Spot list */}
-      <div className="flex-1 overflow-y-auto">
+      <div ref={spotListRef} className="flex-1 overflow-y-auto">
         {loading ? (
           <div className="flex flex-col gap-3 p-4">
             {[1, 2, 3].map((i) => (

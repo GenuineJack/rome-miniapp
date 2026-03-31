@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useEffect } from "react";
+
 export type WeatherData = {
   tempF: number;
   condition: string;
@@ -75,6 +77,19 @@ type WeatherStripProps = {
 };
 
 export function WeatherStrip({ weather, loading, error, todayLabel }: WeatherStripProps) {
+  const [bostonTime, setBostonTime] = useState(() =>
+    new Date().toLocaleTimeString("en-US", { timeZone: "America/New_York", hour: "numeric", minute: "2-digit", hour12: true })
+  );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBostonTime(
+        new Date().toLocaleTimeString("en-US", { timeZone: "America/New_York", hour: "numeric", minute: "2-digit", hour12: true })
+      );
+    }, 60_000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div
       className="shrink-0 px-4 py-3"
@@ -109,6 +124,11 @@ export function WeatherStrip({ weather, loading, error, todayLabel }: WeatherStr
             >
               {todayLabel}
             </p>
+            <p
+              style={{ fontFamily: "var(--font-sans)", fontSize: "11px", color: "rgba(255,255,255,0.7)", marginTop: "2px" }}
+            >
+              {bostonTime} ET
+            </p>
           </div>
           <p
             className="italic"
@@ -132,6 +152,11 @@ export function WeatherStrip({ weather, loading, error, todayLabel }: WeatherStr
               style={{ fontFamily: "var(--font-serif)", fontSize: "10px", opacity: 0.6 }}
             >
               {todayLabel}
+            </p>
+            <p
+              style={{ fontFamily: "var(--font-sans)", fontSize: "11px", color: "rgba(255,255,255,0.7)", marginTop: "3px", lineHeight: 1 }}
+            >
+              {bostonTime} ET
             </p>
           </div>
 

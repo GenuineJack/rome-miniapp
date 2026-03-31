@@ -81,7 +81,23 @@ export const builders = pgTable("builders", {
   projectUrl: text("project_url"),
   neighborhood: text("neighborhood"),
   category: text("category"),
+  // New multi-value fields (JSON-encoded string arrays)
+  projectLinks: text("project_links"), // JSON string: string[]
+  categories: text("categories"),       // JSON string: string[]
+  talkAbout: text("talk_about"),
   featured: boolean("featured").default(false).notNull(),
   verified: boolean("verified").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+/**
+ * Submission errors table — logs failed form submissions for admin review
+ */
+export const submissionErrors = pgTable("submission_errors", {
+  id: text("id").primaryKey(),
+  type: text("type").notNull(), // "spot" | "happening" | "builder"
+  payload: text("payload").notNull(), // JSON stringified form data
+  errorMessage: text("error_message").notNull(),
+  userFid: integer("user_fid"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

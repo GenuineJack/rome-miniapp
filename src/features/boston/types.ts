@@ -73,6 +73,9 @@ export type Builder = {
   projectUrl: string | null;
   neighborhood: string | null;
   category: string | null;
+  projectLinks: string[];   // JSON-parsed from DB text column
+  categories: string[];     // JSON-parsed from DB text column
+  talkAbout: string | null;
   featured: boolean;
   verified: boolean;
   createdAt: Date;
@@ -88,6 +91,14 @@ export type NeighborhoodInfo = {
 };
 
 export type ActiveTab = "explore" | "neighborhoods" | "today" | "builders" | "new";
+
+export const REGION_IDS = new Set([
+  "north-shore",
+  "south-shore-cape",
+  "metro-west",
+  "central-western-mass",
+  "greater-new-england",
+]);
 
 export type BostonGame = {
   id: string;
@@ -242,5 +253,36 @@ export const NEIGHBORHOODS: NeighborhoodInfo[] = [
     name: "Brookline",
     tagline: "Technically not Boston. Practically the same. The food is better.",
     description: "Coolidge Corner and the best movie theater in Greater Boston. The deli situation is unmatched. Yes, there's a Trader Joe's. Multiple.",
+  },
+  // ── Regions ─────────────────────────────────────────────────────────────────
+  {
+    id: "north-shore",
+    name: "North Shore",
+    tagline: "Salem, Gloucester, Rockport, Newburyport — the coast above Boston",
+    description: "The North Shore is where Boston goes when it needs to breathe. Salem in October, the working harbor at Gloucester, the rocky shore at Rockport, the brick Federal streetscapes of Newburyport. The commuter rail reaches most of it. The seafood is better than the city and less discussed about it.",
+  },
+  {
+    id: "south-shore-cape",
+    name: "South Shore & Cape",
+    tagline: "Plymouth, Quincy, the Cape — Boston's summer escape valve",
+    description: "South Shore is the less-celebrated sibling of the North Shore — working class, honest, better priced. Quincy is an underrated food town. Plymouth has the rock and a good waterfront. The Cape is the Cape: traffic on Friday, perfect on Tuesday, worth it in September when the crowds thin and the light changes.",
+  },
+  {
+    id: "metro-west",
+    name: "Metro West",
+    tagline: "Framingham, Natick, Waltham, Newton — the arc west of the city",
+    description: "MetroWest is where the suburbs get interesting. Waltham has a real restaurant scene and Lamplighter Brewing. Newton has six distinct village centers and the best public schools in the state. Framingham has a Christo mural and a downtown that's quietly having a moment. Not Boston, but Boston-adjacent in the ways that matter.",
+  },
+  {
+    id: "central-western-mass",
+    name: "Central & Western Mass",
+    tagline: "Worcester, Springfield, the Pioneer Valley — the rest of the state",
+    description: "Worcester is the second city and it knows it. The restaurant scene has gotten genuinely good. The DCU Center gets real acts. The Pioneer Valley — Northampton, Amherst, Holyoke — is a different Massachusetts entirely: college towns, farmland, the best Thai food in New England in a converted diner. Three hours from Boston and worth the drive.",
+  },
+  {
+    id: "greater-new-england",
+    name: "Greater New England",
+    tagline: "Providence, Portland, Burlington, Manchester — the wider region",
+    description: "The Northeast corridor connects Boston to a region that thinks of itself as a unit. Providence is 45 minutes and has Federal Hill and RISD. Portland, Maine has become one of the best food cities on the East Coast. Burlington, Vermont is small and serious. The builders who move between these cities share more DNA with each other than with anywhere else in the country.",
   },
 ];

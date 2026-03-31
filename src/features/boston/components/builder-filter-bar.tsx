@@ -1,6 +1,9 @@
 "use client";
 
-import { BUILDER_CATEGORIES, BUILDER_CATEGORY_ICONS, BuilderCategory, NEIGHBORHOODS } from "@/features/boston/types";
+import { BUILDER_CATEGORIES, BUILDER_CATEGORY_ICONS, BuilderCategory, NEIGHBORHOODS, REGION_IDS } from "@/features/boston/types";
+
+const CITY_NEIGHBORHOODS = NEIGHBORHOODS.filter((n) => !REGION_IDS.has(n.id));
+const REGIONS = NEIGHBORHOODS.filter((n) => REGION_IDS.has(n.id));
 
 type BuilderFilterBarProps = {
   activeCategory: string;
@@ -79,11 +82,20 @@ export function BuilderFilterBar({
           }}
         >
           <option value="All">All neighborhoods</option>
-          {NEIGHBORHOODS.map((n) => (
-            <option key={n.id} value={n.name}>
-              {n.name}
-            </option>
-          ))}
+          <optgroup label="Boston Neighborhoods">
+            {CITY_NEIGHBORHOODS.map((n) => (
+              <option key={n.id} value={n.name}>
+                {n.name}
+              </option>
+            ))}
+          </optgroup>
+          <optgroup label="Greater Region">
+            {REGIONS.map((n) => (
+              <option key={n.id} value={n.name}>
+                {n.name}
+              </option>
+            ))}
+          </optgroup>
         </select>
       </div>
     </div>

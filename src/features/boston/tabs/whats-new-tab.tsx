@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Spot } from "@/features/boston/types";
+import { Spot, CategoryFilter } from "@/features/boston/types";
 import { getRecentSpots } from "@/db/actions/boston-actions";
 import { SpotFeedCard } from "@/features/boston/components/spot-feed-card";
+import { CategoryFilterBar } from "@/features/boston/components/category-filter";
 
 type SeasonalBlock = {
   type: "seasonal";
@@ -112,6 +113,7 @@ type WhatsNewTabProps = {
 export function WhatsNewTab({ spots: parentSpots, loading: parentLoading, onSelectSpot }: WhatsNewTabProps = {}) {
   const [ownSpots, setOwnSpots] = useState<Spot[]>([]);
   const [ownLoading, setOwnLoading] = useState(parentSpots === undefined);
+  const [activeCategory, setActiveCategory] = useState<CategoryFilter>("All");
 
   const spots = parentSpots ?? ownSpots;
   const loading = parentSpots !== undefined ? (parentLoading ?? false) : ownLoading;
@@ -129,7 +131,9 @@ export function WhatsNewTab({ spots: parentSpots, loading: parentLoading, onSele
     }
   }, [hasParentSpots]);
 
-  const feed = buildFeed(spots);
+  const feed = buildFeed(
+    activeCategory === "All" ? spots : spots.filter((s) => s.category === activeCategory)
+  );
 
   return (
     <div className="flex flex-col h-full overflow-y-auto">
@@ -139,14 +143,22 @@ export function WhatsNewTab({ spots: parentSpots, loading: parentLoading, onSele
           className="text-lg font-black uppercase tracking-tight text-white"
           style={{ fontFamily: "var(--font-sans)" }}
         >
-          What&apos;s New
+          Community
         </h2>
         <p
           className="text-xs italic text-white opacity-60 mt-0.5"
           style={{ fontFamily: "var(--font-serif)" }}
         >
-          Recent submissions and seasonal picks
+          Community-submitted spots and seasonal picks
         </p>
+      </div>
+
+      {/* Category filter */}
+      <div className="py-2" style={{ background: "#f3f3f3", borderBottom: "1px solid #e0e0e0" }}>
+        <CategoryFilterBar
+          active={activeCategory}
+          onChange={(cat) => setActiveCategory(cat === activeCategory ? "All" : cat)}
+        />
       </div>
 
       <div className="flex flex-col gap-3 p-4">

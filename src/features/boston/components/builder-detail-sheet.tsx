@@ -91,6 +91,14 @@ export function BuilderDetailSheet({
     ? BUILDER_CATEGORY_ICONS[builder.category as BuilderCategory] ?? "✦"
     : null;
 
+  const allCategories = builder.categories?.length
+    ? builder.categories
+    : builder.category ? [builder.category] : [];
+
+  const allLinks = builder.projectLinks?.length
+    ? builder.projectLinks
+    : builder.projectUrl ? [builder.projectUrl] : [];
+
   return (
     <>
       {/* Backdrop */}
@@ -165,14 +173,18 @@ export function BuilderDetailSheet({
               </p>
 
               <div className="flex items-center gap-2 flex-wrap">
-                {builder.category && categoryIcon && (
-                  <span
-                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-widest"
-                    style={{ fontFamily: "var(--font-sans)", background: "#091f2f", color: "#fff" }}
-                  >
-                    {categoryIcon} {builder.category}
-                  </span>
-                )}
+                {allCategories.map((cat) => {
+                  const icon = BUILDER_CATEGORY_ICONS[cat as BuilderCategory] ?? "✦";
+                  return (
+                    <span
+                      key={cat}
+                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-widest"
+                      style={{ fontFamily: "var(--font-sans)", background: "#091f2f", color: "#fff" }}
+                    >
+                      {icon} {cat}
+                    </span>
+                  );
+                })}
                 {builder.neighborhood && (
                   <span
                     className="text-[10px]"
@@ -199,7 +211,7 @@ export function BuilderDetailSheet({
           )}
 
           {/* Project block */}
-          {builder.projectName && (
+          {(builder.projectName || allLinks.length > 0) && (
             <div className="mb-4">
               <p
                 className="text-[9px] font-bold uppercase tracking-widest mb-1"
@@ -207,25 +219,44 @@ export function BuilderDetailSheet({
               >
                 Building
               </p>
-              <div className="flex items-center justify-between gap-3">
+              {builder.projectName && (
                 <p
-                  className="text-sm font-bold"
+                  className="text-sm font-bold mb-1"
                   style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
                 >
                   {builder.projectName}
                 </p>
-                {builder.projectUrl && (
-                  <a
-                    href={builder.projectUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[10px] font-bold uppercase tracking-widest shrink-0 hover:underline"
-                    style={{ fontFamily: "var(--font-sans)", color: "#1871bd" }}
-                  >
-                    ↗ visit
-                  </a>
-                )}
-              </div>
+              )}
+              {allLinks.map((link, i) => (
+                <a
+                  key={i}
+                  href={link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-[11px] font-bold uppercase tracking-widest hover:underline truncate mb-0.5"
+                  style={{ fontFamily: "var(--font-sans)", color: "#1871bd" }}
+                >
+                  ↗ {(() => { try { return new URL(link).hostname.replace(/^www\./, ""); } catch { return link; } })()}
+                </a>
+              ))}
+            </div>
+          )}
+
+          {/* Talk about */}
+          {builder.talkAbout && (
+            <div className="mb-4">
+              <p
+                className="text-[9px] font-bold uppercase tracking-widest mb-1"
+                style={{ fontFamily: "var(--font-sans)", color: "#828282" }}
+              >
+                Talk to me about
+              </p>
+              <p
+                className="text-xs italic leading-relaxed"
+                style={{ fontFamily: "var(--font-serif)", color: "#58585b" }}
+              >
+                {builder.talkAbout}
+              </p>
             </div>
           )}
 

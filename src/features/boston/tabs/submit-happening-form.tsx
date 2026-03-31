@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useFarcasterUser } from "@/neynar-farcaster-sdk/mini";
 import { NEIGHBORHOODS } from "@/features/boston/types";
-import { submitHappening } from "@/db/actions/boston-actions";
+import { submitHappening, logSubmissionError } from "@/db/actions/boston-actions";
 
 const EMOJI_OPTIONS = ["📅", "🎨", "🎵", "🍕", "🏃", "🌿", "🎉", "🏀", "🎭", "🛠️", "🌊", "🍺"];
 
@@ -95,26 +95,42 @@ export function SubmitHappeningForm({ onSuccess }: Props) {
     if (!validate() || !user) return;
     setState("submitting");
 
-    const result = await submitHappening({
-      title: form.title.trim(),
-      description: form.description.trim(),
-      neighborhood: form.neighborhood,
-      dateLabel: form.dateLabel.trim(),
-      startDate: form.startDate || undefined,
-      endDate: form.endDate || undefined,
-      emoji: form.emoji,
-      url: form.url.trim() || undefined,
-      submittedByFid: user.fid,
-      submittedByUsername: user.username ?? "",
-      submittedByDisplayName: user.displayName ?? "",
-      submittedByPfpUrl: user.pfpUrl,
-    });
+    try {
+      const result = await submitHappening({
+        title: form.title.trim(),
+        description: form.description.trim(),
+        neighborhood: form.neighborhood,
+        dateLabel: form.dateLabel.trim(),
+        startDate: form.startDate || undefined,
+        endDate: form.endDate || undefined,
+        emoji: form.emoji,
+        url: form.url.trim() || undefined,
+        submittedByFid: user.fid,
+        submittedByUsername: user.username ?? "",
+        submittedByDisplayName: user.displayName ?? "",
+        submittedByPfpUrl: user.pfpUrl,
+      });
 
-    if (result.success) {
-      setSubmittedEmoji(form.emoji); // capture before form reset
-      setState("success");
-    } else {
+      if (result.success) {
+        setSubmittedEmoji(form.emoji); // capture before form reset
+        setState("success");
+      } else {
+        setState("error");
+        logSubmissionError({
+          type: "happening",
+          payload: JSON.stringify(form),
+          errorMessage: result.error ?? "Unknown error",
+          userFid: user.fid,
+        });
+      }
+    } catch (err) {
       setState("error");
+      logSubmissionError({
+        type: "happening",
+        payload: JSON.stringify(form),
+        errorMessage: err instanceof Error ? err.message : "Network error",
+        userFid: user.fid,
+      });
     }
   }
 

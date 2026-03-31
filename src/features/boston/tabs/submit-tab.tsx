@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useFarcasterUser } from "@/neynar-farcaster-sdk/mini";
 import { useShare } from "@/neynar-farcaster-sdk/mini";
 import { CATEGORIES, NEIGHBORHOODS, CATEGORY_ICONS, Category } from "@/features/boston/types";
-import { submitSpot } from "@/db/actions/boston-actions";
+import { submitSpot, logSubmissionError } from "@/db/actions/boston-actions";
 
 type SubmitState = "form" | "submitting" | "success" | "error";
 
@@ -121,10 +121,12 @@ export function SubmitTab() {
   const [state, setState] = useState<SubmitState>("form");
   const [successData, setSuccessData] = useState<SuccessData | null>(null);
   const [errors, setErrors] = useState<Partial<FormData>>({});
+  const [serverError, setServerError] = useState<string | null>(null);
 
   // Clear the server error banner as soon as the user edits any field
   function handleFieldChange(update: Partial<FormData>) {
     if (state === "error") setState("form");
+    if (serverError) setServerError(null);
     setForm((prev) => ({ ...prev, ...update }));
   }
 
@@ -149,30 +151,51 @@ export function SubmitTab() {
 
     setState("submitting");
 
-    const result = await submitSpot({
-      name: form.name.trim(),
-      category: form.category,
-      neighborhood: form.neighborhood,
-      description: form.description.trim(),
-      address: form.address.trim() || undefined,
-      link: form.link.trim() || undefined,
-      submittedByFid: user.fid,
-      submittedByUsername: user.username ?? "",
-      submittedByDisplayName: user.displayName ?? "",
-      submittedByPfpUrl: user.pfpUrl,
-    });
-
-    if (result.success) {
-      setSuccessData({
+    try {
+      const result = await submitSpot({
         name: form.name.trim(),
         category: form.category,
         neighborhood: form.neighborhood,
+        description: form.description.trim(),
+        address: form.address.trim() || undefined,
+        link: form.link.trim() || undefined,
+        submittedByFid: user.fid,
+        submittedByUsername: user.username ?? "",
+        submittedByDisplayName: user.displayName ?? "",
+        submittedByPfpUrl: user.pfpUrl,
       });
-      setForm(EMPTY_FORM);
-      setErrors({});
-      setState("success");
-    } else {
+
+      if (result.success) {
+        setSuccessData({
+          name: form.name.trim(),
+          category: form.category,
+          neighborhood: form.neighborhood,
+        });
+        setForm(EMPTY_FORM);
+        setErrors({});
+        setServerError(null);
+        setState("success");
+      } else {
+        setServerError(result.error ?? "Submission failed. Please try again.");
+        setState("error");
+        // Log to DB
+        logSubmissionError({
+          type: "spot",
+          payload: JSON.stringify(form),
+          errorMessage: result.error ?? "Unknown server error",
+          userFid: user.fid,
+        });
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Network error";
+      setServerError(message);
       setState("error");
+      logSubmissionError({
+        type: "spot",
+        payload: JSON.stringify(form),
+        errorMessage: message,
+        userFid: user.fid,
+      });
     }
   }
 
@@ -406,10 +429,23 @@ export function SubmitTab() {
         {/* Error state */}
         {state === "error" && (
           <div
-            className="p-3 rounded-sm text-xs font-bold uppercase tracking-wide"
-            style={{ fontFamily: "var(--font-sans)", background: "#d22d23", color: "#fff" }}
+            className="p-3 rounded-sm text-xs font-bold"
+            style={{ fontFamily: "var(--font-sans)", background: "rgba(210,45,35,0.08)", color: "#d22d23", border: "1px solid rgba(210,45,35,0.2)" }}
           >
-            Submission failed. Try again.
+            <p className="uppercase tracking-wide mb-1">Submission failed</p>
+            {serverError && (
+              <p className="font-normal text-[11px] italic" style={{ fontFamily: "var(--font-serif)" }}>
+                {serverError}
+              </p>
+            )}
+            <button
+              type="button"
+              onClick={() => { setState("form"); setServerError(null); }}
+              className="mt-2 text-[10px] font-bold uppercase tracking-widest underline"
+              style={{ background: "none", border: "none", cursor: "pointer", color: "#d22d23", padding: 0 }}
+            >
+              Dismiss
+            </button>
           </div>
         )}
 

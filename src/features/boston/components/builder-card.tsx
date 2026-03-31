@@ -36,9 +36,9 @@ function BuilderAvatar({ builder, size = 48 }: { builder: Builder; size?: number
 export { BuilderAvatar };
 
 export function BuilderCard({ builder, onClick, onSpotFilterClick }: BuilderCardProps) {
-  const categoryIcon = builder.category
-    ? BUILDER_CATEGORY_ICONS[builder.category as BuilderCategory] ?? "✦"
-    : null;
+  const allCategories = builder.categories?.length
+    ? builder.categories
+    : builder.category ? [builder.category] : [];
 
   const joinDate = new Date(builder.createdAt).toLocaleDateString("en-US", {
     month: "short",
@@ -101,14 +101,22 @@ export function BuilderCard({ builder, onClick, onSpotFilterClick }: BuilderCard
           )}
         </div>
 
-        {/* Category pill — top right */}
-        {builder.category && categoryIcon && (
-          <span
-            className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-sm text-[9px] font-bold uppercase tracking-widest text-white"
-            style={{ fontFamily: "var(--font-sans)", background: "#091f2f" }}
-          >
-            {categoryIcon} {builder.category}
-          </span>
+        {/* Category pill(s) — top right */}
+        {allCategories.length > 0 && (
+          <div className="shrink-0 flex flex-col gap-1">
+            {allCategories.map((cat) => {
+              const icon = BUILDER_CATEGORY_ICONS[cat as BuilderCategory] ?? "✦";
+              return (
+                <span
+                  key={cat}
+                  className="inline-flex items-center gap-1 px-2 py-1 rounded-sm text-[9px] font-bold uppercase tracking-widest text-white"
+                  style={{ fontFamily: "var(--font-sans)", background: "#091f2f" }}
+                >
+                  {icon} {cat}
+                </span>
+              );
+            })}
+          </div>
         )}
       </div>
 
@@ -119,9 +127,9 @@ export function BuilderCard({ builder, onClick, onSpotFilterClick }: BuilderCard
           style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
         >
           Building:{" "}
-          {builder.projectUrl ? (
+          {(builder.projectLinks?.[0] ?? builder.projectUrl) ? (
             <a
-              href={builder.projectUrl}
+              href={builder.projectLinks?.[0] ?? builder.projectUrl!}
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}

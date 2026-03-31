@@ -6,13 +6,22 @@ import {
   BUILDER_CATEGORY_ICONS,
   BuilderCategory,
   NEIGHBORHOODS,
+  REGION_IDS,
+  Builder,
 } from "@/features/boston/types";
-import { joinBuilderDirectory } from "@/db/actions/boston-actions";
-import { useFarcasterUser } from "@/neynar-farcaster-sdk/mini";
+import { joinBuilderDirectory, updateBuilder } from "@/db/actions/boston-actions";
+import { useFarcasterUser, useShare } from "@/neynar-farcaster-sdk/mini";
+
+const CITY_NEIGHBORHOODS = NEIGHBORHOODS.filter((n) => !REGION_IDS.has(n.id));
+const FORM_REGIONS = NEIGHBORHOODS.filter((n) => REGION_IDS.has(n.id));
+
+const MAX_LINKS = 3;
+const MAX_CATEGORIES = 3;
 
 type JoinFormProps = {
   onSuccess: () => void;
   onClose: () => void;
+  existingBuilder?: Builder | null;
 };
 
 type FormState = "form" | "submitting" | "success";
@@ -81,15 +90,34 @@ function InputField({
   );
 }
 
-export function BuilderJoinForm({ onSuccess, onClose }: JoinFormProps) {
+function ensureHttps(url: string): string {
+  const trimmed = url.trim();
+  if (!trimmed) return trimmed;
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+}
+
+export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFormProps) {
   const { data: user } = useFarcasterUser();
+  const { share } = useShare();
+
+  const isEditing = !!existingBuilder;
 
   const [formState, setFormState] = useState<FormState>("form");
-  const [projectName, setProjectName] = useState("");
-  const [projectUrl, setProjectUrl] = useState("");
-  const [neighborhood, setNeighborhood] = useState("");
-  const [category, setCategory] = useState<BuilderCategory | "">("");
-  const [bio, setBio] = useState("");
+  const [projectName, setProjectName] = useState(existingBuilder?.projectName ?? "");
+  const [projectLinks, setProjectLinks] = useState<string[]>(
+    existingBuilder?.projectLinks?.length ? existingBuilder.projectLinks : [""]
+  );
+  const [neighborhood, setNeighborhood] = useState(existingBuilder?.neighborhood ?? "");
+  const [selectedCategories, setSelectedCategories] = useState<BuilderCategory[]>(
+    (existingBuilder?.categories?.length
+      ? existingBuilder.categories
+      : existingBuilder?.category
+        ? [existingBuilder.category]
+        : []) as BuilderCategory[]
+  );
+  const [bio, setBio] = useState(existingBuilder?.bio ?? "");
+  const [talkAbout, setTalkAbout] = useState(existingBuilder?.talkAbout ?? "");
   const [error, setError] = useState<string | null>(null);
 
   if (!user) {
@@ -102,33 +130,76 @@ export function BuilderJoinForm({ onSuccess, onClose }: JoinFormProps) {
     );
   }
 
+  function handleLinkChange(index: number, value: string) {
+    setProjectLinks((prev) => {
+      const next = [...prev];
+      next[index] = value;
+      return next;
+    });
+  }
+
+  function handleLinkBlur(index: number) {
+    setProjectLinks((prev) => {
+      const next = [...prev];
+      next[index] = ensureHttps(next[index]);
+      return next;
+    });
+  }
+
+  function addLink() {
+    if (projectLinks.length < MAX_LINKS) {
+      setProjectLinks((prev) => [...prev, ""]);
+    }
+  }
+
+  function removeLink(index: number) {
+    setProjectLinks((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  function toggleCategory(cat: BuilderCategory) {
+    setSelectedCategories((prev) => {
+      if (prev.includes(cat)) return prev.filter((c) => c !== cat);
+      if (prev.length >= MAX_CATEGORIES) return prev;
+      return [...prev, cat];
+    });
+  }
+
   async function handleSubmit() {
     if (!user) return;
 
-    if (!neighborhood || !category) {
-      setError("Neighborhood and builder type are required.");
+    if (!neighborhood || selectedCategories.length === 0) {
+      setError("Neighborhood and at least one builder type are required.");
       return;
     }
 
-    if (projectUrl && projectUrl.trim() !== "" && !projectUrl.startsWith("http")) {
-      setError("Project link must start with http:// or https://");
-      return;
+    const cleanLinks = projectLinks.map((l) => ensureHttps(l)).filter((l) => l.length > 0);
+    for (const link of cleanLinks) {
+      if (!/^https?:\/\//i.test(link)) {
+        setError("All project links must start with http:// or https://");
+        return;
+      }
     }
 
     setError(null);
     setFormState("submitting");
 
-    const result = await joinBuilderDirectory({
+    const payload = {
       fid: user.fid,
       displayName: user.displayName ?? user.username ?? "Anonymous",
       username: user.username ?? "",
       avatarUrl: user.pfpUrl ?? undefined,
       bio: bio.trim() || undefined,
       projectName: projectName.trim() || undefined,
-      projectUrl: projectUrl.trim() || undefined,
+      projectLinks: cleanLinks,
+      categories: selectedCategories,
+      talkAbout: talkAbout.trim() || undefined,
       neighborhood,
-      category,
-    });
+      category: selectedCategories[0],
+    };
+
+    const result = isEditing
+      ? await updateBuilder(user.fid, payload)
+      : await joinBuilderDirectory(payload);
 
     if (result.success) {
       setFormState("success");
@@ -138,12 +209,11 @@ export function BuilderJoinForm({ onSuccess, onClose }: JoinFormProps) {
     }
   }
 
-  function handleShareToFarcaster() {
-    const text = encodeURIComponent(
-      "Just joined the /boston builder directory. If you\u2019re building in Boston, claim your spot \u2192"
-    );
-    const url = `https://farcaster.xyz/~/compose?text=${text}`;
-    window.open(url, "_blank");
+  async function handleShareToFarcaster() {
+    await share({
+      text: "Just joined the /boston builder directory. If you\u2019re building in Boston, claim your spot \u2192",
+      channelKey: "boston",
+    });
   }
 
   if (formState === "success") {
@@ -279,14 +349,43 @@ export function BuilderJoinForm({ onSuccess, onClose }: JoinFormProps) {
           maxLength={60}
         />
 
-        {/* Project link */}
-        <InputField
-          label="Project link"
-          value={projectUrl}
-          onChange={setProjectUrl}
-          placeholder="https://"
-          type="url"
-        />
+        {/* Project links — up to 3 */}
+        <div>
+          <label style={labelStyle}>Project links</label>
+          {projectLinks.map((link, i) => (
+            <div key={i} className="flex items-center gap-2 mb-2">
+              <input
+                type="url"
+                value={link}
+                onChange={(e) => handleLinkChange(i, e.target.value)}
+                onBlur={() => handleLinkBlur(i)}
+                placeholder="https://"
+                style={{ ...inputStyle, flex: 1 }}
+                onFocus={(e) => { e.target.style.boxShadow = "0 0 0 3px rgba(24,113,189,0.25)"; e.target.style.borderColor = "#1871bd"; }}
+              />
+              {projectLinks.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removeLink(i)}
+                  style={{ background: "none", border: "none", cursor: "pointer", color: "#828282", fontSize: "16px", padding: "4px" }}
+                  aria-label="Remove link"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          ))}
+          {projectLinks.length < MAX_LINKS && (
+            <button
+              type="button"
+              onClick={addLink}
+              className="text-[10px] font-bold uppercase tracking-widest"
+              style={{ fontFamily: "var(--font-sans)", color: "#1871bd", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+            >
+              + Add another link
+            </button>
+          )}
+        </div>
 
         {/* Neighborhood */}
         <div>
@@ -310,32 +409,44 @@ export function BuilderJoinForm({ onSuccess, onClose }: JoinFormProps) {
             onBlur={(e) => { e.target.style.boxShadow = "none"; e.target.style.borderColor = "#e0e0e0"; }}
           >
             <option value="">Select a neighborhood</option>
-            {NEIGHBORHOODS.map((n) => (
-              <option key={n.id} value={n.name}>{n.name}</option>
-            ))}
+            <optgroup label="Boston Neighborhoods">
+              {CITY_NEIGHBORHOODS.map((n) => (
+                <option key={n.id} value={n.name}>{n.name}</option>
+              ))}
+            </optgroup>
+            <optgroup label="Greater Region">
+              {FORM_REGIONS.map((n) => (
+                <option key={n.id} value={n.name}>{n.name}</option>
+              ))}
+            </optgroup>
           </select>
         </div>
 
-        {/* Builder category — pill select */}
+        {/* Builder category — multi-select chips (up to 3) */}
         <div>
           <label style={labelStyle}>
             What kind of builder? <span style={{ color: "#1871bd" }}>*</span>
+            <span style={{ fontWeight: "400", color: "#828282", marginLeft: 4 }}>(up to {MAX_CATEGORIES})</span>
           </label>
           <div className="flex flex-wrap gap-2">
             {BUILDER_CATEGORIES.map((cat) => {
-              const isSelected = category === cat;
+              const isSelected = selectedCategories.includes(cat);
+              const isDisabled = !isSelected && selectedCategories.length >= MAX_CATEGORIES;
               return (
                 <button
                   key={cat}
-                  onClick={() => setCategory(cat)}
+                  type="button"
+                  onClick={() => toggleCategory(cat)}
+                  disabled={isDisabled}
                   className="inline-flex items-center gap-1 px-3 py-2 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors duration-150 focus:outline-none"
                   style={{
                     fontFamily: "var(--font-sans)",
                     background: isSelected ? "#091f2f" : "transparent",
-                    color: isSelected ? "#fff" : "#091f2f",
+                    color: isSelected ? "#fff" : isDisabled ? "#c0c0c0" : "#091f2f",
                     border: `1px solid ${isSelected ? "#091f2f" : "#c0c0c0"}`,
                     minHeight: "34px",
-                    cursor: "pointer",
+                    cursor: isDisabled ? "not-allowed" : "pointer",
+                    opacity: isDisabled ? 0.5 : 1,
                   }}
                 >
                   {BUILDER_CATEGORY_ICONS[cat]} {cat}
@@ -345,16 +456,45 @@ export function BuilderJoinForm({ onSuccess, onClose }: JoinFormProps) {
           </div>
         </div>
 
-        {/* Bio */}
+        {/* Bio — expanded to 300 chars */}
         <div>
           <label style={labelStyle}>One-liner about you</label>
           <div style={{ position: "relative" }}>
+            <textarea
+              value={bio}
+              onChange={(e) => setBio(e.target.value.slice(0, 300))}
+              placeholder="What are you working on? Be specific. 300 chars max."
+              maxLength={300}
+              rows={3}
+              style={{ ...inputStyle, paddingRight: "40px", resize: "none", minHeight: "80px" }}
+              onFocus={(e) => { e.target.style.boxShadow = "0 0 0 3px rgba(24,113,189,0.25)"; e.target.style.borderColor = "#1871bd"; }}
+              onBlur={(e) => { e.target.style.boxShadow = "none"; e.target.style.borderColor = "#e0e0e0"; }}
+            />
+            <span
+              style={{
+                position: "absolute",
+                right: "10px",
+                bottom: "10px",
+                fontFamily: "var(--font-sans)",
+                fontSize: "9px",
+                color: bio.length >= 280 ? "#1871bd" : "#c0c0c0",
+              }}
+            >
+              {bio.length}/300
+            </span>
+          </div>
+        </div>
+
+        {/* Talk about */}
+        <div>
+          <label style={labelStyle}>Talk to me about</label>
+          <div style={{ position: "relative" }}>
             <input
               type="text"
-              value={bio}
-              onChange={(e) => setBio(e.target.value.slice(0, 100))}
-              placeholder="100 chars. Be specific."
-              maxLength={100}
+              value={talkAbout}
+              onChange={(e) => setTalkAbout(e.target.value.slice(0, 120))}
+              placeholder="e.g. Solidity, community events, design..."
+              maxLength={120}
               style={{ ...inputStyle, paddingRight: "40px" }}
               onFocus={(e) => { e.target.style.boxShadow = "0 0 0 3px rgba(24,113,189,0.25)"; e.target.style.borderColor = "#1871bd"; }}
               onBlur={(e) => { e.target.style.boxShadow = "none"; e.target.style.borderColor = "#e0e0e0"; }}
@@ -366,10 +506,10 @@ export function BuilderJoinForm({ onSuccess, onClose }: JoinFormProps) {
                 bottom: "10px",
                 fontFamily: "var(--font-sans)",
                 fontSize: "9px",
-                color: bio.length >= 90 ? "#1871bd" : "#c0c0c0",
+                color: talkAbout.length >= 110 ? "#1871bd" : "#c0c0c0",
               }}
             >
-              {bio.length}/100
+              {talkAbout.length}/120
             </span>
           </div>
         </div>
@@ -405,7 +545,7 @@ export function BuilderJoinForm({ onSuccess, onClose }: JoinFormProps) {
             opacity: formState === "submitting" ? 0.6 : 1,
           }}
         >
-          {formState === "submitting" ? "Joining..." : "Join the Directory"}
+          {formState === "submitting" ? (isEditing ? "Saving..." : "Joining...") : isEditing ? "Save Changes" : "Join the Directory"}
         </button>
       </div>
     </div>

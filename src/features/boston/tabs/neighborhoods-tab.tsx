@@ -1,17 +1,32 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { NEIGHBORHOODS, NeighborhoodInfo } from "@/features/boston/types";
-import { getSpotCountByNeighborhood } from "@/db/actions/boston-actions";
+import { NEIGHBORHOODS, REGION_IDS, NeighborhoodInfo, Spot } from "@/features/boston/types";
+import { getSpotCountByNeighborhood, getSpotsByNeighborhood } from "@/db/actions/boston-actions";
+
+const CITY_NEIGHBORHOODS = NEIGHBORHOODS.filter((n) => !REGION_IDS.has(n.id));
+const REGIONS = NEIGHBORHOODS.filter((n) => REGION_IDS.has(n.id));
 
 type NeighborhoodDetailProps = {
   neighborhood: NeighborhoodInfo;
   spotCount: number;
   onBack: () => void;
   onViewSpots: (neighborhoodId: string) => void;
+  onSelectSpot: (spot: Spot) => void;
 };
 
-function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots }: NeighborhoodDetailProps) {
+function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots, onSelectSpot }: NeighborhoodDetailProps) {
+  const [inlineSpots, setInlineSpots] = useState<Spot[]>([]);
+  const [spotsLoading, setSpotsLoading] = useState(true);
+
+  useEffect(() => {
+    setSpotsLoading(true);
+    getSpotsByNeighborhood(neighborhood.name, 5).then((data) => {
+      setInlineSpots(data);
+      setSpotsLoading(false);
+    });
+  }, [neighborhood.name]);
+
   return (
     <div className="flex flex-col h-full overflow-y-auto">
       {/* Header */}
@@ -69,15 +84,27 @@ function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots }: Ne
         </p>
       </div>
 
-      {/* Empty state if no spots */}
-      {spotCount === 0 && (
-        <div className="flex-1 flex items-center justify-center p-8 text-center">
-          <div>
+      {/* Inline spots */}
+      <div className="p-4">
+        <p
+          className="text-[9px] font-bold uppercase tracking-widest mb-3"
+          style={{ fontFamily: "var(--font-sans)", color: "#828282" }}
+        >
+          Spots in {neighborhood.name}
+        </p>
+        {spotsLoading ? (
+          <div className="flex flex-col gap-2">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="rounded-sm bg-[#e0e0e0] animate-pulse" style={{ height: "48px" }} />
+            ))}
+          </div>
+        ) : inlineSpots.length === 0 ? (
+          <div className="py-6 text-center">
             <p
               className="text-sm font-bold uppercase tracking-widest mb-2"
               style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
             >
-              Nobody's repped {neighborhood.name} yet.
+              Nobody&apos;s repped {neighborhood.name} yet.
             </p>
             <p
               className="text-sm italic"
@@ -86,8 +113,43 @@ function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots }: Ne
               Be the first.
             </p>
           </div>
-        </div>
-      )}
+        ) : (
+          <>
+            <div className="flex flex-col gap-2">
+              {inlineSpots.map((spot) => (
+                <button
+                  key={spot.id}
+                  onClick={() => onSelectSpot(spot)}
+                  className="w-full text-left flex items-center justify-between gap-2 px-3 py-2.5 rounded-sm transition-colors duration-150 hover:bg-[#e0e0e0]"
+                  style={{ background: "#fff", border: "1px solid #e0e0e0" }}
+                >
+                  <span
+                    className="text-xs font-bold truncate"
+                    style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+                  >
+                    {spot.name}
+                  </span>
+                  <span
+                    className="inline-flex items-center px-1.5 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-widest shrink-0"
+                    style={{ fontFamily: "var(--font-sans)", background: "#091f2f", color: "#fff" }}
+                  >
+                    {spot.category}
+                  </span>
+                </button>
+              ))}
+            </div>
+            {spotCount > 5 && (
+              <button
+                onClick={() => onViewSpots(neighborhood.id)}
+                className="mt-3 text-[10px] font-bold uppercase tracking-widest"
+                style={{ fontFamily: "var(--font-sans)", color: "#1871bd", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+              >
+                View all in Explore →
+              </button>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }
@@ -105,7 +167,7 @@ function NeighborhoodCard({ neighborhood, spotCount, onClick }: NeighborhoodCard
       className="w-full text-left p-4 rounded-sm transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1871bd] group hover:bg-[#091f2f]"
       style={{
         background: "#f3f3f3",
-        minHeight: "100px",
+        minHeight: "110px",
       }}
     >
       <h3
@@ -115,16 +177,68 @@ function NeighborhoodCard({ neighborhood, spotCount, onClick }: NeighborhoodCard
         {neighborhood.name}
       </h3>
       <p
-        className="text-xs italic leading-snug mb-3 line-clamp-2 text-[#58585b] group-hover:text-white/80 transition-colors duration-200"
+        className="text-xs italic leading-snug mb-2 line-clamp-3 text-[#58585b] group-hover:text-white/80 transition-colors duration-200"
         style={{ fontFamily: "var(--font-serif)" }}
       >
         {neighborhood.tagline}
       </p>
-      <span
-        className="text-[10px] font-bold uppercase tracking-widest text-[#1871bd] group-hover:text-white/70 transition-colors duration-200"
-        style={{ fontFamily: "var(--font-sans)" }}
+      <div className="flex items-center justify-between">
+        <span
+          className="text-[10px] font-bold uppercase tracking-widest text-[#1871bd] group-hover:text-white/70 transition-colors duration-200"
+          style={{ fontFamily: "var(--font-sans)" }}
+        >
+          📍 {spotCount} {spotCount === 1 ? "spot" : "spots"}
+        </span>
+        <span className="text-xs text-[#828282] group-hover:text-white/50 transition-colors duration-200">→</span>
+      </div>
+    </button>
+  );
+}
+
+type RegionCardProps = {
+  neighborhood: NeighborhoodInfo;
+  spotCount: number;
+  onClick: () => void;
+};
+
+function RegionCard({ neighborhood, spotCount, onClick }: RegionCardProps) {
+  return (
+    <button
+      onClick={onClick}
+      className="w-full text-left p-4 rounded-sm transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1871bd] hover:bg-[#f8f8f8]"
+      style={{
+        background: "#fff",
+        borderLeft: "4px solid #1871bd",
+        border: "1px solid #e0e0e0",
+        borderLeftWidth: "4px",
+        borderLeftColor: "#1871bd",
+      }}
+    >
+      <div className="flex items-center gap-2 mb-1.5">
+        <span
+          className="text-[8px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-sm"
+          style={{ fontFamily: "var(--font-sans)", background: "rgba(24,113,189,0.1)", color: "#1871bd" }}
+        >
+          Region
+        </span>
+      </div>
+      <h3
+        className="text-sm font-black uppercase tracking-tight leading-none mb-1.5"
+        style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
       >
-        {spotCount} {spotCount === 1 ? "spot" : "spots"}
+        {neighborhood.name}
+      </h3>
+      <p
+        className="text-xs italic leading-relaxed mb-2 text-[#58585b]"
+        style={{ fontFamily: "var(--font-serif)" }}
+      >
+        {neighborhood.description}
+      </p>
+      <span
+        className="text-[10px] font-bold uppercase tracking-widest"
+        style={{ fontFamily: "var(--font-sans)", color: "#1871bd" }}
+      >
+        {spotCount > 0 ? `📍 ${spotCount} ${spotCount === 1 ? "spot" : "spots"}` : "Be the first to add a spot in this region"}
       </span>
     </button>
   );
@@ -132,9 +246,10 @@ function NeighborhoodCard({ neighborhood, spotCount, onClick }: NeighborhoodCard
 
 type NeighborhoodsTabProps = {
   onNavigateToExplore: (neighborhoodId: string) => void;
+  onSelectSpot?: (spot: Spot) => void;
 };
 
-export function NeighborhoodsTab({ onNavigateToExplore }: NeighborhoodsTabProps) {
+export function NeighborhoodsTab({ onNavigateToExplore, onSelectSpot }: NeighborhoodsTabProps) {
   const [selected, setSelected] = useState<NeighborhoodInfo | null>(null);
   const [spotCounts, setSpotCounts] = useState<Record<string, number>>({});
 
@@ -156,6 +271,7 @@ export function NeighborhoodsTab({ onNavigateToExplore }: NeighborhoodsTabProps)
           setSelected(null);
           onNavigateToExplore(id);
         }}
+        onSelectSpot={(spot) => onSelectSpot?.(spot)}
       />
     );
   }
@@ -168,24 +284,63 @@ export function NeighborhoodsTab({ onNavigateToExplore }: NeighborhoodsTabProps)
           className="text-lg font-black uppercase tracking-tight text-white"
           style={{ fontFamily: "var(--font-sans)" }}
         >
-          Neighborhoods
+          Areas
         </h2>
         <p
           className="text-xs italic text-white opacity-60 mt-0.5"
           style={{ fontFamily: "var(--font-serif)" }}
         >
-          Every part of the city, in the city's words
+          Every part of the city, in the city&apos;s words
         </p>
       </div>
 
-      {/* Grid */}
-      <div className="grid grid-cols-2 gap-3 p-4">
-        {NEIGHBORHOODS.map((n) => (
-          <NeighborhoodCard
+      {/* City Neighborhoods — 2-column grid */}
+      <div className="p-4">
+        <p
+          className="text-[9px] font-bold uppercase tracking-widest mb-3"
+          style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+        >
+          Boston Neighborhoods
+        </p>
+        <div className="grid grid-cols-2 gap-3">
+          {CITY_NEIGHBORHOODS.map((n) => (
+            <NeighborhoodCard
+              key={n.id}
+              neighborhood={n}
+              spotCount={getCount(n)}
+              onClick={() => setSelected(n)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Region divider */}
+      <div className="flex items-center justify-center py-4 px-4">
+        <div className="flex-1 border-t border-[#e0e0e0]" />
+        <span
+          className="px-3"
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontSize: "9px",
+            fontWeight: "700",
+            textTransform: "uppercase",
+            letterSpacing: "0.15em",
+            color: "#828282",
+          }}
+        >
+          — Greater Boston Region —
+        </span>
+        <div className="flex-1 border-t border-[#e0e0e0]" />
+      </div>
+
+      {/* Regions — single column */}
+      <div className="flex flex-col gap-3 px-4 pb-6">
+        {REGIONS.map((n) => (
+          <RegionCard
             key={n.id}
             neighborhood={n}
             spotCount={getCount(n)}
-            onClick={() => setSelected(n)}
+            onClick={() => onNavigateToExplore(n.id)}
           />
         ))}
       </div>

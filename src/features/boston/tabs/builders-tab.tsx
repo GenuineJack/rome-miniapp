@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Builder } from "@/features/boston/types";
-import { getBuildersWithSpotCounts, isBuilderInDirectory } from "@/db/actions/boston-actions";
+import { getBuildersWithSpotCounts, isBuilderInDirectory, getBuilderByFid } from "@/db/actions/boston-actions";
 import { BuilderCard } from "@/features/boston/components/builder-card";
 import { FeaturedBuilderCard } from "@/features/boston/components/featured-builder-card";
 import { BuilderFilterBar } from "@/features/boston/components/builder-filter-bar";
@@ -29,6 +29,7 @@ export function BuildersTab({ onViewBuilderSpots, onSpotClick, pendingBuilderVie
   const [showJoinOverlay, setShowJoinOverlay] = useState(false);
   const [userIsInDirectory, setUserIsInDirectory] = useState(false);
   const [directoryCheckDone, setDirectoryCheckDone] = useState(false);
+  const [userBuilder, setUserBuilder] = useState<Builder | null>(null);
 
   const loadBuilders = useCallback(async () => {
     setLoading(true);
@@ -54,13 +55,16 @@ export function BuildersTab({ onViewBuilderSpots, onSpotClick, pendingBuilderVie
       isBuilderInDirectory(userFid).then((inDir) => {
         setUserIsInDirectory(inDir);
         setDirectoryCheckDone(true);
+        if (inDir) {
+          getBuilderByFid(userFid).then((b) => setUserBuilder(b));
+        }
       });
     }
   }, [userFid, directoryCheckDone]);
 
   // Filter builders
   const filtered = allBuilders.filter((b) => {
-    const catOk = activeCategory === "All" || b.category === activeCategory;
+    const catOk = activeCategory === "All" || b.category === activeCategory || b.categories?.includes(activeCategory);
     const nbrOk = activeNeighborhood === "All" || b.neighborhood === activeNeighborhood;
     return catOk && nbrOk;
   });
@@ -75,8 +79,16 @@ export function BuildersTab({ onViewBuilderSpots, onSpotClick, pendingBuilderVie
     !userIsInDirectory &&
     !showJoinOverlay;
 
+  const showEditBanner =
+    userFid !== undefined &&
+    user !== null &&
+    directoryCheckDone &&
+    userIsInDirectory &&
+    !showJoinOverlay;
+
   function handleJoinSuccess() {
     setUserIsInDirectory(true);
+    setDirectoryCheckDone(false); // re-fetch builder record
     loadBuilders();
   }
 
@@ -163,6 +175,28 @@ export function BuildersTab({ onViewBuilderSpots, onSpotClick, pendingBuilderVie
               onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#1871bd"; }}
             >
               Join →
+            </button>
+          </div>
+        )}
+
+        {/* Edit profile banner */}
+        {showEditBanner && (
+          <div
+            className="flex items-center justify-between gap-3 px-4 py-2"
+            style={{ background: "#f3f3f3", borderBottom: "1px solid #e0e0e0" }}
+          >
+            <p
+              className="text-[10px] font-bold uppercase tracking-widest"
+              style={{ fontFamily: "var(--font-sans)", color: "#828282" }}
+            >
+              Your profile
+            </p>
+            <button
+              onClick={() => setShowJoinOverlay(true)}
+              className="text-[10px] font-bold uppercase tracking-widest focus:outline-none"
+              style={{ fontFamily: "var(--font-sans)", color: "#1871bd", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+            >
+              Edit →
             </button>
           </div>
         )}
@@ -311,6 +345,7 @@ export function BuildersTab({ onViewBuilderSpots, onSpotClick, pendingBuilderVie
             <BuilderJoinForm
               onSuccess={handleJoinSuccess}
               onClose={() => setShowJoinOverlay(false)}
+              existingBuilder={userIsInDirectory ? userBuilder : null}
             />
           </div>
         </div>

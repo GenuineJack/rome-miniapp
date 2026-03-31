@@ -1,10 +1,19 @@
 "use server";
 
 import { db } from "@/neynar-db-sdk/db";
-import { spots, builders, communityHappenings } from "@/db/schema";
+import { spots, builders, communityHappenings, submissionErrors } from "@/db/schema";
 import { eq, desc, and, gte, or, isNull, count, sql as drizzleSql } from "drizzle-orm";
 import { randomUUID } from "crypto";
 import type { Builder, Spot } from "@/features/boston/types";
+
+function parseBuilderRow(row: Record<string, unknown>): Builder {
+  const r = row as Builder & { projectLinks?: string | null; categories?: string | null };
+  return {
+    ...r,
+    projectLinks: typeof r.projectLinks === "string" ? JSON.parse(r.projectLinks) : r.projectLinks ?? [],
+    categories: typeof r.categories === "string" ? JSON.parse(r.categories) : r.categories ?? [],
+  };
+}
 
 // ─── Spots ───────────────────────────────────────────────────────────────────
 
@@ -259,7 +268,7 @@ export async function getBuildersWithSpotCounts(): Promise<(Builder & { spotCoun
     }
 
     return allBuilders.map((b) => ({
-      ...b,
+      ...parseBuilderRow(b as unknown as Record<string, unknown>),
       spotCount: spotCounts[b.fid] ?? 0,
     }));
   } catch (error) {
@@ -276,7 +285,7 @@ export async function getFilteredBuilders(opts?: {
     const allBuilders = await getBuildersWithSpotCounts();
 
     return allBuilders.filter((b) => {
-      const catOk = !opts?.category || opts.category === "All" || b.category === opts.category;
+      const catOk = !opts?.category || opts.category === "All" || b.category === opts.category || b.categories?.includes(opts.category);
       const nbrOk = !opts?.neighborhood || opts.neighborhood === "All" || b.neighborhood === opts.neighborhood;
       return catOk && nbrOk;
     });
@@ -293,7 +302,9 @@ export async function joinBuilderDirectory(data: {
   avatarUrl?: string;
   bio?: string;
   projectName?: string;
-  projectUrl?: string;
+  projectLinks?: string[];
+  categories?: string[];
+  talkAbout?: string;
   neighborhood: string;
   category: string;
 }): Promise<{ success: boolean; id?: string; error?: string }> {
@@ -317,7 +328,10 @@ export async function joinBuilderDirectory(data: {
       avatarUrl: data.avatarUrl ?? null,
       bio: data.bio ?? null,
       projectName: data.projectName ?? null,
-      projectUrl: data.projectUrl ?? null,
+      projectUrl: data.projectLinks?.[0] ?? null,
+      projectLinks: data.projectLinks?.length ? JSON.stringify(data.projectLinks) : null,
+      categories: data.categories?.length ? JSON.stringify(data.categories) : null,
+      talkAbout: data.talkAbout ?? null,
       neighborhood: data.neighborhood,
       category: data.category,
       featured: false,
@@ -330,6 +344,40 @@ export async function joinBuilderDirectory(data: {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
     };
+  }
+}
+
+export async function updateBuilder(
+  fid: number,
+  data: {
+    bio?: string;
+    projectName?: string;
+    projectLinks?: string[];
+    categories?: string[];
+    talkAbout?: string;
+    neighborhood?: string;
+    category?: string;
+    [key: string]: unknown;
+  }
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    await db
+      .update(builders)
+      .set({
+        bio: data.bio ?? null,
+        projectName: data.projectName ?? null,
+        projectUrl: data.projectLinks?.[0] ?? null,
+        projectLinks: data.projectLinks?.length ? JSON.stringify(data.projectLinks) : null,
+        categories: data.categories?.length ? JSON.stringify(data.categories) : null,
+        talkAbout: data.talkAbout ?? null,
+        neighborhood: data.neighborhood ?? undefined,
+        category: data.category ?? undefined,
+      })
+      .where(eq(builders.fid, fid));
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update builder:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 }
 
@@ -354,7 +402,7 @@ export async function getBuilderByFid(fid: number): Promise<Builder | null> {
       .from(builders)
       .where(eq(builders.fid, fid))
       .limit(1);
-    return result[0] ?? null;
+    return result[0] ? parseBuilderRow(result[0] as unknown as Record<string, unknown>) : null;
   } catch (error) {
     console.error("Failed to get builder by FID:", error);
     return null;
@@ -372,6 +420,89 @@ export async function getSpotsByBuilder(fid: number, limit: number = 5): Promise
   } catch (error) {
     console.error("Failed to get spots by builder:", error);
     return [];
+  }
+}
+
+export async function getSpotsByNeighborhood(neighborhoodName: string, limit: number = 5): Promise<Spot[]> {
+  try {
+    return (await db
+      .select()
+      .from(spots)
+      .where(and(eq(spots.neighborhood, neighborhoodName), eq(spots.status, "approved")))
+      .orderBy(desc(spots.createdAt))
+      .limit(limit)) as Spot[];
+  } catch (error) {
+    console.error("Failed to get spots by neighborhood:", error);
+    return [];
+  }
+}
+
+// ─── Submission error logging ─────────────────────────────────────────────────
+
+export async function logSubmissionError(data: {
+  type: string;
+  payload: string;
+  errorMessage: string;
+  userFid: number;
+}) {
+  try {
+    await db.insert(submissionErrors).values({
+      id: randomUUID(),
+      type: data.type,
+      payload: data.payload,
+      errorMessage: data.errorMessage,
+      userFid: data.userFid,
+    });
+  } catch (err) {
+    console.error("Failed to log submission error:", err);
+  }
+}
+
+export async function getSubmissionErrors(limit: number = 50) {
+  try {
+    return await db
+      .select()
+      .from(submissionErrors)
+      .orderBy(desc(submissionErrors.createdAt))
+      .limit(limit);
+  } catch (error) {
+    console.error("Failed to get submission errors:", error);
+    return [];
+  }
+}
+
+// ─── Admin: Pending spots / happenings ────────────────────────────────────────
+
+export async function getPendingSpots() {
+  try {
+    return await db
+      .select()
+      .from(spots)
+      .where(eq(spots.status, "pending"))
+      .orderBy(desc(spots.createdAt));
+  } catch (error) {
+    console.error("Failed to get pending spots:", error);
+    return [];
+  }
+}
+
+export async function approveSpot(id: string) {
+  try {
+    await db.update(spots).set({ status: "approved" }).where(eq(spots.id, id));
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to approve spot:", error);
+    return { success: false };
+  }
+}
+
+export async function rejectSpot(id: string) {
+  try {
+    await db.update(spots).set({ status: "rejected" }).where(eq(spots.id, id));
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to reject spot:", error);
+    return { success: false };
   }
 }
 

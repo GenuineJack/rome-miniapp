@@ -48,6 +48,26 @@ export async function runMigrations() {
     `ALTER TABLE community_happenings ADD COLUMN IF NOT EXISTS start_date text`,
     `ALTER TABLE community_happenings ADD COLUMN IF NOT EXISTS end_date text`,
     `ALTER TABLE community_happenings ADD COLUMN IF NOT EXISTS url text`,
+
+    // builders: multi-value fields
+    `ALTER TABLE builders ADD COLUMN IF NOT EXISTS project_links text`,
+    `ALTER TABLE builders ADD COLUMN IF NOT EXISTS categories text`,
+    `ALTER TABLE builders ADD COLUMN IF NOT EXISTS talk_about text`,
+
+    // Migrate existing single category → categories JSON array and projectUrl → projectLinks
+    // Only runs on rows that still have old single values and empty new fields
+    `UPDATE builders SET categories = CONCAT('["', category, '"]') WHERE category IS NOT NULL AND (categories IS NULL OR categories = '')`,
+    `UPDATE builders SET project_links = CONCAT('["', project_url, '"]') WHERE project_url IS NOT NULL AND project_url != '' AND (project_links IS NULL OR project_links = '')`,
+
+    // submission_errors: create table
+    `CREATE TABLE IF NOT EXISTS submission_errors (
+      id text PRIMARY KEY,
+      type text NOT NULL,
+      payload text NOT NULL,
+      error_message text NOT NULL,
+      user_fid integer,
+      created_at timestamp DEFAULT now() NOT NULL
+    )`,
   ];
 
   let applied = 0;

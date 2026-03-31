@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect, useCallback } from "react";
 import { Spot, CATEGORY_ICONS, Category } from "@/features/boston/types";
+import { useShare } from "@/neynar-farcaster-sdk/mini";
 
 type SpotDetailSheetProps = {
   spot: Spot | null;
@@ -15,6 +16,7 @@ export function SpotDetailSheet({ spot, onClose, onViewBuilder }: SpotDetailShee
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [translateY, setTranslateY] = useState(0);
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
+  const { share } = useShare();
 
   // Reset animation state when spot changes
   useEffect(() => {
@@ -82,6 +84,15 @@ export function SpotDetailSheet({ spot, onClose, onViewBuilder }: SpotDetailShee
       const query = encodeURIComponent(`${spot.name} Boston MA`);
       window.open(`https://maps.google.com/?q=${query}`, "_blank");
     }
+  }
+
+  async function handleShare() {
+    if (!spot) return;
+    await share({
+      text: `${spot.name} — ${spot.description}\n\nAdded to /boston by @${spot.submittedByUsername}`,
+      path: `/?spotId=${spot.id}`,
+      channelKey: "boston",
+    });
   }
 
   if (!spot) return null;
@@ -258,23 +269,38 @@ export function SpotDetailSheet({ spot, onClose, onViewBuilder }: SpotDetailShee
             >
               Open in Maps
             </button>
-            {spot.link && (
-              <a
-                href={spot.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 flex items-center justify-center py-3 rounded-sm text-sm font-bold uppercase tracking-widest border-2 border-[#1871bd] transition-colors duration-150"
-                style={{
-                  fontFamily: "var(--font-sans)",
-                  color: "#1871bd",
-                  minHeight: "44px",
-                  textDecoration: "none",
-                }}
-              >
-                Website
-              </a>
-            )}
+            <button
+              onClick={handleShare}
+              className="flex-1 py-3 rounded-sm text-sm font-bold uppercase tracking-widest transition-colors duration-150"
+              style={{
+                fontFamily: "var(--font-sans)",
+                background: "#091f2f",
+                color: "#fff",
+                minHeight: "44px",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              Share
+            </button>
           </div>
+          {spot.link && (
+            <a
+              href={spot.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center py-3 rounded-sm text-sm font-bold uppercase tracking-widest border-2 border-[#1871bd] transition-colors duration-150 mb-2"
+              style={{
+                fontFamily: "var(--font-sans)",
+                color: "#1871bd",
+                minHeight: "44px",
+                textDecoration: "none",
+                width: "100%",
+              }}
+            >
+              Website
+            </a>
+          )}
           {/* Secondary close action — less visual weight */}
           <button
             onClick={handleClose}

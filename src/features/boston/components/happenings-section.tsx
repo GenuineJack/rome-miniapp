@@ -386,6 +386,26 @@ const HAPPENING_DEFS: HappeningDef[] = [
       return "THIS MONTH";
     },
   },
+  {
+    id: "world-cup-2026",
+    title: "FIFA World Cup 2026 — Boston Host City",
+    description: "Boston is hosting World Cup matches at Gillette Stadium in Foxborough. Five group stage matches and a Round of 16 game, June through July 2026. One of 16 North American host cities. The biggest sporting event on the planet is coming to Greater Boston.",
+    relatedNeighborhood: "south-shore-cape",
+    emoji: "⚽",
+    isActive: (today) => {
+      const start = new Date(2026, 0, 1);
+      const end = new Date(2026, 6, 31);
+      return today >= start && today <= end;
+    },
+    timingLabel: (today) => {
+      const firstMatch = new Date(2026, 5, 15);
+      const d = Math.round((firstMatch.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+      if (d <= 0) return "HAPPENING NOW";
+      if (d <= 30) return `FIRST MATCH IN ${d} DAYS`;
+      if (d <= 60) return "COMING THIS SUMMER";
+      return "SUMMER 2026";
+    },
+  },
 ];
 
 // ─── Resolve happenings for today ─────────────────────────────────────────────
