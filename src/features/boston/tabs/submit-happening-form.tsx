@@ -43,20 +43,17 @@ function inputStyle(hasError?: boolean) {
     width: "100%",
     outline: "none",
     minHeight: "44px",
+    transition: "border-color 0.15s, box-shadow 0.15s",
   } as React.CSSProperties;
 }
 
-function labelStyle() {
-  return {
-    fontFamily: "var(--font-sans)",
-    fontSize: "10px",
-    fontWeight: "700",
-    letterSpacing: "1px",
-    textTransform: "uppercase" as const,
-    color: "#091f2f",
-    marginBottom: "6px",
-    display: "block",
-  };
+function handleInputFocus(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+  e.target.style.borderColor = "#1871bd";
+  e.target.style.boxShadow = "0 0 0 2px rgba(24,113,189,0.12)";
+}
+function handleInputBlur(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+  e.target.style.borderColor = "#e0e0e0";
+  e.target.style.boxShadow = "none";
 }
 
 type Props = {
@@ -137,12 +134,10 @@ export function SubmitHappeningForm({ onSuccess }: Props) {
   if (!user) {
     return (
       <div className="flex flex-col h-full items-center justify-center p-8 text-center">
-        <p className="text-sm font-bold uppercase tracking-widest mb-2"
-          style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}>
+        <p className="text-sm font-bold uppercase tracking-widest mb-2 t-sans-navy">
           Sign in with Farcaster to submit.
         </p>
-        <p className="text-sm italic"
-          style={{ fontFamily: "var(--font-serif)", color: "#828282" }}>
+        <p className="text-sm italic t-serif-gray">
           Every event needs a person behind it.
         </p>
       </div>
@@ -153,25 +148,22 @@ export function SubmitHappeningForm({ onSuccess }: Props) {
     return (
       <div className="flex flex-col items-center p-8 gap-5 text-center">
         <div className="text-4xl">{submittedEmoji}</div>
-        <h3 className="text-lg font-black uppercase tracking-tight"
-          style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}>
+        <h3 className="text-lg font-black uppercase tracking-tight t-sans-navy">
           Event added.
         </h3>
-        <p className="text-sm italic"
-          style={{ fontFamily: "var(--font-serif)", color: "#828282" }}>
+        <p className="text-sm italic t-serif-gray">
           It&apos;s live in the Today tab for the /boston community.
         </p>
         <button
           onClick={() => { setForm(EMPTY_FORM); setState("form"); onSuccess(); }}
-          className="w-full py-3 rounded-sm text-sm font-bold uppercase tracking-widest"
-          style={{ fontFamily: "var(--font-sans)", background: "#091f2f", color: "#fff", minHeight: "44px" }}
+          className="w-full py-3 rounded-sm text-sm font-bold uppercase tracking-widest t-sans-white bg-navy"
+          style={{ minHeight: "44px" }}
         >
           Done
         </button>
         <button
           onClick={() => { setForm(EMPTY_FORM); setState("form"); }}
-          className="w-full py-2 text-sm font-bold uppercase tracking-widest"
-          style={{ fontFamily: "var(--font-sans)", color: "#1871bd", background: "none", border: "none", cursor: "pointer" }}
+          className="w-full py-2 text-sm font-bold uppercase tracking-widest t-sans-blue bg-transparent border-0 cursor-pointer"
         >
           Add Another
         </button>
@@ -182,14 +174,14 @@ export function SubmitHappeningForm({ onSuccess }: Props) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 p-4">
       {/* Submitting as */}
-      <p className="text-xs italic opacity-60"
-        style={{ fontFamily: "var(--font-serif)", color: "#091f2f" }}>
+      <p className="text-xs italic opacity-60 t-serif"
+        style={{ color: "#091f2f" }}>
         Submitting as @{user.username}
       </p>
 
       {/* Emoji picker */}
       <div>
-        <label style={labelStyle()}>Event emoji</label>
+        <label className="label-boston">Event emoji</label>
         <div className="flex flex-wrap gap-2">
           {EMOJI_OPTIONS.map((e) => (
             <button
@@ -213,16 +205,18 @@ export function SubmitHappeningForm({ onSuccess }: Props) {
 
       {/* Title */}
       <div>
-        <label style={labelStyle()}>Event name *</label>
+        <label className="label-boston">Event name *</label>
         <input
           type="text"
           placeholder="e.g. Dorchester Open Studios"
           value={form.title}
           onChange={(e) => handleFieldChange({ title: e.target.value })}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
           style={inputStyle(!!errors.title)}
         />
         {errors.title && (
-          <p className="text-[10px] mt-1 font-bold" style={{ color: "#d22d23", fontFamily: "var(--font-sans)" }}>
+          <p className="text-[10px] mt-1 font-bold t-sans-red">
             {errors.title}
           </p>
         )}
@@ -230,10 +224,13 @@ export function SubmitHappeningForm({ onSuccess }: Props) {
 
       {/* Neighborhood */}
       <div>
-        <label style={labelStyle()}>Neighborhood *</label>
+        <label className="label-boston">Neighborhood *</label>
         <select
           value={form.neighborhood}
           onChange={(e) => handleFieldChange({ neighborhood: e.target.value })}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
+          aria-label="Neighborhood"
           style={inputStyle(!!errors.neighborhood)}
         >
           <option value="">Select a neighborhood</option>
@@ -242,7 +239,7 @@ export function SubmitHappeningForm({ onSuccess }: Props) {
           ))}
         </select>
         {errors.neighborhood && (
-          <p className="text-[10px] mt-1 font-bold" style={{ color: "#d22d23", fontFamily: "var(--font-sans)" }}>
+          <p className="text-[10px] mt-1 font-bold t-sans-red">
             {errors.neighborhood}
           </p>
         )}
@@ -250,19 +247,21 @@ export function SubmitHappeningForm({ onSuccess }: Props) {
 
       {/* Date label */}
       <div>
-        <label style={labelStyle()}>When is it? *</label>
+        <label className="label-boston">When is it? *</label>
         <input
           type="text"
           placeholder="e.g. This Saturday · Every Sunday in April · April 12"
           value={form.dateLabel}
           onChange={(e) => handleFieldChange({ dateLabel: e.target.value })}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
           style={inputStyle(!!errors.dateLabel)}
         />
-        <p className="text-[10px] mt-1" style={{ fontFamily: "var(--font-sans)", color: "#828282" }}>
+        <p className="text-[10px] mt-1 t-sans-gray">
           Write it how you&apos;d say it out loud.
         </p>
         {errors.dateLabel && (
-          <p className="text-[10px] mt-1 font-bold" style={{ color: "#d22d23", fontFamily: "var(--font-sans)" }}>
+          <p className="text-[10px] mt-1 font-bold t-sans-red">
             {errors.dateLabel}
           </p>
         )}
@@ -271,23 +270,27 @@ export function SubmitHappeningForm({ onSuccess }: Props) {
       {/* Date range (optional) */}
       <div className="flex gap-3">
         <div className="flex-1">
-          <label style={labelStyle()}>Start date <span style={{ color: "#828282", fontWeight: 400 }}>(optional)</span></label>
+          <label className="label-boston">Start date <span className="text-boston-gray-400 font-normal">(optional)</span></label>
           <input
             type="date"
             value={form.startDate}
             onChange={(e) => handleFieldChange({ startDate: e.target.value })}
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
             style={inputStyle()}
           />
         </div>
         <div className="flex-1">
-          <label style={labelStyle()}>End date <span style={{ color: "#828282", fontWeight: 400 }}>(optional)</span></label>
+          <label className="label-boston">End date <span className="text-boston-gray-400 font-normal">(optional)</span></label>
           <input
             type="date"
             value={form.endDate}
             onChange={(e) => handleFieldChange({ endDate: e.target.value })}
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
             style={inputStyle()}
           />
-          <p className="text-[10px] mt-1" style={{ fontFamily: "var(--font-sans)", color: "#828282" }}>
+          <p className="text-[10px] mt-1 t-sans-gray">
             Event hides after this date.
           </p>
         </div>
@@ -295,22 +298,23 @@ export function SubmitHappeningForm({ onSuccess }: Props) {
 
       {/* Description */}
       <div>
-        <label style={labelStyle()}>What is it? *</label>
+        <label className="label-boston">What is it? *</label>
         <textarea
           placeholder="One or two sentences. What's the vibe, why should someone go."
           value={form.description}
           onChange={(e) => handleFieldChange({ description: e.target.value })}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
           rows={3}
           style={{ ...inputStyle(!!errors.description), resize: "none", minHeight: "80px" }}
         />
         <div className="flex justify-between items-center mt-1">
           {errors.description ? (
-            <p className="text-[10px] font-bold" style={{ color: "#d22d23", fontFamily: "var(--font-sans)" }}>
+            <p className="text-[10px] font-bold t-sans-red">
               {errors.description}
             </p>
           ) : <span />}
-          <span className="text-[10px] font-medium" style={{
-            fontFamily: "var(--font-sans)",
+          <span className="text-[10px] font-medium t-sans" style={{
             color: form.description.length > 180 ? "#d22d23" : "#828282",
           }}>
             {form.description.length}/200
@@ -320,26 +324,27 @@ export function SubmitHappeningForm({ onSuccess }: Props) {
 
       {/* URL (optional) */}
       <div>
-        <label style={labelStyle()}>
-          Website / Tickets <span style={{ color: "#828282", fontWeight: "400" }}>(optional)</span>
+        <label className="label-boston">
+          Website / Tickets <span className="text-boston-gray-400 font-normal">(optional)</span>
         </label>
         <input
           type="url"
           placeholder="e.g. https://sowaartsdistrict.com"
           value={form.url}
           onChange={(e) => handleFieldChange({ url: e.target.value })}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
           style={inputStyle(!!errors.url)}
         />
         {errors.url && (
-          <p className="text-[10px] mt-1 font-bold" style={{ color: "#d22d23", fontFamily: "var(--font-sans)" }}>
+          <p className="text-[10px] mt-1 font-bold t-sans-red">
             {errors.url}
           </p>
         )}
       </div>
 
       {state === "error" && (
-        <div className="p-3 rounded-sm text-xs font-bold uppercase tracking-wide"
-          style={{ fontFamily: "var(--font-sans)", background: "#d22d23", color: "#fff" }}>
+        <div className="p-3 rounded-sm text-xs font-bold uppercase tracking-wide t-sans-white bg-boston-red">
           Submission failed. Try again.
         </div>
       )}
@@ -347,8 +352,8 @@ export function SubmitHappeningForm({ onSuccess }: Props) {
       <button
         type="submit"
         disabled={state === "submitting"}
-        className="w-full py-3 rounded-sm text-sm font-bold uppercase tracking-widest transition-colors duration-150 disabled:opacity-50"
-        style={{ fontFamily: "var(--font-sans)", background: "#091f2f", color: "#fff", minHeight: "48px" }}
+        className="w-full py-3 rounded-sm text-sm font-bold uppercase tracking-widest transition-colors duration-150 disabled:opacity-50 t-sans-white bg-navy"
+        style={{ minHeight: "48px" }}
       >
         {state === "submitting" ? "Adding..." : "Add to Today"}
       </button>

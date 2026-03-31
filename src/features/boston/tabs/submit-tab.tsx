@@ -44,21 +44,19 @@ function inputStyle(hasError?: boolean) {
     width: "100%",
     outline: "none",
     minHeight: "44px",
+    transition: "border-color 0.15s, box-shadow 0.15s",
   } as React.CSSProperties;
 }
 
-function labelStyle() {
-  return {
-    fontFamily: "var(--font-sans)",
-    fontSize: "10px",
-    fontWeight: "700",
-    letterSpacing: "1px",
-    textTransform: "uppercase" as const,
-    color: "#091f2f",
-    marginBottom: "6px",
-    display: "block",
-  };
+function handleInputFocus(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+  e.target.style.borderColor = "#1871bd";
+  e.target.style.boxShadow = "0 0 0 2px rgba(24,113,189,0.12)";
 }
+function handleInputBlur(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+  e.target.style.borderColor = "#e0e0e0";
+  e.target.style.boxShadow = "none";
+}
+
 
 function SuccessSpotPreview({
   data,
@@ -75,40 +73,35 @@ function SuccessSpotPreview({
 
   return (
     <div
-      className="w-full border-2 border-[#e0e0e0] rounded-sm p-3 text-left"
-      style={{ background: "#fff" }}
+      className="w-full border-2 border-[#e0e0e0] rounded-sm p-3 text-left bg-white"
     >
       <div className="flex items-start justify-between gap-2 mb-1.5">
         <span
-          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest"
-          style={{ background: "#091f2f", color: "#fff", fontFamily: "var(--font-sans)" }}
+          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest t-sans-white bg-navy"
         >
           {icon} {data.category}
         </span>
       </div>
       <h3
-        className="text-sm font-bold leading-tight mb-2"
-        style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+        className="text-sm font-bold leading-tight mb-2 t-sans-navy"
       >
         {data.name}
       </h3>
       <div
-        className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-wide"
-        style={{ fontFamily: "var(--font-sans)", color: "#828282" }}
+        className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-wide t-sans-gray"
       >
         {pfpUrl ? (
           <img src={pfpUrl} alt={displayName} className="w-5 h-5 rounded-full object-cover shrink-0" />
         ) : (
           <div
-            className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
-            style={{ background: "#1871bd" }}
+            className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0 bg-boston-blue"
           >
             {displayName[0]?.toUpperCase() ?? "?"}
           </div>
         )}
         <span>📍 {data.neighborhood}</span>
         <span>·</span>
-        <span style={{ color: "#1871bd" }}>@{username}</span>
+        <span className="text-boston-blue">@{username}</span>
       </div>
     </div>
   );
@@ -210,14 +203,12 @@ export function SubmitTab() {
     return (
       <div className="flex flex-col h-full items-center justify-center p-8 text-center">
         <p
-          className="text-sm font-bold uppercase tracking-widest mb-2"
-          style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+          className="text-sm font-bold uppercase tracking-widest mb-2 t-sans-navy"
         >
           Sign in with Farcaster to submit.
         </p>
         <p
-          className="text-sm italic"
-          style={{ fontFamily: "var(--font-serif)", color: "#828282" }}
+          className="text-sm italic t-serif-gray"
         >
           Every spot needs a person behind it. That&apos;s the whole point.
         </p>
@@ -228,10 +219,9 @@ export function SubmitTab() {
   if (state === "success" && successData) {
     return (
       <div className="flex flex-col h-full overflow-y-auto">
-        <div className="px-4 py-4 border-b border-[#e0e0e0]" style={{ background: "#091f2f" }}>
+        <div className="px-4 py-4 border-b border-[#e0e0e0] bg-navy">
           <h2
-            className="text-lg font-black uppercase tracking-tight text-white"
-            style={{ fontFamily: "var(--font-sans)" }}
+            className="text-lg font-black uppercase tracking-tight text-white t-sans"
           >
             Added.
           </h2>
@@ -247,8 +237,7 @@ export function SubmitTab() {
 
           {/* Confirmation copy */}
           <p
-            className="text-sm italic text-center"
-            style={{ fontFamily: "var(--font-serif)", color: "#828282" }}
+            className="text-sm italic text-center t-serif-gray"
           >
             Live. The /boston community can see it now.
           </p>
@@ -256,26 +245,15 @@ export function SubmitTab() {
           <div className="flex flex-col gap-3 w-full">
             <button
               onClick={handleShare}
-              className="w-full py-3 rounded-sm text-sm font-bold uppercase tracking-widest"
-              style={{
-                fontFamily: "var(--font-sans)",
-                background: "#1871bd",
-                color: "#fff",
-                minHeight: "44px",
-              }}
+              className="w-full py-3 rounded-sm text-sm font-bold uppercase tracking-widest t-sans-white bg-boston-blue"
+              style={{ minHeight: "44px" }}
             >
               Share to /boston
             </button>
             <button
               onClick={() => setState("form")}
-              className="w-full py-3 rounded-sm text-sm font-bold uppercase tracking-widest border-2"
-              style={{
-                fontFamily: "var(--font-sans)",
-                background: "transparent",
-                color: "#091f2f",
-                borderColor: "#091f2f",
-                minHeight: "44px",
-              }}
+              className="w-full py-3 rounded-sm text-sm font-bold uppercase tracking-widest border-2 t-sans-navy bg-transparent border-navy"
+              style={{ minHeight: "44px" }}
             >
               Add Another
             </button>
@@ -288,16 +266,14 @@ export function SubmitTab() {
   return (
     <div className="flex flex-col h-full overflow-y-auto">
       {/* Header */}
-      <div className="px-4 py-4 border-b border-[#e0e0e0]" style={{ background: "#091f2f" }}>
+      <div className="px-4 py-4 border-b border-[#e0e0e0] bg-navy">
         <h2
-          className="text-lg font-black uppercase tracking-tight text-white"
-          style={{ fontFamily: "var(--font-sans)" }}
+          className="text-lg font-black uppercase tracking-tight text-white t-sans"
         >
           Submit a Spot
         </h2>
         <p
-          className="text-xs italic text-white opacity-60 mt-0.5"
-          style={{ fontFamily: "var(--font-serif)" }}
+          className="text-xs italic text-white opacity-60 mt-0.5 t-serif"
         >
           Submitting as @{user.username}
         </p>
@@ -306,16 +282,18 @@ export function SubmitTab() {
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 p-4">
         {/* Spot name */}
         <div>
-          <label style={labelStyle()}>Spot name *</label>
+          <label className="label-boston">Spot name *</label>
           <input
             type="text"
             placeholder="e.g. Tatte Bakery"
             value={form.name}
             onChange={(e) => handleFieldChange({ name: e.target.value })}
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
             style={inputStyle(!!errors.name)}
           />
           {errors.name && (
-            <p className="text-[10px] mt-1 font-bold" style={{ color: "#d22d23", fontFamily: "var(--font-sans)" }}>
+            <p className="text-[10px] mt-1 font-bold t-sans-red">
               {errors.name}
             </p>
           )}
@@ -323,10 +301,13 @@ export function SubmitTab() {
 
         {/* Category */}
         <div>
-          <label style={labelStyle()}>Category *</label>
+          <label className="label-boston">Category *</label>
           <select
             value={form.category}
             onChange={(e) => handleFieldChange({ category: e.target.value })}
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            aria-label="Category"
             style={inputStyle(!!errors.category)}
           >
             <option value="">Select a category</option>
@@ -335,7 +316,7 @@ export function SubmitTab() {
             ))}
           </select>
           {errors.category && (
-            <p className="text-[10px] mt-1 font-bold" style={{ color: "#d22d23", fontFamily: "var(--font-sans)" }}>
+            <p className="text-[10px] mt-1 font-bold t-sans-red">
               {errors.category}
             </p>
           )}
@@ -343,10 +324,13 @@ export function SubmitTab() {
 
         {/* Neighborhood */}
         <div>
-          <label style={labelStyle()}>Neighborhood *</label>
+          <label className="label-boston">Neighborhood *</label>
           <select
             value={form.neighborhood}
             onChange={(e) => handleFieldChange({ neighborhood: e.target.value })}
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            aria-label="Neighborhood"
             style={inputStyle(!!errors.neighborhood)}
           >
             <option value="">Select a neighborhood</option>
@@ -355,7 +339,7 @@ export function SubmitTab() {
             ))}
           </select>
           {errors.neighborhood && (
-            <p className="text-[10px] mt-1 font-bold" style={{ color: "#d22d23", fontFamily: "var(--font-sans)" }}>
+            <p className="text-[10px] mt-1 font-bold t-sans-red">
               {errors.neighborhood}
             </p>
           )}
@@ -363,11 +347,13 @@ export function SubmitTab() {
 
         {/* Description */}
         <div>
-          <label style={labelStyle()}>Why this spot? *</label>
+          <label className="label-boston">Why this spot? *</label>
           <textarea
             placeholder="One sentence. Be specific. 140 chars max."
             value={form.description}
             onChange={(e) => handleFieldChange({ description: e.target.value })}
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
             rows={3}
             style={{
               ...inputStyle(!!errors.description),
@@ -377,14 +363,13 @@ export function SubmitTab() {
           />
           <div className="flex justify-between items-center mt-1">
             {errors.description ? (
-              <p className="text-[10px] font-bold" style={{ color: "#d22d23", fontFamily: "var(--font-sans)" }}>
+              <p className="text-[10px] font-bold t-sans-red">
                 {errors.description}
               </p>
             ) : <span />}
             <span
-              className="text-[10px] font-medium"
+              className="text-[10px] font-medium t-sans"
               style={{
-                fontFamily: "var(--font-sans)",
                 color: form.description.length > 130 ? "#d22d23" : "#828282",
               }}
             >
@@ -395,32 +380,36 @@ export function SubmitTab() {
 
         {/* Address (optional) */}
         <div>
-          <label style={labelStyle()}>
-            Address <span style={{ color: "#828282", fontWeight: "400" }}>(optional)</span>
+          <label className="label-boston">
+            Address <span className="text-boston-gray-400 font-normal">(optional)</span>
           </label>
           <input
             type="text"
             placeholder="e.g. 70 Farnsworth St, Boston"
             value={form.address}
             onChange={(e) => handleFieldChange({ address: e.target.value })}
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
             style={inputStyle()}
           />
         </div>
 
         {/* Link (optional) */}
         <div>
-          <label style={labelStyle()}>
-            Website / Link <span style={{ color: "#828282", fontWeight: "400" }}>(optional)</span>
+          <label className="label-boston">
+            Website / Link <span className="text-boston-gray-400 font-normal">(optional)</span>
           </label>
           <input
             type="url"
             placeholder="e.g. https://tattebakery.com"
             value={form.link}
             onChange={(e) => handleFieldChange({ link: e.target.value })}
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
             style={inputStyle(!!errors.link)}
           />
           {errors.link && (
-            <p className="text-[10px] mt-1 font-bold" style={{ color: "#d22d23", fontFamily: "var(--font-sans)" }}>
+            <p className="text-[10px] mt-1 font-bold t-sans-red">
               {errors.link}
             </p>
           )}
@@ -429,20 +418,19 @@ export function SubmitTab() {
         {/* Error state */}
         {state === "error" && (
           <div
-            className="p-3 rounded-sm text-xs font-bold"
-            style={{ fontFamily: "var(--font-sans)", background: "rgba(210,45,35,0.08)", color: "#d22d23", border: "1px solid rgba(210,45,35,0.2)" }}
+            className="p-3 rounded-sm text-xs font-bold t-sans-red"
+            style={{ background: "rgba(210,45,35,0.08)", border: "1px solid rgba(210,45,35,0.2)" }}
           >
             <p className="uppercase tracking-wide mb-1">Submission failed</p>
             {serverError && (
-              <p className="font-normal text-[11px] italic" style={{ fontFamily: "var(--font-serif)" }}>
+              <p className="font-normal text-[11px] italic t-serif">
                 {serverError}
               </p>
             )}
             <button
               type="button"
               onClick={() => { setState("form"); setServerError(null); }}
-              className="mt-2 text-[10px] font-bold uppercase tracking-widest underline"
-              style={{ background: "none", border: "none", cursor: "pointer", color: "#d22d23", padding: 0 }}
+              className="mt-2 text-[10px] font-bold uppercase tracking-widest underline bg-transparent border-0 cursor-pointer text-boston-red p-0"
             >
               Dismiss
             </button>
@@ -453,13 +441,8 @@ export function SubmitTab() {
         <button
           type="submit"
           disabled={state === "submitting"}
-          className="w-full py-3 rounded-sm text-sm font-bold uppercase tracking-widest transition-colors duration-150 disabled:opacity-50"
-          style={{
-            fontFamily: "var(--font-sans)",
-            background: "#091f2f",
-            color: "#fff",
-            minHeight: "48px",
-          }}
+          className="w-full py-3 rounded-sm text-sm font-bold uppercase tracking-widest transition-colors duration-150 disabled:opacity-50 t-sans-white bg-navy"
+          style={{ minHeight: "48px" }}
         >
           {state === "submitting" ? "Adding..." : "Add to /boston"}
         </button>

@@ -30,41 +30,34 @@ function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots, onSe
   return (
     <div className="flex flex-col h-full overflow-y-auto">
       {/* Header */}
-      <div className="px-4 pt-4 pb-5" style={{ background: "#091f2f" }}>
+      <div className="px-4 pt-4 pb-5 bg-navy">
         <button
           onClick={onBack}
-          className="flex items-center gap-1.5 mb-4 text-[10px] font-bold uppercase tracking-widest text-white opacity-60 hover:opacity-100 transition-opacity"
-          style={{ fontFamily: "var(--font-sans)" }}
+          className="flex items-center gap-1.5 mb-4 text-[10px] font-bold uppercase tracking-widest text-white opacity-60 hover:opacity-100 transition-opacity t-sans"
         >
           ← Back
         </button>
         <h2
-          className="text-2xl font-black uppercase tracking-tight leading-none mb-2"
-          style={{ fontFamily: "var(--font-sans)", color: "#fff" }}
+          className="text-2xl font-black uppercase tracking-tight leading-none mb-2 t-sans-white"
         >
           {neighborhood.name}
         </h2>
         <p
-          className="text-sm italic opacity-80"
-          style={{ fontFamily: "var(--font-serif)", color: "#fff" }}
+          className="text-sm italic opacity-80 t-serif-white"
         >
           {neighborhood.tagline}
         </p>
         <div className="mt-3 pt-3 border-t border-white/20 flex items-center justify-between gap-3">
           <span
-            className="text-xs font-bold uppercase tracking-widest"
-            style={{ fontFamily: "var(--font-sans)", color: "#1871bd" }}
+            className="text-xs font-bold uppercase tracking-widest t-sans-blue"
           >
             {spotCount} {spotCount === 1 ? "spot" : "spots"} in the guide
           </span>
           {spotCount > 0 && (
             <button
               onClick={() => onViewSpots(neighborhood.id)}
-              className="px-4 py-2 rounded-sm text-xs font-bold uppercase tracking-widest shrink-0 focus:outline-none"
+              className="px-4 py-2 rounded-sm text-xs font-bold uppercase tracking-widest shrink-0 focus:outline-none t-sans-white bg-boston-blue"
               style={{
-                fontFamily: "var(--font-sans)",
-                background: "#1871bd",
-                color: "#fff",
                 minHeight: "36px",
               }}
             >
@@ -77,8 +70,7 @@ function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots, onSe
       {/* Description */}
       <div className="p-4 border-b border-[#e0e0e0]">
         <p
-          className="text-sm leading-relaxed"
-          style={{ fontFamily: "var(--font-serif)", color: "#58585b" }}
+          className="text-sm leading-relaxed t-serif-body"
         >
           {neighborhood.description}
         </p>
@@ -87,8 +79,7 @@ function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots, onSe
       {/* Inline spots */}
       <div className="p-4">
         <p
-          className="text-[9px] font-bold uppercase tracking-widest mb-3"
-          style={{ fontFamily: "var(--font-sans)", color: "#828282" }}
+          className="text-[9px] font-bold uppercase tracking-widest mb-3 t-sans-gray"
         >
           Spots in {neighborhood.name}
         </p>
@@ -101,14 +92,12 @@ function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots, onSe
         ) : inlineSpots.length === 0 ? (
           <div className="py-6 text-center">
             <p
-              className="text-sm font-bold uppercase tracking-widest mb-2"
-              style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+              className="text-sm font-bold uppercase tracking-widest mb-2 t-sans-navy"
             >
               Nobody&apos;s repped {neighborhood.name} yet.
             </p>
             <p
-              className="text-sm italic"
-              style={{ fontFamily: "var(--font-serif)", color: "#828282" }}
+              className="text-sm italic t-serif-gray"
             >
               Be the first.
             </p>
@@ -120,18 +109,16 @@ function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots, onSe
                 <button
                   key={spot.id}
                   onClick={() => onSelectSpot(spot)}
-                  className="w-full text-left flex items-center justify-between gap-2 px-3 py-2.5 rounded-sm transition-colors duration-150 hover:bg-[#e0e0e0]"
-                  style={{ background: "#fff", border: "1px solid #e0e0e0" }}
+                  className="w-full text-left flex items-center justify-between gap-2 px-3 py-2.5 rounded-sm transition-colors duration-150 hover:bg-[#e0e0e0] bg-white"
+                  style={{ border: "1px solid #e0e0e0" }}
                 >
                   <span
-                    className="text-xs font-bold truncate"
-                    style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+                    className="text-xs font-bold truncate t-sans-navy"
                   >
                     {spot.name}
                   </span>
                   <span
-                    className="inline-flex items-center px-1.5 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-widest shrink-0"
-                    style={{ fontFamily: "var(--font-sans)", background: "#091f2f", color: "#fff" }}
+                    className="inline-flex items-center px-1.5 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-widest shrink-0 t-sans-white bg-navy"
                   >
                     {spot.category}
                   </span>
@@ -141,8 +128,8 @@ function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots, onSe
             {spotCount > 5 && (
               <button
                 onClick={() => onViewSpots(neighborhood.id)}
-                className="mt-3 text-[10px] font-bold uppercase tracking-widest"
-                style={{ fontFamily: "var(--font-sans)", color: "#1871bd", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                className="mt-3 text-[10px] font-bold uppercase tracking-widest t-sans-blue"
+                style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
               >
                 View all in Explore →
               </button>
@@ -164,28 +151,24 @@ function NeighborhoodCard({ neighborhood, spotCount, onClick }: NeighborhoodCard
   return (
     <button
       onClick={onClick}
-      className="w-full text-left p-4 rounded-sm transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1871bd] group hover:bg-[#091f2f]"
+      className="w-full text-left p-4 rounded-sm transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1871bd] group hover:bg-[#091f2f] bg-boston-gray-50"
       style={{
-        background: "#f3f3f3",
         minHeight: "110px",
       }}
     >
       <h3
-        className="text-sm font-black uppercase tracking-tight leading-none mb-1.5 text-[#091f2f] group-hover:text-white transition-colors duration-200"
-        style={{ fontFamily: "var(--font-sans)" }}
+        className="text-sm font-black uppercase tracking-tight leading-none mb-1.5 text-[#091f2f] group-hover:text-white transition-colors duration-200 t-sans"
       >
         {neighborhood.name}
       </h3>
       <p
-        className="text-xs italic leading-snug mb-2 line-clamp-3 text-[#58585b] group-hover:text-white/80 transition-colors duration-200"
-        style={{ fontFamily: "var(--font-serif)" }}
+        className="text-xs italic leading-snug mb-2 line-clamp-3 text-[#58585b] group-hover:text-white/80 transition-colors duration-200 t-serif"
       >
         {neighborhood.tagline}
       </p>
       <div className="flex items-center justify-between">
         <span
-          className="text-[10px] font-bold uppercase tracking-widest text-[#1871bd] group-hover:text-white/70 transition-colors duration-200"
-          style={{ fontFamily: "var(--font-sans)" }}
+          className="text-[10px] font-bold uppercase tracking-widest text-[#1871bd] group-hover:text-white/70 transition-colors duration-200 t-sans"
         >
           📍 {spotCount} {spotCount === 1 ? "spot" : "spots"}
         </span>
@@ -205,9 +188,8 @@ function RegionCard({ neighborhood, spotCount, onClick }: RegionCardProps) {
   return (
     <button
       onClick={onClick}
-      className="w-full text-left p-4 rounded-sm transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1871bd] hover:bg-[#f8f8f8]"
+      className="w-full text-left p-4 rounded-sm transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1871bd] hover:bg-[#f8f8f8] bg-white"
       style={{
-        background: "#fff",
         borderLeft: "4px solid #1871bd",
         border: "1px solid #e0e0e0",
         borderLeftWidth: "4px",
@@ -216,27 +198,24 @@ function RegionCard({ neighborhood, spotCount, onClick }: RegionCardProps) {
     >
       <div className="flex items-center gap-2 mb-1.5">
         <span
-          className="text-[8px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-sm"
-          style={{ fontFamily: "var(--font-sans)", background: "rgba(24,113,189,0.1)", color: "#1871bd" }}
+          className="text-[8px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-sm t-sans-blue"
+          style={{ background: "rgba(24,113,189,0.1)" }}
         >
           Region
         </span>
       </div>
       <h3
-        className="text-sm font-black uppercase tracking-tight leading-none mb-1.5"
-        style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+        className="text-sm font-black uppercase tracking-tight leading-none mb-1.5 t-sans-navy"
       >
         {neighborhood.name}
       </h3>
       <p
-        className="text-xs italic leading-relaxed mb-2 text-[#58585b]"
-        style={{ fontFamily: "var(--font-serif)" }}
+        className="text-xs italic leading-relaxed mb-2 text-[#58585b] t-serif"
       >
         {neighborhood.description}
       </p>
       <span
-        className="text-[10px] font-bold uppercase tracking-widest"
-        style={{ fontFamily: "var(--font-sans)", color: "#1871bd" }}
+        className="text-[10px] font-bold uppercase tracking-widest t-sans-blue"
       >
         {spotCount > 0 ? `📍 ${spotCount} ${spotCount === 1 ? "spot" : "spots"}` : "Be the first to add a spot in this region"}
       </span>
@@ -279,16 +258,14 @@ export function NeighborhoodsTab({ onNavigateToExplore, onSelectSpot }: Neighbor
   return (
     <div className="flex flex-col h-full overflow-y-auto">
       {/* Header */}
-      <div className="px-4 py-4 border-b border-[#e0e0e0]" style={{ background: "#091f2f" }}>
+      <div className="px-4 py-4 border-b border-[#e0e0e0] bg-navy">
         <h2
-          className="text-lg font-black uppercase tracking-tight text-white"
-          style={{ fontFamily: "var(--font-sans)" }}
+          className="text-lg font-black uppercase tracking-tight text-white t-sans"
         >
           Areas
         </h2>
         <p
-          className="text-xs italic text-white opacity-60 mt-0.5"
-          style={{ fontFamily: "var(--font-serif)" }}
+          className="text-xs italic text-white opacity-60 mt-0.5 t-serif"
         >
           Every part of the city, in the city&apos;s words
         </p>
@@ -297,8 +274,7 @@ export function NeighborhoodsTab({ onNavigateToExplore, onSelectSpot }: Neighbor
       {/* City Neighborhoods — 2-column grid */}
       <div className="p-4">
         <p
-          className="text-[9px] font-bold uppercase tracking-widest mb-3"
-          style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+          className="text-[9px] font-bold uppercase tracking-widest mb-3 t-sans-navy"
         >
           Boston Neighborhoods
         </p>
@@ -318,14 +294,12 @@ export function NeighborhoodsTab({ onNavigateToExplore, onSelectSpot }: Neighbor
       <div className="flex items-center justify-center py-4 px-4">
         <div className="flex-1 border-t border-[#e0e0e0]" />
         <span
-          className="px-3"
+          className="px-3 t-sans-gray"
           style={{
-            fontFamily: "var(--font-sans)",
             fontSize: "9px",
             fontWeight: "700",
             textTransform: "uppercase",
             letterSpacing: "0.15em",
-            color: "#828282",
           }}
         >
           — Greater Boston Region —

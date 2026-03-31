@@ -22,8 +22,8 @@ export function BuilderFilterBar({
 
   return (
     <div
-      className="shrink-0"
-      style={{ background: "#f3f3f3", borderBottom: "1px solid #e0e0e0" }}
+      className="shrink-0 bg-boston-gray-50"
+      style={{ borderBottom: "1px solid #e0e0e0" }}
     >
       {/* Category pills — horizontally scrollable */}
       <div className="overflow-x-auto py-3 px-4 no-scrollbar">
@@ -35,9 +35,8 @@ export function BuilderFilterBar({
               <button
                 key={cat}
                 onClick={() => onCategoryChange(cat)}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-sm text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition-colors duration-150 focus:outline-none"
+                className="t-sans inline-flex items-center gap-1 px-3 py-1.5 rounded-sm text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition-colors duration-150 focus:outline-none"
                 style={{
-                  fontFamily: "var(--font-sans)",
                   background: isActive ? "#091f2f" : "transparent",
                   color: isActive ? "#fff" : "#091f2f",
                   border: `1px solid ${isActive ? "#091f2f" : "#c0c0c0"}`,
@@ -53,23 +52,19 @@ export function BuilderFilterBar({
 
       {/* Neighborhood dropdown */}
       <div
-        className="flex items-center gap-2 px-4 pb-3"
-        style={{ fontFamily: "var(--font-sans)" }}
+        className="t-sans flex items-center gap-2 px-4 pb-3"
       >
         <span
-          className="text-[10px] font-bold uppercase tracking-widest shrink-0"
-          style={{ color: "#828282" }}
+          className="text-[10px] font-bold uppercase tracking-widest shrink-0 text-boston-gray-400"
         >
           📍 Neighborhood
         </span>
         <select
           value={activeNeighborhood}
           onChange={(e) => onNeighborhoodChange(e.target.value)}
-          className="flex-1 text-[11px] font-medium focus:outline-none"
+          aria-label="Filter by neighborhood"
+          className="t-sans-navy bg-white flex-1 text-[11px] font-medium focus:outline-none"
           style={{
-            fontFamily: "var(--font-sans)",
-            color: "#091f2f",
-            background: "#fff",
             border: "1px solid #e0e0e0",
             borderRadius: "3px",
             padding: "6px 8px",

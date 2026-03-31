@@ -155,7 +155,8 @@ export function LeafletMapInner({ spots, onSpotClick, height }: LeafletMapProps)
       `}</style>
       <div
         ref={containerRef}
-        style={{ width: "100%", height, background: "#0d1b2a" }}
+        className="bg-[#0d1b2a]"
+        style={{ width: "100%", height }}
       />
     </>
   );

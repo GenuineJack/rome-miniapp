@@ -25,8 +25,8 @@ function BuilderAvatar({ builder, size = 48 }: { builder: Builder; size?: number
   }
   return (
     <div
-      className="rounded-full flex items-center justify-center font-black text-white shrink-0"
-      style={{ width: sizePx, height: sizePx, background: "#1871bd", fontSize }}
+      className="rounded-full flex items-center justify-center font-black text-white shrink-0 bg-boston-blue"
+      style={{ width: sizePx, height: sizePx, fontSize }}
     >
       {builder.displayName[0]?.toUpperCase() ?? "?"}
     </div>
@@ -66,15 +66,14 @@ export function BuilderCard({ builder, onClick, onSpotFilterClick }: BuilderCard
           {/* Name + verified badge */}
           <div className="flex items-center gap-1.5 flex-wrap">
             <span
-              className="text-sm font-bold leading-tight"
-              style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+              className="text-sm font-bold leading-tight t-sans-navy"
             >
               {builder.displayName}
             </span>
             {builder.verified && (
               <span
-                className="inline-flex items-center justify-center w-3 h-3 rounded-full text-white shrink-0"
-                style={{ background: "#1871bd", fontSize: "7px", fontWeight: "900" }}
+                className="inline-flex items-center justify-center w-3 h-3 rounded-full text-white shrink-0 bg-boston-blue"
+                style={{ fontSize: "7px", fontWeight: "900" }}
                 aria-label="Verified"
               >
                 ✓
@@ -84,8 +83,7 @@ export function BuilderCard({ builder, onClick, onSpotFilterClick }: BuilderCard
 
           {/* Username */}
           <p
-            className="text-[10px] leading-none mt-0.5"
-            style={{ fontFamily: "var(--font-sans)", color: "#1871bd" }}
+            className="text-[10px] leading-none mt-0.5 t-sans-blue"
           >
             @{builder.username}
           </p>
@@ -93,8 +91,7 @@ export function BuilderCard({ builder, onClick, onSpotFilterClick }: BuilderCard
           {/* Neighborhood */}
           {builder.neighborhood && (
             <p
-              className="text-[10px] mt-1"
-              style={{ fontFamily: "var(--font-sans)", color: "#828282" }}
+              className="text-[10px] mt-1 t-sans-gray"
             >
               📍 {builder.neighborhood}
             </p>
@@ -109,8 +106,7 @@ export function BuilderCard({ builder, onClick, onSpotFilterClick }: BuilderCard
               return (
                 <span
                   key={cat}
-                  className="inline-flex items-center gap-1 px-2 py-1 rounded-sm text-[9px] font-bold uppercase tracking-widest text-white"
-                  style={{ fontFamily: "var(--font-sans)", background: "#091f2f" }}
+                  className="inline-flex items-center gap-1 px-2 py-1 rounded-sm text-[9px] font-bold uppercase tracking-widest text-white t-sans bg-navy"
                 >
                   {icon} {cat}
                 </span>
@@ -123,8 +119,7 @@ export function BuilderCard({ builder, onClick, onSpotFilterClick }: BuilderCard
       {/* Project line */}
       {builder.projectName && (
         <p
-          className="text-xs mb-2"
-          style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+          className="text-xs mb-2 t-sans-navy"
         >
           Building:{" "}
           {(builder.projectLinks?.[0] ?? builder.projectUrl) ? (
@@ -133,8 +128,7 @@ export function BuilderCard({ builder, onClick, onSpotFilterClick }: BuilderCard
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="font-bold hover:underline"
-              style={{ color: "#1871bd" }}
+              className="font-bold hover:underline text-boston-blue"
             >
               {builder.projectName}
             </a>
@@ -147,8 +141,7 @@ export function BuilderCard({ builder, onClick, onSpotFilterClick }: BuilderCard
       {/* Bio */}
       {builder.bio && (
         <p
-          className="text-xs italic leading-snug mb-3 line-clamp-2"
-          style={{ fontFamily: "var(--font-serif)", color: "#58585b" }}
+          className="text-xs italic leading-snug mb-3 line-clamp-2 t-serif-body"
         >
           &ldquo;{builder.bio}&rdquo;
         </p>
@@ -164,9 +157,8 @@ export function BuilderCard({ builder, onClick, onSpotFilterClick }: BuilderCard
             e.stopPropagation();
             if (spotCount > 0) onSpotFilterClick?.(builder.fid, builder.username);
           }}
-          className="text-[10px] font-medium leading-none focus:outline-none"
+          className="text-[10px] font-medium leading-none focus:outline-none t-sans"
           style={{
-            fontFamily: "var(--font-sans)",
             color: spotCount > 0 ? "#1871bd" : "#828282",
             background: "none",
             border: "none",
@@ -180,8 +172,7 @@ export function BuilderCard({ builder, onClick, onSpotFilterClick }: BuilderCard
         <span style={{ color: "#c0c0c0", fontSize: "10px" }}>·</span>
 
         <span
-          className="text-[10px] leading-none"
-          style={{ fontFamily: "var(--font-sans)", color: "#828282" }}
+          className="text-[10px] leading-none t-sans-gray"
         >
           Joined {joinDate}
         </span>

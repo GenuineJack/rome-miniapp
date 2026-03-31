@@ -28,7 +28,6 @@ type FormState = "form" | "submitting" | "success";
 
 // Shared input style helper
 const inputStyle: React.CSSProperties = {
-  fontFamily: "var(--font-serif)",
   fontSize: "13px",
   color: "#091f2f",
   background: "#fff",
@@ -41,12 +40,10 @@ const inputStyle: React.CSSProperties = {
 };
 
 const labelStyle: React.CSSProperties = {
-  fontFamily: "var(--font-sans)",
   fontSize: "10px",
   fontWeight: "700",
   textTransform: "uppercase" as const,
   letterSpacing: "0.12em",
-  color: "#091f2f",
   display: "block",
   marginBottom: "6px",
 };
@@ -70,19 +67,20 @@ function InputField({
 }) {
   return (
     <div>
-      <label style={labelStyle}>{label}</label>
+      <label className="t-sans-navy" style={labelStyle}>{label}</label>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         maxLength={maxLength}
+        className="t-serif"
         style={inputStyle}
         onFocus={(e) => { e.target.style.boxShadow = "0 0 0 3px rgba(24,113,189,0.25)"; e.target.style.borderColor = "#1871bd"; }}
         onBlur={(e) => { e.target.style.boxShadow = "none"; e.target.style.borderColor = "#e0e0e0"; }}
       />
       {hint && (
-        <p style={{ fontFamily: "var(--font-serif)", fontSize: "11px", color: "#828282", marginTop: "4px", fontStyle: "italic" }}>
+        <p className="t-serif-gray" style={{ fontSize: "11px", marginTop: "4px", fontStyle: "italic" }}>
           {hint}
         </p>
       )}
@@ -123,7 +121,7 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center h-full p-8 text-center">
-        <p style={{ fontFamily: "var(--font-serif)", fontSize: "14px", fontStyle: "italic", color: "#58585b" }}>
+        <p className="t-serif-body" style={{ fontSize: "14px", fontStyle: "italic" }}>
           Sign in with Farcaster to join the directory.
         </p>
       </div>
@@ -228,8 +226,7 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
           />
         ) : (
           <div
-            className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-black text-white"
-            style={{ background: "#1871bd" }}
+            className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-black text-white bg-boston-blue"
           >
             {(user.displayName ?? user.username ?? "?")[0]?.toUpperCase()}
           </div>
@@ -237,22 +234,20 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
 
         <div>
           <p
-            className="font-bold text-base"
-            style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+            className="font-bold text-base t-sans-navy"
           >
             {user.displayName ?? user.username}
           </p>
           <p
-            className="text-xs"
-            style={{ fontFamily: "var(--font-sans)", color: "#1871bd" }}
+            className="text-xs t-sans-blue"
           >
             @{user.username}
           </p>
         </div>
 
         <p
-          className="text-sm italic leading-relaxed"
-          style={{ fontFamily: "var(--font-serif)", color: "#58585b", maxWidth: "260px" }}
+          className="text-sm italic leading-relaxed t-serif-body"
+          style={{ maxWidth: "260px" }}
         >
           You&apos;re in the /boston builder directory.
         </p>
@@ -260,11 +255,8 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
         <div className="flex flex-col gap-3 w-full" style={{ maxWidth: "300px" }}>
           <button
             onClick={handleShareToFarcaster}
-            className="w-full py-3 rounded-sm text-xs font-bold uppercase tracking-widest transition-opacity duration-150 hover:opacity-90 focus:outline-none"
+            className="w-full py-3 rounded-sm text-xs font-bold uppercase tracking-widest transition-opacity duration-150 hover:opacity-90 focus:outline-none t-sans-white bg-boston-blue"
             style={{
-              fontFamily: "var(--font-sans)",
-              background: "#1871bd",
-              color: "#fff",
               border: "none",
               minHeight: "44px",
               cursor: "pointer",
@@ -279,10 +271,8 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
               onSuccess();
               onClose();
             }}
-            className="w-full py-3 rounded-sm text-xs font-bold uppercase tracking-widest transition-colors duration-150 focus:outline-none"
+            className="w-full py-3 rounded-sm text-xs font-bold uppercase tracking-widest transition-colors duration-150 focus:outline-none t-sans-navy"
             style={{
-              fontFamily: "var(--font-sans)",
-              color: "#091f2f",
               background: "transparent",
               border: "2px solid #091f2f",
               minHeight: "44px",
@@ -301,8 +291,8 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
       <div className="flex flex-col gap-5 p-5">
         {/* Identity card — non-editable */}
         <div
-          className="flex items-center gap-3 p-3 rounded-sm"
-          style={{ background: "#f3f3f3", border: "1px solid #e0e0e0" }}
+          className="flex items-center gap-3 p-3 rounded-sm bg-boston-gray-50"
+          style={{ border: "1px solid #e0e0e0" }}
         >
           {user.pfpUrl ? (
             <img
@@ -312,29 +302,25 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
             />
           ) : (
             <div
-              className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-black text-white shrink-0"
-              style={{ background: "#1871bd" }}
+              className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-black text-white shrink-0 bg-boston-blue"
             >
               {(user.displayName ?? user.username ?? "?")[0]?.toUpperCase()}
             </div>
           )}
           <div className="min-w-0">
             <p
-              className="text-sm font-bold truncate"
-              style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+              className="text-sm font-bold truncate t-sans-navy"
             >
               {user.displayName ?? user.username}
             </p>
             <p
-              className="text-[10px] truncate"
-              style={{ fontFamily: "var(--font-sans)", color: "#1871bd" }}
+              className="text-[10px] truncate t-sans-blue"
             >
               @{user.username}
             </p>
           </div>
           <span
-            className="ml-auto text-[9px] font-bold uppercase tracking-widest shrink-0"
-            style={{ fontFamily: "var(--font-sans)", color: "#828282" }}
+            className="ml-auto text-[9px] font-bold uppercase tracking-widest shrink-0 t-sans-gray"
           >
             Joining as
           </span>
@@ -351,15 +337,16 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
 
         {/* Project links — up to 3 */}
         <div>
-          <label style={labelStyle}>Project links</label>
+          <label className="t-sans-navy" style={labelStyle}>Project links</label>
           {projectLinks.map((link, i) => (
             <div key={i} className="flex items-center gap-2 mb-2">
               <input
                 type="url"
                 value={link}
                 onChange={(e) => handleLinkChange(i, e.target.value)}
-                onBlur={() => handleLinkBlur(i)}
+                onBlur={(e) => { handleLinkBlur(i); e.target.style.boxShadow = "none"; e.target.style.borderColor = "#e0e0e0"; }}
                 placeholder="https://"
+                className="t-serif"
                 style={{ ...inputStyle, flex: 1 }}
                 onFocus={(e) => { e.target.style.boxShadow = "0 0 0 3px rgba(24,113,189,0.25)"; e.target.style.borderColor = "#1871bd"; }}
               />
@@ -367,7 +354,8 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
                 <button
                   type="button"
                   onClick={() => removeLink(i)}
-                  style={{ background: "none", border: "none", cursor: "pointer", color: "#828282", fontSize: "16px", padding: "4px" }}
+                  className="text-boston-gray-400"
+                  style={{ background: "none", border: "none", cursor: "pointer", fontSize: "16px", padding: "4px" }}
                   aria-label="Remove link"
                 >
                   ✕
@@ -379,8 +367,8 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
             <button
               type="button"
               onClick={addLink}
-              className="text-[10px] font-bold uppercase tracking-widest"
-              style={{ fontFamily: "var(--font-sans)", color: "#1871bd", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+              className="text-[10px] font-bold uppercase tracking-widest t-sans-blue"
+              style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
             >
               + Add another link
             </button>
@@ -389,15 +377,16 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
 
         {/* Neighborhood */}
         <div>
-          <label style={labelStyle}>
-            Your neighborhood <span style={{ color: "#1871bd" }}>*</span>
+          <label className="t-sans-navy" style={labelStyle}>
+            Your neighborhood <span className="text-boston-blue">*</span>
           </label>
           <select
             value={neighborhood}
             onChange={(e) => setNeighborhood(e.target.value)}
+            aria-label="Your neighborhood"
+            className="t-sans"
             style={{
               ...inputStyle,
-              fontFamily: "var(--font-sans)",
               fontSize: "11px",
               appearance: "none",
               backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23828282' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")`,
@@ -424,9 +413,9 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
 
         {/* Builder category — multi-select chips (up to 3) */}
         <div>
-          <label style={labelStyle}>
-            What kind of builder? <span style={{ color: "#1871bd" }}>*</span>
-            <span style={{ fontWeight: "400", color: "#828282", marginLeft: 4 }}>(up to {MAX_CATEGORIES})</span>
+          <label className="t-sans-navy" style={labelStyle}>
+            What kind of builder? <span className="text-boston-blue">*</span>
+            <span className="text-boston-gray-400" style={{ fontWeight: "400", marginLeft: 4 }}>(up to {MAX_CATEGORIES})</span>
           </label>
           <div className="flex flex-wrap gap-2">
             {BUILDER_CATEGORIES.map((cat) => {
@@ -438,9 +427,8 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
                   type="button"
                   onClick={() => toggleCategory(cat)}
                   disabled={isDisabled}
-                  className="inline-flex items-center gap-1 px-3 py-2 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors duration-150 focus:outline-none"
+                  className="inline-flex items-center gap-1 px-3 py-2 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors duration-150 focus:outline-none t-sans"
                   style={{
-                    fontFamily: "var(--font-sans)",
                     background: isSelected ? "#091f2f" : "transparent",
                     color: isSelected ? "#fff" : isDisabled ? "#c0c0c0" : "#091f2f",
                     border: `1px solid ${isSelected ? "#091f2f" : "#c0c0c0"}`,
@@ -458,7 +446,7 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
 
         {/* Bio — expanded to 300 chars */}
         <div>
-          <label style={labelStyle}>One-liner about you</label>
+          <label className="t-sans-navy" style={labelStyle}>One-liner about you</label>
           <div style={{ position: "relative" }}>
             <textarea
               value={bio}
@@ -466,16 +454,17 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
               placeholder="What are you working on? Be specific. 300 chars max."
               maxLength={300}
               rows={3}
+              className="t-serif"
               style={{ ...inputStyle, paddingRight: "40px", resize: "none", minHeight: "80px" }}
               onFocus={(e) => { e.target.style.boxShadow = "0 0 0 3px rgba(24,113,189,0.25)"; e.target.style.borderColor = "#1871bd"; }}
               onBlur={(e) => { e.target.style.boxShadow = "none"; e.target.style.borderColor = "#e0e0e0"; }}
             />
             <span
+              className="t-sans"
               style={{
                 position: "absolute",
                 right: "10px",
                 bottom: "10px",
-                fontFamily: "var(--font-sans)",
                 fontSize: "9px",
                 color: bio.length >= 280 ? "#1871bd" : "#c0c0c0",
               }}
@@ -487,7 +476,7 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
 
         {/* Talk about */}
         <div>
-          <label style={labelStyle}>Talk to me about</label>
+          <label className="t-sans-navy" style={labelStyle}>Talk to me about</label>
           <div style={{ position: "relative" }}>
             <input
               type="text"
@@ -495,16 +484,17 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
               onChange={(e) => setTalkAbout(e.target.value.slice(0, 120))}
               placeholder="e.g. Solidity, community events, design..."
               maxLength={120}
+              className="t-serif"
               style={{ ...inputStyle, paddingRight: "40px" }}
               onFocus={(e) => { e.target.style.boxShadow = "0 0 0 3px rgba(24,113,189,0.25)"; e.target.style.borderColor = "#1871bd"; }}
               onBlur={(e) => { e.target.style.boxShadow = "none"; e.target.style.borderColor = "#e0e0e0"; }}
             />
             <span
+              className="t-sans"
               style={{
                 position: "absolute",
                 right: "10px",
                 bottom: "10px",
-                fontFamily: "var(--font-sans)",
                 fontSize: "9px",
                 color: talkAbout.length >= 110 ? "#1871bd" : "#c0c0c0",
               }}
@@ -517,9 +507,8 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
         {/* Error */}
         {error && (
           <p
-            className="text-xs px-3 py-2 rounded-sm"
+            className="text-xs px-3 py-2 rounded-sm t-serif"
             style={{
-              fontFamily: "var(--font-serif)",
               fontStyle: "italic",
               color: "#c0392b",
               background: "rgba(192,57,43,0.08)",
@@ -534,11 +523,8 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
         <button
           onClick={handleSubmit}
           disabled={formState === "submitting"}
-          className="w-full py-3 rounded-sm text-sm font-bold uppercase tracking-widest transition-opacity duration-150 focus:outline-none"
+          className="w-full py-3 rounded-sm text-sm font-bold uppercase tracking-widest transition-opacity duration-150 focus:outline-none t-sans-white bg-navy"
           style={{
-            fontFamily: "var(--font-sans)",
-            background: "#091f2f",
-            color: "#fff",
             border: "none",
             minHeight: "48px",
             cursor: formState === "submitting" ? "not-allowed" : "pointer",

@@ -57,11 +57,8 @@ export function MapView({ spots, onSpotClick }: MapViewProps) {
 
       {/* Spot count badge */}
       <div
-        className="absolute top-3 right-3 px-2 py-1 rounded-sm text-[10px] font-bold uppercase tracking-widest z-[1000] pointer-events-none"
+        className="absolute top-3 right-3 px-2 py-1 rounded-sm text-[10px] font-bold uppercase tracking-widest z-[1000] pointer-events-none t-sans-white bg-navy"
         style={{
-          fontFamily: "var(--font-sans)",
-          background: "#091f2f",
-          color: "#ffffff",
           border: "1px solid rgba(255,255,255,0.2)",
         }}
       >
@@ -76,23 +73,20 @@ export function MapView({ spots, onSpotClick }: MapViewProps) {
       {/* Legend */}
       <div className="absolute bottom-3 left-3 flex items-center gap-3 z-[1000] pointer-events-none">
         <div className="flex items-center gap-1">
-          <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#d22d23" }} />
-          <span className="text-[9px] font-bold uppercase tracking-wide text-white opacity-60"
-            style={{ fontFamily: "var(--font-sans)" }}>
+          <div className="w-2.5 h-2.5 rounded-full bg-boston-red" />
+          <span className="text-[9px] font-bold uppercase tracking-wide text-white opacity-60 t-sans">
             Spot
           </span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#fcb61a" }} />
-          <span className="text-[9px] font-bold uppercase tracking-wide text-white opacity-60"
-            style={{ fontFamily: "var(--font-sans)" }}>
+          <span className="text-[9px] font-bold uppercase tracking-wide text-white opacity-60 t-sans">
             Featured
           </span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#1871bd" }} />
-          <span className="text-[9px] font-bold uppercase tracking-wide text-white opacity-60"
-            style={{ fontFamily: "var(--font-sans)" }}>
+          <div className="w-2.5 h-2.5 rounded-full bg-boston-blue" />
+          <span className="text-[9px] font-bold uppercase tracking-wide text-white opacity-60 t-sans">
             New
           </span>
         </div>

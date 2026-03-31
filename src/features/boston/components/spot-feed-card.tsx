@@ -21,8 +21,7 @@ export function SpotFeedCard({ spot, onClick }: { spot: Spot; onClick?: (spot: S
 
   return (
     <div
-      className={`p-4 border-2 border-[#e0e0e0] rounded-sm transition-colors duration-150 ${onClick ? "cursor-pointer hover:border-[#1871bd]" : ""}`}
-      style={{ background: "#fff" }}
+      className={`bg-white p-4 border-2 border-[#e0e0e0] rounded-sm transition-colors duration-150 ${onClick ? "cursor-pointer hover:border-[#1871bd]" : ""}`}
       onClick={() => onClick?.(spot)}
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}
@@ -30,29 +29,25 @@ export function SpotFeedCard({ spot, onClick }: { spot: Spot; onClick?: (spot: S
     >
       <div className="flex items-start justify-between gap-2 mb-2">
         <span
-          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest"
-          style={{ fontFamily: "var(--font-sans)", background: "#091f2f", color: "#fff" }}
+          className="t-sans-white bg-navy inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest"
         >
           {icon} {spot.category}
         </span>
         <span
-          className="text-[10px] font-medium uppercase tracking-wide shrink-0"
-          style={{ fontFamily: "var(--font-sans)", color: "#828282" }}
+          className="t-sans-gray text-[10px] font-medium uppercase tracking-wide shrink-0"
         >
           {timeAgo(spot.createdAt)}
         </span>
       </div>
 
       <h3
-        className="text-sm font-bold mb-1 leading-tight"
-        style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+        className="t-sans-navy text-sm font-bold mb-1 leading-tight"
       >
         {spot.name}
       </h3>
 
       <p
-        className="text-xs italic leading-snug mb-3"
-        style={{ fontFamily: "var(--font-serif)", color: "#58585b" }}
+        className="t-serif-body text-xs italic leading-snug mb-3"
       >
         &ldquo;{spot.description}&rdquo;
       </p>
@@ -67,18 +62,16 @@ export function SpotFeedCard({ spot, onClick }: { spot: Spot; onClick?: (spot: S
           />
         ) : (
           <div
-            className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0"
-            style={{ background: "#1871bd" }}
+            className="bg-boston-blue w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0"
           >
             {spot.submittedByDisplayName[0]?.toUpperCase() ?? "?"}
           </div>
         )}
         <span
-          className="text-[10px] font-medium min-w-0"
-          style={{ fontFamily: "var(--font-sans)", color: "#828282" }}
+          className="t-sans-gray text-[10px] font-medium min-w-0"
         >
           Added by{" "}
-          <span style={{ color: "#1871bd" }}>@{spot.submittedByUsername}</span>{" "}
+          <span className="text-boston-blue">@{spot.submittedByUsername}</span>{" "}
           &middot; {spot.neighborhood}
         </span>
       </div>

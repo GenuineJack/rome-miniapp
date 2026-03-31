@@ -111,22 +111,21 @@ export function MiniApp() {
   }, []);
 
   return (
-    <div className="flex flex-col h-dvh overflow-hidden" style={{ background: "#f3f3f3" }}>
+    <div className="flex flex-col h-dvh overflow-hidden bg-boston-gray-50">
       {/* Header */}
       <header
-        className="flex items-center justify-between px-4 py-3 shrink-0"
-        style={{ background: "#091f2f", borderBottom: "3px solid #1871bd" }}
+        className="flex items-center justify-between px-4 py-3 shrink-0 bg-navy-bar"
       >
         <div>
           <span
-            className="font-black uppercase tracking-tight leading-none block"
-            style={{ fontFamily: "var(--font-sans)", color: "#fff", fontSize: "15px" }}
+            className="font-black uppercase tracking-tight leading-none block t-sans-white"
+            style={{ fontSize: "15px" }}
           >
             The Boston Miniapp
           </span>
           <span
-            className="leading-none block mt-0.5"
-            style={{ fontFamily: "var(--font-serif)", color: "#fff", fontSize: "10px", fontStyle: "italic", opacity: 0.6 }}
+            className="leading-none block mt-0.5 t-serif-white"
+            style={{ fontSize: "10px", fontStyle: "italic", opacity: 0.6 }}
           >
             curated by the people who live here
           </span>
@@ -135,9 +134,9 @@ export function MiniApp() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => { setSubmitMode("picker"); setShowSubmitOverlay(true); }}
-            className="transition-colors duration-150"
+            className="transition-colors duration-150 t-sans"
+            aria-label="Add a spot or event"
             style={{
-              fontFamily: "var(--font-sans)",
               fontSize: "9px",
               fontWeight: "700",
               textTransform: "uppercase",
@@ -215,28 +214,28 @@ export function MiniApp() {
 
         {/* Submit overlay */}
         {showSubmitOverlay && (
-          <div className="absolute inset-0 flex flex-col" style={{ background: "#f3f3f3", zIndex: 50 }}>
+          <div className="absolute inset-0 flex flex-col bg-boston-gray-50" style={{ zIndex: 50 }}>
             <div
-              className="flex items-center justify-between px-4 py-3 shrink-0"
-              style={{ background: "#091f2f", borderBottom: "3px solid #1871bd" }}
+              className="flex items-center justify-between px-4 py-3 shrink-0 bg-navy-bar"
             >
               <button
                 onClick={() => {
                   if (submitMode !== "picker") { setSubmitMode("picker"); }
                   else { setShowSubmitOverlay(false); }
                 }}
-                className="transition-opacity duration-150 hover:opacity-70"
+                className="transition-opacity duration-150 hover:opacity-70 t-sans-white"
                 style={{
-                  fontFamily: "var(--font-sans)", fontSize: "10px", fontWeight: "700",
-                  textTransform: "uppercase", letterSpacing: "0.15em", color: "#fff",
+                  fontSize: "10px", fontWeight: "700",
+                  textTransform: "uppercase", letterSpacing: "0.15em",
                   background: "none", border: "none", cursor: "pointer", padding: 0,
                 }}
               >
                 ← BACK
               </button>
               <span
+                className="t-sans"
                 style={{
-                  fontFamily: "var(--font-sans)", fontSize: "10px", fontWeight: "700",
+                  fontSize: "10px", fontWeight: "700",
                   textTransform: "uppercase", letterSpacing: "0.15em", color: "rgba(255,255,255,0.5)",
                 }}
               >
@@ -248,8 +247,8 @@ export function MiniApp() {
             <div className="flex-1 overflow-y-auto">
               {submitMode === "picker" && (
                 <div className="flex flex-col p-6 gap-4">
-                  <p className="italic text-center mb-2"
-                    style={{ fontFamily: "var(--font-serif)", fontSize: "13px", color: "#828282" }}>
+                  <p className="italic text-center mb-2 t-serif-gray"
+                    style={{ fontSize: "13px" }}>
                     What are you adding to the guide?
                   </p>
 
@@ -262,12 +261,12 @@ export function MiniApp() {
                   >
                     <span className="text-2xl shrink-0 mt-0.5">📍</span>
                     <div>
-                      <p className="font-bold uppercase tracking-widest mb-1"
-                        style={{ fontFamily: "var(--font-sans)", fontSize: "12px", color: "#091f2f" }}>
+                      <p className="font-bold uppercase tracking-widest mb-1 t-sans-navy"
+                        style={{ fontSize: "12px" }}>
                         Add a Spot
                       </p>
-                      <p className="italic leading-snug"
-                        style={{ fontFamily: "var(--font-serif)", fontSize: "12px", color: "#828282" }}>
+                      <p className="italic leading-snug t-serif-gray"
+                        style={{ fontSize: "12px" }}>
                         A restaurant, bar, park, shop, or hidden gem. Goes into the Explore guide.
                       </p>
                     </div>
@@ -282,12 +281,12 @@ export function MiniApp() {
                   >
                     <span className="text-2xl shrink-0 mt-0.5">📅</span>
                     <div>
-                      <p className="font-bold uppercase tracking-widest mb-1"
-                        style={{ fontFamily: "var(--font-sans)", fontSize: "12px", color: "#091f2f" }}>
+                      <p className="font-bold uppercase tracking-widest mb-1 t-sans-navy"
+                        style={{ fontSize: "12px" }}>
                         Add an Event
                       </p>
-                      <p className="italic leading-snug"
-                        style={{ fontFamily: "var(--font-serif)", fontSize: "12px", color: "#828282" }}>
+                      <p className="italic leading-snug t-serif-gray"
+                        style={{ fontSize: "12px" }}>
                         Something happening in Boston — a market, show, open studio, pop-up. Goes into Today.
                       </p>
                     </div>
@@ -308,6 +307,8 @@ export function MiniApp() {
       {/* Bottom tab bar */}
       <nav
         className="flex items-stretch shrink-0"
+        role="navigation"
+        aria-label="Main navigation"
         style={{
           background: "#091f2f",
           borderTop: "1px solid rgba(255,255,255,0.1)",
@@ -325,6 +326,8 @@ export function MiniApp() {
                 onClick={() => setActiveTab(tab.id)}
                 className="flex-1 flex flex-col items-center justify-center py-2 gap-0.5 relative focus:outline-none"
                 style={{ minHeight: "64px" }}
+                aria-label={tab.label}
+                aria-current={isActive ? "page" : undefined}
               >
                 <div
                   className="flex items-center justify-center transition-colors duration-150"
@@ -341,9 +344,8 @@ export function MiniApp() {
                   </span>
                 </div>
                 <span
-                  className="text-[9px] font-bold uppercase tracking-widest leading-none"
+                  className="text-[9px] font-bold uppercase tracking-widest leading-none t-sans"
                   style={{
-                    fontFamily: "var(--font-sans)",
                     color: isActive ? "#1871bd" : "rgba(255,255,255,0.45)",
                   }}
                 >
@@ -358,8 +360,8 @@ export function MiniApp() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className="flex-1 flex flex-col items-center justify-center py-2 gap-0.5 relative transition-colors duration-150 focus:outline-none"
-              style={{ minHeight: "64px" }}
-            >
+              style={{ minHeight: "64px" }}              aria-label={tab.label}
+              aria-current={isActive ? "page" : undefined}            >
               {isActive && (
                 <div
                   className="absolute top-0 left-1/2 -translate-x-1/2"
@@ -370,9 +372,8 @@ export function MiniApp() {
                 {tab.icon}
               </span>
               <span
-                className="text-[9px] font-bold uppercase tracking-widest leading-none"
+                className="text-[9px] font-bold uppercase tracking-widest leading-none t-sans"
                 style={{
-                  fontFamily: "var(--font-sans)",
                   color: isActive ? "#1871bd" : "rgba(255,255,255,0.45)",
                 }}
               >

@@ -5,6 +5,7 @@ import { spots, builders, communityHappenings, submissionErrors } from "@/db/sch
 import { eq, desc, and, gte, or, isNull, count, sql as drizzleSql } from "drizzle-orm";
 import { randomUUID } from "crypto";
 import type { Builder, Spot } from "@/features/boston/types";
+import { verifyAdmin, verifyFid } from "@/db/actions/admin-auth";
 
 function parseBuilderRow(row: Record<string, unknown>): Builder {
   const r = row as Builder & { projectLinks?: string | null; categories?: string | null };
@@ -91,6 +92,9 @@ export async function submitSpot(data: {
   submittedByPfpUrl?: string;
 }) {
   try {
+    if (!(await verifyFid(data.submittedByFid))) {
+      return { success: false, error: "Could not verify Farcaster identity" };
+    }
     const id = randomUUID();
     await db.insert(spots).values({
       id,
@@ -167,6 +171,9 @@ export async function submitHappening(data: {
   submittedByPfpUrl?: string;
 }) {
   try {
+    if (!(await verifyFid(data.submittedByFid))) {
+      return { success: false, error: "Could not verify Farcaster identity" };
+    }
     const id = randomUUID();
     await db.insert(communityHappenings).values({
       id,
@@ -309,6 +316,9 @@ export async function joinBuilderDirectory(data: {
   category: string;
 }): Promise<{ success: boolean; id?: string; error?: string }> {
   try {
+    if (!(await verifyFid(data.fid))) {
+      return { success: false, error: "Could not verify Farcaster identity" };
+    }
     // Guard: prevent duplicate registrations
     const existing = await db
       .select()
@@ -458,7 +468,8 @@ export async function logSubmissionError(data: {
   }
 }
 
-export async function getSubmissionErrors(limit: number = 50) {
+export async function getSubmissionErrors(limit: number = 50, callerFid?: number) {
+  if (!callerFid || !(await verifyAdmin(callerFid))) return [];
   try {
     return await db
       .select()
@@ -473,7 +484,8 @@ export async function getSubmissionErrors(limit: number = 50) {
 
 // ─── Admin: Pending spots / happenings ────────────────────────────────────────
 
-export async function getPendingSpots() {
+export async function getPendingSpots(callerFid?: number) {
+  if (!callerFid || !(await verifyAdmin(callerFid))) return [];
   try {
     return await db
       .select()
@@ -486,7 +498,8 @@ export async function getPendingSpots() {
   }
 }
 
-export async function approveSpot(id: string) {
+export async function approveSpot(id: string, callerFid?: number) {
+  if (!callerFid || !(await verifyAdmin(callerFid))) return { success: false, error: "Not authorized" };
   try {
     await db.update(spots).set({ status: "approved" }).where(eq(spots.id, id));
     return { success: true };
@@ -496,7 +509,8 @@ export async function approveSpot(id: string) {
   }
 }
 
-export async function rejectSpot(id: string) {
+export async function rejectSpot(id: string, callerFid?: number) {
+  if (!callerFid || !(await verifyAdmin(callerFid))) return { success: false, error: "Not authorized" };
   try {
     await db.update(spots).set({ status: "rejected" }).where(eq(spots.id, id));
     return { success: true };

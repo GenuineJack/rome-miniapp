@@ -10,8 +10,7 @@ const privateConfigSchema = z.object({
 
 const rawPrivateConfig = {
   neynarApiKey: process.env.NEYNAR_API_KEY || "",
-  coingeckoApiKey:
-    process.env.COINGECKO_API_KEY || "CG-UviYfmkExfr86X5JFTZfaVbb",
+  coingeckoApiKey: process.env.COINGECKO_API_KEY || "",
 };
 
 const parsed = privateConfigSchema.safeParse(rawPrivateConfig);

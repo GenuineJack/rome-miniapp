@@ -56,27 +56,25 @@ const SEASONAL_BLOCKS: SeasonalBlock[] = [
 function SeasonalBlockCard({ block }: { block: SeasonalBlock }) {
   return (
     <div
-      className="p-4 rounded-sm"
-      style={{ background: "#091f2f" }}
+      className="p-4 rounded-sm bg-navy"
     >
       <div className="flex items-center gap-2 mb-2">
         <span className="text-lg">{block.emoji}</span>
         <span
-          className="text-[9px] font-bold uppercase tracking-widest"
-          style={{ fontFamily: "var(--font-sans)", color: "#fcb61a" }}
+          className="text-[9px] font-bold uppercase tracking-widest t-sans"
+          style={{ color: "#fcb61a" }}
         >
           Seasonal
         </span>
       </div>
       <h3
-        className="text-sm font-bold mb-1.5"
-        style={{ fontFamily: "var(--font-sans)", color: "#fff" }}
+        className="text-sm font-bold mb-1.5 t-sans-white"
       >
         {block.title}
       </h3>
       <p
-        className="text-xs italic leading-relaxed"
-        style={{ fontFamily: "var(--font-serif)", color: "rgba(255,255,255,0.75)" }}
+        className="text-xs italic leading-relaxed t-serif"
+        style={{ color: "rgba(255,255,255,0.75)" }}
       >
         {block.description}
       </p>
@@ -138,23 +136,21 @@ export function WhatsNewTab({ spots: parentSpots, loading: parentLoading, onSele
   return (
     <div className="flex flex-col h-full overflow-y-auto">
       {/* Header */}
-      <div className="px-4 py-4 border-b border-[#e0e0e0]" style={{ background: "#091f2f" }}>
+      <div className="px-4 py-4 border-b border-[#e0e0e0] bg-navy">
         <h2
-          className="text-lg font-black uppercase tracking-tight text-white"
-          style={{ fontFamily: "var(--font-sans)" }}
+          className="text-lg font-black uppercase tracking-tight text-white t-sans"
         >
           Community
         </h2>
         <p
-          className="text-xs italic text-white opacity-60 mt-0.5"
-          style={{ fontFamily: "var(--font-serif)" }}
+          className="text-xs italic text-white opacity-60 mt-0.5 t-serif"
         >
           Community-submitted spots and seasonal picks
         </p>
       </div>
 
       {/* Category filter */}
-      <div className="py-2" style={{ background: "#f3f3f3", borderBottom: "1px solid #e0e0e0" }}>
+      <div className="py-2 bg-boston-gray-50" style={{ borderBottom: "1px solid #e0e0e0" }}>
         <CategoryFilterBar
           active={activeCategory}
           onChange={(cat) => setActiveCategory(cat === activeCategory ? "All" : cat)}
@@ -175,14 +171,12 @@ export function WhatsNewTab({ spots: parentSpots, loading: parentLoading, onSele
             ))}
             <div className="py-8 text-center">
               <p
-                className="text-sm font-bold uppercase tracking-widest mb-2"
-                style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+                className="text-sm font-bold uppercase tracking-widest mb-2 t-sans-navy"
               >
                 Nothing submitted yet.
               </p>
               <p
-                className="text-sm italic"
-                style={{ fontFamily: "var(--font-serif)", color: "#828282" }}
+                className="text-sm italic t-serif-gray"
               >
                 Go be the first person to rep your neighborhood.
               </p>

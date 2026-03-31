@@ -35,23 +35,21 @@ export function SpotCard({ spot, onClick, isNew }: SpotCardProps) {
     >
       <div className="flex items-start justify-between gap-2 mb-1.5">
         <span
-          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest"
-          style={{ background: "#091f2f", color: "#fff", fontFamily: "var(--font-sans)" }}
+          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest t-sans-white bg-navy"
         >
           {icon} {spot.category}
         </span>
         {isNew && (
           <span
-            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest shrink-0"
-            style={{ background: "#1871bd", color: "#fff", fontFamily: "var(--font-sans)" }}
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest shrink-0 t-sans-white bg-boston-blue"
           >
             New
           </span>
         )}
         {spot.featured && !isNew && (
           <span
-            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest shrink-0"
-            style={{ background: "#fcb61a", color: "#091f2f", fontFamily: "var(--font-sans)" }}
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest shrink-0 t-sans-navy"
+            style={{ background: "#fcb61a" }}
           >
             ★ Pick
           </span>
@@ -59,15 +57,13 @@ export function SpotCard({ spot, onClick, isNew }: SpotCardProps) {
       </div>
 
       <h3
-        className="text-sm font-bold leading-tight mb-1"
-        style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+        className="text-sm font-bold leading-tight mb-1 t-sans-navy"
       >
         {spot.name}
       </h3>
 
       <p
-        className="text-xs italic leading-snug mb-2 line-clamp-2"
-        style={{ fontFamily: "var(--font-serif)", color: "#58585b" }}
+        className="text-xs italic leading-snug mb-2 line-clamp-2 t-serif-body"
       >
         &ldquo;{spot.description}&rdquo;
       </p>
@@ -75,8 +71,7 @@ export function SpotCard({ spot, onClick, isNew }: SpotCardProps) {
       {/* Bottom row: meta + quick actions */}
       <div className="flex items-center justify-between gap-2">
         <div
-          className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-wide min-w-0"
-          style={{ fontFamily: "var(--font-sans)", color: "#828282" }}
+          className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-wide min-w-0 t-sans-gray"
         >
           <span className="truncate">📍 {spot.neighborhood}</span>
           <span className="shrink-0">·</span>
@@ -91,8 +86,7 @@ export function SpotCard({ spot, onClick, isNew }: SpotCardProps) {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="w-7 h-7 flex items-center justify-center rounded-sm transition-colors duration-150 hover:bg-[#f0f0f0]"
-              style={{ color: "#828282" }}
+              className="w-7 h-7 flex items-center justify-center rounded-sm transition-colors duration-150 hover:bg-[#f0f0f0] text-boston-gray-400"
               title="Website"
               aria-label={`Website for ${spot.name}`}
             >
@@ -105,8 +99,7 @@ export function SpotCard({ spot, onClick, isNew }: SpotCardProps) {
           )}
           <button
             onClick={(e) => handleDirections(spot, e)}
-            className="w-7 h-7 flex items-center justify-center rounded-sm transition-colors duration-150 focus:outline-none hover:bg-[#f0f0f0]"
-            style={{ color: "#828282" }}
+            className="w-7 h-7 flex items-center justify-center rounded-sm transition-colors duration-150 focus:outline-none hover:bg-[#f0f0f0] text-boston-gray-400"
             title="Get directions"
             aria-label={`Directions to ${spot.name}`}
           >
@@ -117,8 +110,7 @@ export function SpotCard({ spot, onClick, isNew }: SpotCardProps) {
           </button>
           <button
             onClick={(e) => handleShare(spot, e)}
-            className="w-7 h-7 flex items-center justify-center rounded-sm transition-colors duration-150 focus:outline-none hover:bg-[#f0f0f0]"
-            style={{ color: "#828282" }}
+            className="w-7 h-7 flex items-center justify-center rounded-sm transition-colors duration-150 focus:outline-none hover:bg-[#f0f0f0] text-boston-gray-400"
             title="Share"
             aria-label={`Share ${spot.name}`}
           >

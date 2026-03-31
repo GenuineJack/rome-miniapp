@@ -97,15 +97,12 @@ export function ExploreTab({
       {mapCollapsed && (
         <button
           onClick={() => setMapCollapsed(false)}
-          className="w-full flex items-center justify-center py-1.5 shrink-0"
+          className="w-full flex items-center justify-center py-1.5 shrink-0 bg-navy t-sans-white"
           style={{
-            background: "#091f2f",
-            fontFamily: "var(--font-sans)",
             fontSize: "9px",
             fontWeight: "700",
             textTransform: "uppercase",
             letterSpacing: "0.15em",
-            color: "#fff",
             border: "none",
             cursor: "pointer",
           }}
@@ -117,19 +114,16 @@ export function ExploreTab({
       {/* Neighborhood filter banner */}
       {activeNeighborhood && (
         <div
-          className="flex items-center justify-between px-4 py-2"
-          style={{ background: "#1871bd" }}
+          className="flex items-center justify-between px-4 py-2 bg-boston-blue"
         >
           <span
-            className="text-xs font-bold uppercase tracking-widest text-white"
-            style={{ fontFamily: "var(--font-sans)" }}
+            className="text-xs font-bold uppercase tracking-widest text-white t-sans"
           >
             {activeNeighborhood.name}
           </span>
           <button
             onClick={onClearNeighborhoodFilter}
-            className="text-white text-xs font-bold uppercase tracking-widest opacity-80 hover:opacity-100 focus:outline-none"
-            style={{ fontFamily: "var(--font-sans)" }}
+            className="text-white text-xs font-bold uppercase tracking-widest opacity-80 hover:opacity-100 focus:outline-none t-sans"
           >
             × Clear
           </button>
@@ -139,19 +133,16 @@ export function ExploreTab({
       {/* Submitter filter banner */}
       {submitterFilter && (
         <div
-          className="flex items-center justify-between px-4 py-2"
-          style={{ background: "#1871bd" }}
+          className="flex items-center justify-between px-4 py-2 bg-boston-blue"
         >
           <span
-            className="text-xs font-bold uppercase tracking-widest text-white"
-            style={{ fontFamily: "var(--font-sans)" }}
+            className="text-xs font-bold uppercase tracking-widest text-white t-sans"
           >
             Spots by @{submitterFilter.username}
           </span>
           <button
             onClick={onClearSubmitterFilter}
-            className="text-white text-xs font-bold uppercase tracking-widest opacity-80 hover:opacity-100 focus:outline-none"
-            style={{ fontFamily: "var(--font-sans)" }}
+            className="text-white text-xs font-bold uppercase tracking-widest opacity-80 hover:opacity-100 focus:outline-none t-sans"
           >
             × Clear
           </button>
@@ -159,16 +150,15 @@ export function ExploreTab({
       )}
 
       {/* Category filter */}
-      <div className="py-2" style={{ background: "#f3f3f3", borderBottom: "1px solid #e0e0e0" }}>
+      <div className="py-2 bg-boston-gray-50 border-b border-boston-gray-100">
         <CategoryFilterBar active={activeCategory} onChange={onCategoryChange} />
       </div>
 
       {/* Search bar */}
-      <div className="px-4 pt-2 pb-1.5" style={{ background: "#f3f3f3" }}>
+      <div className="px-4 pt-2 pb-1.5 bg-boston-gray-50">
         <div className="relative">
           <span
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-sm pointer-events-none"
-            style={{ color: "#828282" }}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-sm pointer-events-none text-boston-gray-400"
           >
             🔍
           </span>
@@ -177,25 +167,23 @@ export function ExploreTab({
             placeholder="Search spots..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full focus:outline-none"
+            className="w-full focus:outline-none t-sans-navy bg-white border border-boston-gray-100"
+            aria-label="Search spots"
             style={{
-              fontFamily: "var(--font-sans)",
               fontSize: "12px",
-              color: "#091f2f",
-              background: "#fff",
-              border: "1px solid #e0e0e0",
               borderRadius: "3px",
               height: "36px",
               paddingLeft: "36px",
               paddingRight: searchQuery ? "32px" : "12px",
             }}
+            onFocus={(e) => { e.target.style.borderColor = "#1871bd"; e.target.style.boxShadow = "0 0 0 3px rgba(24,113,189,0.15)"; }}
+            onBlur={(e) => { e.target.style.borderColor = "#e0e0e0"; e.target.style.boxShadow = "none"; }}
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-2 top-1/2 -translate-y-1/2 focus:outline-none"
+              className="absolute right-2 top-1/2 -translate-y-1/2 focus:outline-none text-boston-gray-400"
               style={{
-                color: "#828282",
                 background: "none",
                 border: "none",
                 cursor: "pointer",
@@ -222,14 +210,12 @@ export function ExploreTab({
         ) : error ? (
           <div className="p-8 text-center">
             <p
-              className="text-sm font-bold uppercase tracking-widest mb-2"
-              style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+              className="text-sm font-bold uppercase tracking-widest mb-2 t-sans-navy"
             >
               Couldn&apos;t load spots.
             </p>
             <p
-              className="text-sm italic"
-              style={{ fontFamily: "var(--font-serif)", color: "#828282" }}
+              className="text-sm italic t-serif-gray"
             >
               Check your connection and try refreshing.
             </p>
@@ -237,14 +223,12 @@ export function ExploreTab({
         ) : filtered.length === 0 ? (
           <div className="p-8 text-center">
             <p
-              className="text-sm font-bold uppercase tracking-widest mb-2"
-              style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+              className="text-sm font-bold uppercase tracking-widest mb-2 t-sans-navy"
             >
               {searchQuery.trim() ? "No results." : "Nothing here yet."}
             </p>
             <p
-              className="text-sm italic"
-              style={{ fontFamily: "var(--font-serif)", color: "#828282" }}
+              className="text-sm italic t-serif-gray"
             >
               {searchQuery.trim()
                 ? `No spots matching "${searchQuery.trim()}". Try a different search.`

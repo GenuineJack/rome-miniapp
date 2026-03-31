@@ -1,7 +1,8 @@
-"server-only";
+import "server-only";
 
 import { sql } from "drizzle-orm";
 import { db } from "@/neynar-db-sdk/db";
+import { spots } from "@/db/schema";
 
 /**
  * Schema migrations — runs automatically on server startup via instrumentation.ts
@@ -202,15 +203,29 @@ async function autoSeedIfEmpty() {
     console.log("[migrations] Spots table is empty — seeding…");
     let inserted = 0;
     for (const spot of SEED_SPOTS) {
-      const e = (s: string) => s.replace(/'/g, "''");
-      const link = spot.link ? `'${e(spot.link)}'` : "NULL";
-      const address = spot.address ? `'${e(spot.address)}'` : "NULL";
-      const subcat = spot.subcategory ? `'${e(spot.subcategory)}'` : "NULL";
-      const lat = spot.latitude != null ? spot.latitude : "NULL";
-      const lng = spot.longitude != null ? spot.longitude : "NULL";
-      const q = `INSERT INTO spots (id,name,category,subcategory,neighborhood,description,address,link,latitude,longitude,submitted_by_fid,submitted_by_username,submitted_by_display_name,submitted_by_pfp_url,featured,status,created_at) VALUES ('${spot.id}','${e(spot.name)}','${e(spot.category)}',${subcat},'${e(spot.neighborhood)}','${e(spot.description)}',${address},${link},${lat},${lng},${GENUINEJACK_FID},'genuinejack','Genuine Jack','${GENUINEJACK_PFP}',${spot.featured},'approved',now()) ON CONFLICT (id) DO NOTHING`;
-      const ok = await runQuery(q);
-      if (ok) inserted++;
+      try {
+        await db.insert(spots).values({
+          id: spot.id,
+          name: spot.name,
+          category: spot.category,
+          subcategory: spot.subcategory ?? null,
+          neighborhood: spot.neighborhood,
+          description: spot.description,
+          address: spot.address ?? null,
+          link: spot.link ?? null,
+          latitude: spot.latitude ?? null,
+          longitude: spot.longitude ?? null,
+          submittedByFid: GENUINEJACK_FID,
+          submittedByUsername: "genuinejack",
+          submittedByDisplayName: "Genuine Jack",
+          submittedByPfpUrl: GENUINEJACK_PFP,
+          featured: spot.featured,
+          status: "approved",
+        }).onConflictDoNothing({ target: spots.id });
+        inserted++;
+      } catch (e) {
+        console.warn("[migrations] Seed insert failed for", spot.id, (e as Error).message?.slice(0, 80));
+      }
     }
     console.log(`[migrations] Auto-seed complete — ${inserted}/${SEED_SPOTS.length} spots inserted.`);
   } catch (e) {

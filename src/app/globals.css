@@ -55,24 +55,24 @@
 
 .dark {
   /* Boston Community Guide Design System - Dark Mode */
-  --primary: #091f2f;
-  --primary-navy: #091f2f;
-  --primary-blue: #1871bd;
-  --primary-blue-light: #288be4;
+  --primary: #0d2a3f;
+  --primary-navy: #0d2a3f;
+  --primary-blue: #288be4;
+  --primary-blue-light: #4da6f0;
 
-  --alert-red: #d22d23;
-  --badge-yellow: #fcb61a;
-  --hover-coral: #fb4d42;
+  --alert-red: #e84c42;
+  --badge-yellow: #fcc94d;
+  --hover-coral: #fc6f66;
 
-  --white: #ffffff;
-  --card-bg: #f3f3f3;
-  --border-gray: #e0e0e0;
-  --text-secondary: #828282;
-  --body-text: #58585b;
+  --white: #1a1a1a;
+  --card-bg: #1e1e1e;
+  --border-gray: #333333;
+  --text-secondary: #a0a0a0;
+  --body-text: #d0d0d0;
 
-  --accent: #1871bd;
-  --background: #091f2f;
-  --foreground: #ffffff;
+  --accent: #288be4;
+  --background: #0d2a3f;
+  --foreground: #f0f0f0;
 }
 
 /* Hide scrollbar while keeping scroll functionality */
@@ -91,6 +91,39 @@
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* ============================================
+   BOSTON UTILITY CLASSES
+   Replacements for the most-repeated inline style combos.
+   Use these in className to eliminate style={{}} props.
+   ============================================ */
+
+/* Typography combos — font-family + color */
+.t-sans          { font-family: var(--font-sans); }
+.t-serif         { font-family: var(--font-serif); }
+.t-sans-navy     { font-family: var(--font-sans); color: #091f2f; }
+.t-sans-gray     { font-family: var(--font-sans); color: #828282; }
+.t-sans-blue     { font-family: var(--font-sans); color: #1871bd; }
+.t-sans-red      { font-family: var(--font-sans); color: #d22d23; }
+.t-sans-white    { font-family: var(--font-sans); color: #fff; }
+.t-serif-gray    { font-family: var(--font-serif); color: #828282; }
+.t-serif-body    { font-family: var(--font-serif); color: #58585b; }
+.t-serif-white   { font-family: var(--font-serif); color: #fff; }
+
+/* Background combos */
+.bg-navy-bar     { background: #091f2f; border-bottom: 3px solid #1871bd; }
+
+/* Label style (matches the repeated labelStyle() function) */
+.label-boston {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #091f2f;
+  margin-bottom: 6px;
+  display: block;
 }
 
 /* ============================================

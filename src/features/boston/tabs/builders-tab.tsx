@@ -96,27 +96,26 @@ export function BuildersTab({ onViewBuilderSpots, onSpotClick, pendingBuilderVie
     <div className="flex flex-col h-full overflow-hidden relative">
       {/* Header */}
       <div
-        className="px-4 py-3 shrink-0 flex items-end justify-between"
-        style={{ background: "#091f2f", borderBottom: "3px solid #1871bd" }}
+        className="px-4 py-3 shrink-0 flex items-end justify-between bg-navy-bar"
       >
         <div>
           <h2
-            className="text-lg font-black uppercase tracking-tight"
-            style={{ fontFamily: "var(--font-sans)", color: "#fff", letterSpacing: "0.05em" }}
+            className="text-lg font-black uppercase tracking-tight t-sans-white"
+            style={{ letterSpacing: "0.05em" }}
           >
             Builders
           </h2>
           <p
-            className="text-xs italic mt-0.5"
-            style={{ fontFamily: "var(--font-serif)", color: "rgba(255,255,255,0.6)" }}
+            className="text-xs italic mt-0.5 t-serif"
+            style={{ color: "rgba(255,255,255,0.6)" }}
           >
             The people making things in Boston
           </p>
         </div>
         {!loading && allBuilders.length > 0 && (
           <span
-            className="text-[9px] font-bold uppercase tracking-widest shrink-0 mb-0.5"
-            style={{ fontFamily: "var(--font-sans)", color: "rgba(255,255,255,0.5)" }}
+            className="text-[9px] font-bold uppercase tracking-widest shrink-0 mb-0.5 t-sans"
+            style={{ color: "rgba(255,255,255,0.5)" }}
           >
             {allBuilders.length} builder{allBuilders.length === 1 ? "" : "s"}
           </span>
@@ -136,28 +135,26 @@ export function BuildersTab({ onViewBuilderSpots, onSpotClick, pendingBuilderVie
         {/* Join banner — sticky at top of scroll content */}
         {showJoinBanner && (
           <div
-            className="flex items-center justify-between gap-3 px-4 py-3"
-            style={{ background: "#091f2f", borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+            className="flex items-center justify-between gap-3 px-4 py-3 bg-navy"
+            style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}
           >
             <div className="min-w-0">
               <p
-                className="text-sm italic leading-none"
-                style={{ fontFamily: "var(--font-serif)", color: "#fff" }}
+                className="text-sm italic leading-none t-serif text-white"
               >
                 You build in Boston?
               </p>
               <p
-                className="text-xs italic mt-1 leading-tight"
-                style={{ fontFamily: "var(--font-serif)", color: "rgba(255,255,255,0.7)" }}
+                className="text-xs italic mt-1 leading-tight t-serif"
+                style={{ color: "rgba(255,255,255,0.7)" }}
               >
                 Claim your spot in the directory.
               </p>
             </div>
             <button
               onClick={() => setShowJoinOverlay(true)}
-              className="shrink-0 transition-colors duration-150 focus:outline-none"
+              className="shrink-0 transition-colors duration-150 focus:outline-none t-sans"
               style={{
-                fontFamily: "var(--font-sans)",
                 fontSize: "9px",
                 fontWeight: "700",
                 textTransform: "uppercase",
@@ -182,19 +179,17 @@ export function BuildersTab({ onViewBuilderSpots, onSpotClick, pendingBuilderVie
         {/* Edit profile banner */}
         {showEditBanner && (
           <div
-            className="flex items-center justify-between gap-3 px-4 py-2"
-            style={{ background: "#f3f3f3", borderBottom: "1px solid #e0e0e0" }}
+            className="flex items-center justify-between gap-3 px-4 py-2 bg-boston-gray-50 border-b border-boston-gray-100"
           >
             <p
-              className="text-[10px] font-bold uppercase tracking-widest"
-              style={{ fontFamily: "var(--font-sans)", color: "#828282" }}
+              className="text-[10px] font-bold uppercase tracking-widest t-sans-gray"
             >
               Your profile
             </p>
             <button
               onClick={() => setShowJoinOverlay(true)}
-              className="text-[10px] font-bold uppercase tracking-widest focus:outline-none"
-              style={{ fontFamily: "var(--font-sans)", color: "#1871bd", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+              className="text-[10px] font-bold uppercase tracking-widest focus:outline-none t-sans-blue"
+              style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
             >
               Edit →
             </button>
@@ -212,14 +207,13 @@ export function BuildersTab({ onViewBuilderSpots, onSpotClick, pendingBuilderVie
           // Zero builders state
           <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
             <p
-              className="text-sm font-bold uppercase tracking-widest mb-4"
-              style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+              className="text-sm font-bold uppercase tracking-widest mb-4 t-sans-navy"
             >
               Directory launching soon
             </p>
             <p
-              className="text-sm italic leading-relaxed mb-6"
-              style={{ fontFamily: "var(--font-serif)", color: "#58585b", lineHeight: "1.7", maxWidth: "280px" }}
+              className="text-sm italic leading-relaxed mb-6 t-serif-body"
+              style={{ lineHeight: "1.7", maxWidth: "280px" }}
             >
               If you&apos;re building something in Boston, you belong here. The /boston builder
               directory is for anyone making things in the city — code, community, content,
@@ -228,11 +222,8 @@ export function BuildersTab({ onViewBuilderSpots, onSpotClick, pendingBuilderVie
             {userFid !== undefined && !userIsInDirectory && (
               <button
                 onClick={() => setShowJoinOverlay(true)}
-                className="px-6 py-3 rounded-sm text-xs font-bold uppercase tracking-widest transition-opacity duration-150 hover:opacity-90 focus:outline-none"
+                className="px-6 py-3 rounded-sm text-xs font-bold uppercase tracking-widest transition-opacity duration-150 hover:opacity-90 focus:outline-none t-sans-white bg-boston-blue"
                 style={{
-                  fontFamily: "var(--font-sans)",
-                  background: "#1871bd",
-                  color: "#fff",
                   border: "none",
                   minHeight: "44px",
                   cursor: "pointer",
@@ -257,14 +248,12 @@ export function BuildersTab({ onViewBuilderSpots, onSpotClick, pendingBuilderVie
             {filtered.length === 0 && (activeCategory !== "All" || activeNeighborhood !== "All") ? (
               <div className="py-8 text-center px-4">
                 <p
-                  className="text-xs font-bold uppercase tracking-widest"
-                  style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+                  className="text-xs font-bold uppercase tracking-widest t-sans-navy"
                 >
                   No builders matching that filter yet.
                 </p>
                 <p
-                  className="text-xs italic mt-1"
-                  style={{ fontFamily: "var(--font-serif)", color: "#828282" }}
+                  className="text-xs italic mt-1 t-serif-gray"
                 >
                   They&apos;re out there building — check back.
                 </p>
@@ -283,8 +272,8 @@ export function BuildersTab({ onViewBuilderSpots, onSpotClick, pendingBuilderVie
             {/* Few builders growth nudge (1–5 builders total) */}
             {allBuilders.length > 0 && allBuilders.length <= 5 && (
               <p
-                className="text-xs italic text-center px-4 py-4"
-                style={{ fontFamily: "var(--font-serif)", color: "#828282", lineHeight: "1.6" }}
+                className="text-xs italic text-center px-4 py-4 t-serif-gray"
+                style={{ lineHeight: "1.6" }}
               >
                 The directory grows with the community. Know a Boston builder? Send them here.
               </p>
@@ -303,21 +292,19 @@ export function BuildersTab({ onViewBuilderSpots, onSpotClick, pendingBuilderVie
 
       {/* Join overlay */}
       {showJoinOverlay && (
-        <div className="absolute inset-0 flex flex-col" style={{ background: "#f3f3f3", zIndex: 50 }}>
+        <div className="absolute inset-0 flex flex-col bg-boston-gray-50 z-50">
           {/* Overlay header */}
           <div
-            className="flex items-center justify-between px-4 py-3 shrink-0"
-            style={{ background: "#091f2f", borderBottom: "3px solid #1871bd" }}
+            className="flex items-center justify-between px-4 py-3 shrink-0 bg-navy-bar"
           >
             <button
               onClick={() => setShowJoinOverlay(false)}
+              className="t-sans-white"
               style={{
-                fontFamily: "var(--font-sans)",
                 fontSize: "10px",
                 fontWeight: "700",
                 textTransform: "uppercase",
                 letterSpacing: "0.15em",
-                color: "#fff",
                 background: "none",
                 border: "none",
                 cursor: "pointer",
@@ -327,8 +314,8 @@ export function BuildersTab({ onViewBuilderSpots, onSpotClick, pendingBuilderVie
               ← Back
             </button>
             <span
+              className="t-sans"
               style={{
-                fontFamily: "var(--font-sans)",
                 fontSize: "10px",
                 fontWeight: "700",
                 textTransform: "uppercase",

@@ -92,11 +92,7 @@ export function WeatherStrip({ weather, loading, error, todayLabel }: WeatherStr
 
   return (
     <div
-      className="shrink-0 px-4 py-3"
-      style={{
-        background: "#091f2f",
-        borderBottom: "3px solid #1871bd",
-      }}
+      className="shrink-0 px-4 py-3 bg-navy-bar"
     >
       {loading ? (
         <div className="flex items-center justify-between animate-pulse">
@@ -113,26 +109,27 @@ export function WeatherStrip({ weather, loading, error, todayLabel }: WeatherStr
         <div className="flex items-center justify-between">
           <div>
             <h2
-              className="font-black uppercase tracking-tight text-white"
-              style={{ fontFamily: "var(--font-sans)", fontSize: "16px" }}
+              className="font-black uppercase tracking-tight text-white t-sans"
+              style={{ fontSize: "16px" }}
             >
               Today in Boston
             </h2>
             <p
-              className="italic opacity-60 text-white mt-0.5"
-              style={{ fontFamily: "var(--font-serif)", fontSize: "11px" }}
+              className="italic opacity-60 text-white mt-0.5 t-serif"
+              style={{ fontSize: "11px" }}
             >
               {todayLabel}
             </p>
             <p
-              style={{ fontFamily: "var(--font-sans)", fontSize: "11px", color: "rgba(255,255,255,0.7)", marginTop: "2px" }}
+              className="t-sans"
+              style={{ fontSize: "11px", color: "rgba(255,255,255,0.7)", marginTop: "2px" }}
             >
               {bostonTime} ET
             </p>
           </div>
           <p
-            className="italic"
-            style={{ fontFamily: "var(--font-serif)", color: "rgba(255,255,255,0.5)", fontSize: "13px" }}
+            className="italic t-serif"
+            style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px" }}
           >
             Weather unavailable
           </p>
@@ -142,19 +139,20 @@ export function WeatherStrip({ weather, loading, error, todayLabel }: WeatherStr
           {/* Left: title + date */}
           <div className="min-w-0">
             <h2
-              className="font-black uppercase tracking-tight text-white leading-none"
-              style={{ fontFamily: "var(--font-sans)", fontSize: "15px" }}
+              className="font-black uppercase tracking-tight text-white leading-none t-sans"
+              style={{ fontSize: "15px" }}
             >
               Today in Boston
             </h2>
             <p
-              className="italic text-white mt-0.5 leading-none"
-              style={{ fontFamily: "var(--font-serif)", fontSize: "10px", opacity: 0.6 }}
+              className="italic text-white mt-0.5 leading-none t-serif"
+              style={{ fontSize: "10px", opacity: 0.6 }}
             >
               {todayLabel}
             </p>
             <p
-              style={{ fontFamily: "var(--font-sans)", fontSize: "11px", color: "rgba(255,255,255,0.7)", marginTop: "3px", lineHeight: 1 }}
+              className="t-sans"
+              style={{ fontSize: "11px", color: "rgba(255,255,255,0.7)", marginTop: "3px", lineHeight: 1 }}
             >
               {bostonTime} ET
             </p>
@@ -166,11 +164,10 @@ export function WeatherStrip({ weather, loading, error, todayLabel }: WeatherStr
             <div className="text-right">
               <div className="flex items-baseline gap-1.5 justify-end">
                 <span
+                  className="t-sans-white"
                   style={{
-                    fontFamily: "var(--font-sans)",
                     fontSize: "22px",
                     fontWeight: "700",
-                    color: "#fff",
                     lineHeight: 1,
                   }}
                 >
@@ -178,9 +175,8 @@ export function WeatherStrip({ weather, loading, error, todayLabel }: WeatherStr
                 </span>
               </div>
               <p
-                className="italic"
+                className="italic t-serif"
                 style={{
-                  fontFamily: "var(--font-serif)",
                   fontSize: "11px",
                   color: "rgba(255,255,255,0.75)",
                   lineHeight: 1.2,
@@ -189,8 +185,8 @@ export function WeatherStrip({ weather, loading, error, todayLabel }: WeatherStr
                 {weather.condition}
               </p>
               <p
+                className="t-sans"
                 style={{
-                  fontFamily: "var(--font-sans)",
                   fontSize: "9px",
                   fontWeight: "600",
                   textTransform: "uppercase",

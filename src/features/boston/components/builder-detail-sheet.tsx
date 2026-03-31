@@ -107,9 +107,8 @@ export function BuilderDetailSheet({
       {/* Sheet */}
       <div
         ref={sheetRef}
-        className="fixed bottom-0 left-0 right-0 z-50 rounded-t-lg overflow-hidden"
+        className="fixed bottom-0 left-0 right-0 z-50 rounded-t-lg overflow-hidden bg-white"
         style={{
-          background: "#fff",
           maxHeight: "82vh",
           transform: `translateY(${isAnimatingOut ? "100%" : `${translateY}px`})`,
           transition: isAnimatingOut
@@ -149,15 +148,14 @@ export function BuilderDetailSheet({
             <div className="flex-1 min-w-0 pt-1">
               <div className="flex items-center gap-1.5 flex-wrap mb-0.5">
                 <h2
-                  className="text-lg font-bold leading-tight"
-                  style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+                  className="text-lg font-bold leading-tight t-sans-navy"
                 >
                   {builder.displayName}
                 </h2>
                 {builder.verified && (
                   <span
-                    className="inline-flex items-center justify-center w-4 h-4 rounded-full text-white shrink-0"
-                    style={{ background: "#1871bd", fontSize: "9px", fontWeight: "900" }}
+                    className="inline-flex items-center justify-center w-4 h-4 rounded-full text-white shrink-0 bg-boston-blue"
+                    style={{ fontSize: "9px", fontWeight: "900" }}
                     aria-label="Verified"
                   >
                     ✓
@@ -166,8 +164,7 @@ export function BuilderDetailSheet({
               </div>
 
               <p
-                className="text-xs leading-none mb-2"
-                style={{ fontFamily: "var(--font-sans)", color: "#1871bd" }}
+                className="text-xs leading-none mb-2 t-sans-blue"
               >
                 @{builder.username}
               </p>
@@ -178,8 +175,7 @@ export function BuilderDetailSheet({
                   return (
                     <span
                       key={cat}
-                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-widest"
-                      style={{ fontFamily: "var(--font-sans)", background: "#091f2f", color: "#fff" }}
+                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-widest t-sans-white bg-navy"
                     >
                       {icon} {cat}
                     </span>
@@ -187,8 +183,7 @@ export function BuilderDetailSheet({
                 })}
                 {builder.neighborhood && (
                   <span
-                    className="text-[10px]"
-                    style={{ fontFamily: "var(--font-sans)", color: "#828282" }}
+                    className="text-[10px] t-sans-gray"
                   >
                     📍 {builder.neighborhood}
                   </span>
@@ -203,8 +198,7 @@ export function BuilderDetailSheet({
           {/* Bio */}
           {builder.bio && (
             <p
-              className="text-sm italic leading-relaxed mb-4"
-              style={{ fontFamily: "var(--font-serif)", color: "#58585b" }}
+              className="text-sm italic leading-relaxed mb-4 t-serif-body"
             >
               &ldquo;{builder.bio}&rdquo;
             </p>
@@ -214,15 +208,13 @@ export function BuilderDetailSheet({
           {(builder.projectName || allLinks.length > 0) && (
             <div className="mb-4">
               <p
-                className="text-[9px] font-bold uppercase tracking-widest mb-1"
-                style={{ fontFamily: "var(--font-sans)", color: "#828282" }}
+                className="text-[9px] font-bold uppercase tracking-widest mb-1 t-sans-gray"
               >
                 Building
               </p>
               {builder.projectName && (
                 <p
-                  className="text-sm font-bold mb-1"
-                  style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+                  className="text-sm font-bold mb-1 t-sans-navy"
                 >
                   {builder.projectName}
                 </p>
@@ -233,8 +225,7 @@ export function BuilderDetailSheet({
                   href={link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block text-[11px] font-bold uppercase tracking-widest hover:underline truncate mb-0.5"
-                  style={{ fontFamily: "var(--font-sans)", color: "#1871bd" }}
+                  className="block text-[11px] font-bold uppercase tracking-widest hover:underline truncate mb-0.5 t-sans-blue"
                 >
                   ↗ {(() => { try { return new URL(link).hostname.replace(/^www\./, ""); } catch { return link; } })()}
                 </a>
@@ -246,14 +237,12 @@ export function BuilderDetailSheet({
           {builder.talkAbout && (
             <div className="mb-4">
               <p
-                className="text-[9px] font-bold uppercase tracking-widest mb-1"
-                style={{ fontFamily: "var(--font-sans)", color: "#828282" }}
+                className="text-[9px] font-bold uppercase tracking-widest mb-1 t-sans-gray"
               >
                 Talk to me about
               </p>
               <p
-                className="text-xs italic leading-relaxed"
-                style={{ fontFamily: "var(--font-serif)", color: "#58585b" }}
+                className="text-xs italic leading-relaxed t-serif-body"
               >
                 {builder.talkAbout}
               </p>
@@ -267,8 +256,7 @@ export function BuilderDetailSheet({
           <div className="mb-6">
             <div className="flex items-center justify-between mb-3">
               <p
-                className="text-[9px] font-bold uppercase tracking-widest"
-                style={{ fontFamily: "var(--font-sans)", color: "#828282" }}
+                className="text-[9px] font-bold uppercase tracking-widest t-sans-gray"
               >
                 Spots in the guide
               </p>
@@ -279,8 +267,8 @@ export function BuilderDetailSheet({
                     onViewBuilderSpots?.(builder.fid, builder.username);
                     handleClose();
                   }}
-                  className="text-[10px] font-bold uppercase tracking-widest hover:underline focus:outline-none"
-                  style={{ fontFamily: "var(--font-sans)", color: "#1871bd", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                  className="text-[10px] font-bold uppercase tracking-widest hover:underline focus:outline-none t-sans-blue"
+                  style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
                 >
                   See all →
                 </button>
@@ -295,8 +283,7 @@ export function BuilderDetailSheet({
               </div>
             ) : builderSpots.length === 0 ? (
               <p
-                className="text-xs italic"
-                style={{ fontFamily: "var(--font-serif)", color: "#828282" }}
+                className="text-xs italic t-serif-gray"
               >
                 No spots yet. They&apos;re busy building.
               </p>
@@ -322,11 +309,8 @@ export function BuilderDetailSheet({
               href={`https://farcaster.xyz/${builder.username}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 py-3 rounded-sm text-xs font-bold uppercase tracking-widest text-center transition-colors duration-150 hover:opacity-90"
+              className="flex-1 py-3 rounded-sm text-xs font-bold uppercase tracking-widest text-center transition-colors duration-150 hover:opacity-90 t-sans-white bg-boston-blue"
               style={{
-                fontFamily: "var(--font-sans)",
-                background: "#1871bd",
-                color: "#fff",
                 minHeight: "44px",
                 display: "flex",
                 alignItems: "center",
@@ -338,10 +322,8 @@ export function BuilderDetailSheet({
             </a>
             <button
               onClick={handleClose}
-              className="px-4 py-3 rounded-sm text-xs font-bold uppercase tracking-widest border-2 border-[#091f2f] transition-colors duration-150 focus:outline-none"
+              className="px-4 py-3 rounded-sm text-xs font-bold uppercase tracking-widest border-2 border-[#091f2f] transition-colors duration-150 focus:outline-none t-sans-navy"
               style={{
-                fontFamily: "var(--font-sans)",
-                color: "#091f2f",
                 minHeight: "44px",
               }}
             >

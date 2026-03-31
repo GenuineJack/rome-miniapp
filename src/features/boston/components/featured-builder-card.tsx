@@ -27,13 +27,13 @@ export function FeaturedBuilderCard({ builder, onClick, onSpotFilterClick }: Fea
       role="button"
       tabIndex={0}
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onClick?.(builder); }}
-      className="w-full text-left cursor-pointer focus:outline-none"
-      style={{ background: "#091f2f", borderRadius: "3px", padding: "20px" }}
+      className="w-full text-left cursor-pointer focus:outline-none bg-navy"
+      style={{ borderRadius: "3px", padding: "20px" }}
     >
       {/* Featured label */}
       <div
-        className="text-[9px] font-bold uppercase tracking-widest mb-3"
-        style={{ fontFamily: "var(--font-sans)", color: "#fcb61a" }}
+        className="text-[9px] font-bold uppercase tracking-widest mb-3 t-sans"
+        style={{ color: "#fcb61a" }}
       >
         ★ Featured Builder
       </div>
@@ -46,15 +46,14 @@ export function FeaturedBuilderCard({ builder, onClick, onSpotFilterClick }: Fea
           {/* Name + verified */}
           <div className="flex items-center gap-1.5 flex-wrap">
             <span
-              className="text-sm font-bold leading-tight text-white"
-              style={{ fontFamily: "var(--font-sans)" }}
+              className="text-sm font-bold leading-tight text-white t-sans"
             >
               {builder.displayName}
             </span>
             {builder.verified && (
               <span
-                className="inline-flex items-center justify-center w-3 h-3 rounded-full text-white shrink-0"
-                style={{ background: "#1871bd", fontSize: "7px", fontWeight: "900" }}
+                className="inline-flex items-center justify-center w-3 h-3 rounded-full text-white shrink-0 bg-boston-blue"
+                style={{ fontSize: "7px", fontWeight: "900" }}
                 aria-label="Verified"
               >
                 ✓
@@ -64,8 +63,8 @@ export function FeaturedBuilderCard({ builder, onClick, onSpotFilterClick }: Fea
 
           {/* Username */}
           <p
-            className="text-[10px] leading-none mt-0.5"
-            style={{ fontFamily: "var(--font-sans)", color: "#288be4" }}
+            className="text-[10px] leading-none mt-0.5 t-sans"
+            style={{ color: "#288be4" }}
           >
             @{builder.username}
           </p>
@@ -73,8 +72,8 @@ export function FeaturedBuilderCard({ builder, onClick, onSpotFilterClick }: Fea
           {/* Neighborhood */}
           {builder.neighborhood && (
             <p
-              className="text-[10px] mt-1"
-              style={{ fontFamily: "var(--font-sans)", color: "rgba(255,255,255,0.5)" }}
+              className="text-[10px] mt-1 t-sans"
+              style={{ color: "rgba(255,255,255,0.5)" }}
             >
               📍 {builder.neighborhood}
             </p>
@@ -84,9 +83,8 @@ export function FeaturedBuilderCard({ builder, onClick, onSpotFilterClick }: Fea
         {/* Category pill */}
         {builder.category && categoryIcon && (
           <span
-            className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-sm text-[9px] font-bold uppercase tracking-widest"
+            className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-sm text-[9px] font-bold uppercase tracking-widest t-sans"
             style={{
-              fontFamily: "var(--font-sans)",
               background: "rgba(255,255,255,0.1)",
               color: "rgba(255,255,255,0.85)",
             }}
@@ -99,8 +97,7 @@ export function FeaturedBuilderCard({ builder, onClick, onSpotFilterClick }: Fea
       {/* Project line */}
       {builder.projectName && (
         <p
-          className="text-xs mb-2 text-white"
-          style={{ fontFamily: "var(--font-sans)" }}
+          className="text-xs mb-2 text-white t-sans"
         >
           Building:{" "}
           {builder.projectUrl ? (
@@ -123,8 +120,8 @@ export function FeaturedBuilderCard({ builder, onClick, onSpotFilterClick }: Fea
       {/* Bio — full text, no line clamp */}
       {builder.bio && (
         <p
-          className="text-xs italic leading-snug mb-3"
-          style={{ fontFamily: "var(--font-serif)", color: "rgba(255,255,255,0.8)" }}
+          className="text-xs italic leading-snug mb-3 t-serif"
+          style={{ color: "rgba(255,255,255,0.8)" }}
         >
           &ldquo;{builder.bio}&rdquo;
         </p>
@@ -140,9 +137,8 @@ export function FeaturedBuilderCard({ builder, onClick, onSpotFilterClick }: Fea
             e.stopPropagation();
             if (spotCount > 0) onSpotFilterClick?.(builder.fid, builder.username);
           }}
-          className="text-[10px] font-medium leading-none focus:outline-none"
+          className="text-[10px] font-medium leading-none focus:outline-none t-sans"
           style={{
-            fontFamily: "var(--font-sans)",
             color: spotCount > 0 ? "#288be4" : "rgba(255,255,255,0.4)",
             background: "none",
             border: "none",
@@ -156,8 +152,8 @@ export function FeaturedBuilderCard({ builder, onClick, onSpotFilterClick }: Fea
         <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "10px" }}>·</span>
 
         <span
-          className="text-[10px] leading-none"
-          style={{ fontFamily: "var(--font-sans)", color: "rgba(255,255,255,0.4)" }}
+          className="text-[10px] leading-none t-sans"
+          style={{ color: "rgba(255,255,255,0.4)" }}
         >
           Joined {joinDate}
         </span>

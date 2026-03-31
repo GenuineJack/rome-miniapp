@@ -439,27 +439,26 @@ function CuratedCard({
   onNavigateToNeighborhood?: (id: string) => void;
 }) {
   return (
-    <div className="rounded-sm" style={{ background: "#f3f3f3", padding: "20px", border: "1px solid #e0e0e0" }}>
-      <p className="uppercase mb-2" style={{
-        fontFamily: "var(--font-sans)",
-        fontSize: "9px", fontWeight: "700", letterSpacing: "0.15em", color: "#1871bd", lineHeight: 1,
+    <div className="rounded-sm bg-boston-gray-50" style={{ padding: "20px", border: "1px solid #e0e0e0" }}>
+      <p className="uppercase mb-2 t-sans-blue" style={{
+        fontSize: "9px", fontWeight: "700", letterSpacing: "0.15em", lineHeight: 1,
       }}>
         {happening.emoji} {happening.timing}
       </p>
-      <h3 className="font-bold leading-tight mb-2"
-        style={{ fontFamily: "var(--font-sans)", fontSize: "15px", color: "#091f2f" }}>
+      <h3 className="font-bold leading-tight mb-2 t-sans-navy"
+        style={{ fontSize: "15px" }}>
         {happening.title}
       </h3>
-      <p className="italic leading-relaxed mb-3"
-        style={{ fontFamily: "var(--font-serif)", fontSize: "13px", color: "#58585b", lineHeight: "1.6" }}>
+      <p className="italic leading-relaxed mb-3 t-serif-body"
+        style={{ fontSize: "13px", lineHeight: "1.6" }}>
         {happening.description}
       </p>
       {onNavigateToNeighborhood && (
         <button
           onClick={() => onNavigateToNeighborhood(happening.relatedNeighborhood)}
-          className="text-left transition-opacity duration-150 hover:opacity-70"
+          className="text-left transition-opacity duration-150 hover:opacity-70 t-sans-blue"
           style={{
-            fontFamily: "var(--font-sans)", fontSize: "10px", color: "#1871bd",
+            fontSize: "10px",
             fontWeight: "600", letterSpacing: "0.05em", background: "none", border: "none", padding: 0, cursor: "pointer",
           }}
         >
@@ -472,27 +471,26 @@ function CuratedCard({
 
 function CommunityCard({ happening }: { happening: CommunityHappening }) {
   return (
-    <div className="rounded-sm" style={{ background: "#fff", padding: "20px", border: "2px solid #e0e0e0" }}>
+    <div className="rounded-sm bg-white" style={{ padding: "20px", border: "2px solid #e0e0e0" }}>
       {/* Community badge + timing */}
       <div className="flex items-center justify-between mb-2">
-        <p className="uppercase" style={{
-          fontFamily: "var(--font-sans)",
-          fontSize: "9px", fontWeight: "700", letterSpacing: "0.15em", color: "#1871bd", lineHeight: 1,
+        <p className="uppercase t-sans-blue" style={{
+          fontSize: "9px", fontWeight: "700", letterSpacing: "0.15em", lineHeight: 1,
         }}>
           {happening.emoji} {happening.dateLabel}
         </p>
-        <span className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-sm"
-          style={{ fontFamily: "var(--font-sans)", background: "rgba(24,113,189,0.1)", color: "#1871bd" }}>
+        <span className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-sm t-sans-blue"
+          style={{ background: "rgba(24,113,189,0.1)" }}>
           Community
         </span>
       </div>
 
-      <h3 className="font-bold leading-tight mb-2"
-        style={{ fontFamily: "var(--font-sans)", fontSize: "15px", color: "#091f2f" }}>
+      <h3 className="font-bold leading-tight mb-2 t-sans-navy"
+        style={{ fontSize: "15px" }}>
         {happening.title}
       </h3>
-      <p className="italic leading-relaxed mb-3"
-        style={{ fontFamily: "var(--font-serif)", fontSize: "13px", color: "#58585b", lineHeight: "1.6" }}>
+      <p className="italic leading-relaxed mb-3 t-serif-body"
+        style={{ fontSize: "13px", lineHeight: "1.6" }}>
         {happening.description}
       </p>
 
@@ -502,12 +500,10 @@ function CommunityCard({ happening }: { happening: CommunityHappening }) {
           href={happening.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 mb-3 transition-opacity duration-150 hover:opacity-70"
+          className="inline-flex items-center gap-1 mb-3 transition-opacity duration-150 hover:opacity-70 t-sans-blue"
           style={{
-            fontFamily: "var(--font-sans)",
             fontSize: "10px",
             fontWeight: "600",
-            color: "#1871bd",
             letterSpacing: "0.05em",
             textDecoration: "none",
           }}
@@ -528,13 +524,12 @@ function CommunityCard({ happening }: { happening: CommunityHappening }) {
             loading="lazy"
             className="w-5 h-5 rounded-full object-cover shrink-0" />
         ) : (
-          <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
-            style={{ background: "#1871bd" }}>
+          <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0 bg-boston-blue">
             {happening.submittedByDisplayName[0]?.toUpperCase() ?? "?"}
           </div>
         )}
-        <span className="text-[10px]" style={{ fontFamily: "var(--font-sans)", color: "#828282" }}>
-          📍 {happening.neighborhood} · <span style={{ color: "#1871bd" }}>@{happening.submittedByUsername}</span>
+        <span className="text-[10px] t-sans-gray">
+          📍 {happening.neighborhood} · <span className="text-boston-blue">@{happening.submittedByUsername}</span>
         </span>
       </div>
     </div>
@@ -555,13 +550,13 @@ export function HappeningsSection({ onNavigateToNeighborhood, communityHappening
         className="flex items-end justify-between pb-2"
         style={{ borderBottom: "5px solid #091f2f", marginBottom: "12px" }}
       >
-        <span style={{
-          fontFamily: "var(--font-sans)", fontSize: "10px", fontWeight: "700",
-          textTransform: "uppercase", letterSpacing: "0.15em", color: "#091f2f",
+        <span className="t-sans-navy" style={{
+          fontSize: "10px", fontWeight: "700",
+          textTransform: "uppercase", letterSpacing: "0.15em",
         }}>
           Happening in Boston
         </span>
-        <span style={{ fontFamily: "var(--font-sans)", fontSize: "9px", color: "#828282" }}>
+        <span className="t-sans-gray" style={{ fontSize: "9px" }}>
           {communityHappenings.length > 0 ? `${communityHappenings.length} from community` : "Curated"}
         </span>
       </div>

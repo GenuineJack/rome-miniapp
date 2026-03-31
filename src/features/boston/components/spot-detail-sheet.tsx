@@ -108,9 +108,8 @@ export function SpotDetailSheet({ spot, onClose, onViewBuilder }: SpotDetailShee
       {/* Sheet */}
       <div
         ref={sheetRef}
-        className="fixed bottom-0 left-0 right-0 z-50 rounded-t-lg overflow-hidden"
+        className="fixed bottom-0 left-0 right-0 z-50 rounded-t-lg overflow-hidden bg-white"
         style={{
-          background: "#fff",
           maxHeight: "70vh",
           transform: `translateY(${isAnimatingOut ? "100%" : `${translateY}px`})`,
           transition: isAnimatingOut
@@ -147,15 +146,14 @@ export function SpotDetailSheet({ spot, onClose, onViewBuilder }: SpotDetailShee
           {/* Category tag */}
           <div className="flex items-center gap-2 mb-3">
             <span
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest"
-              style={{ fontFamily: "var(--font-sans)", background: "#091f2f", color: "#fff" }}
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest t-sans-white bg-navy"
             >
               {icon} {spot.category}
             </span>
             {spot.featured && (
               <span
-                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest"
-                style={{ fontFamily: "var(--font-sans)", background: "#fcb61a", color: "#091f2f" }}
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest t-sans-navy"
+                style={{ background: "#fcb61a" }}
               >
                 ★ Staff Pick
               </span>
@@ -164,16 +162,14 @@ export function SpotDetailSheet({ spot, onClose, onViewBuilder }: SpotDetailShee
 
           {/* Name */}
           <h2
-            className="text-xl font-bold leading-tight mb-2"
-            style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+            className="text-xl font-bold leading-tight mb-2 t-sans-navy"
           >
             {spot.name}
           </h2>
 
           {/* Description */}
           <p
-            className="text-sm italic leading-relaxed mb-4"
-            style={{ fontFamily: "var(--font-serif)", color: "#58585b" }}
+            className="text-sm italic leading-relaxed mb-4 t-serif-body"
           >
             &ldquo;{spot.description}&rdquo;
           </p>
@@ -199,30 +195,26 @@ export function SpotDetailSheet({ spot, onClose, onViewBuilder }: SpotDetailShee
               />
             ) : (
               <div
-                className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"
-                style={{ background: "#1871bd" }}
+                className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0 bg-boston-blue"
               >
                 {spot.submittedByDisplayName[0]?.toUpperCase() ?? "?"}
               </div>
             )}
             <div className="min-w-0">
               <p
-                className="text-xs font-bold truncate"
-                style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+                className="text-xs font-bold truncate t-sans-navy"
               >
                 {spot.submittedByDisplayName}
               </p>
               <p
-                className="text-[10px] truncate"
-                style={{ fontFamily: "var(--font-sans)", color: "#1871bd" }}
+                className="text-[10px] truncate t-sans-blue"
               >
                 @{spot.submittedByUsername}
               </p>
             </div>
             <div className="ml-auto text-right shrink-0 flex items-center gap-2">
               <p
-                className="text-[10px] font-medium uppercase tracking-wide"
-                style={{ fontFamily: "var(--font-sans)", color: "#828282" }}
+                className="text-[10px] font-medium uppercase tracking-wide t-sans-gray"
               >
                 📍 {spot.neighborhood}
               </p>
@@ -235,8 +227,7 @@ export function SpotDetailSheet({ spot, onClose, onViewBuilder }: SpotDetailShee
           {/* Address */}
           {spot.address && (
             <p
-              className="text-xs mb-4"
-              style={{ fontFamily: "var(--font-sans)", color: "#828282" }}
+              className="text-xs mb-4 t-sans-gray"
             >
               {spot.address}
             </p>
@@ -248,8 +239,7 @@ export function SpotDetailSheet({ spot, onClose, onViewBuilder }: SpotDetailShee
               href={spot.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-xs font-bold mb-4 underline underline-offset-2 truncate"
-              style={{ fontFamily: "var(--font-sans)", color: "#1871bd" }}
+              className="flex items-center gap-1.5 text-xs font-bold mb-4 underline underline-offset-2 truncate t-sans-blue"
             >
               🔗 {(() => { try { return new URL(spot.link).hostname.replace(/^www\./, ""); } catch { return spot.link; } })()}
             </a>
@@ -259,11 +249,8 @@ export function SpotDetailSheet({ spot, onClose, onViewBuilder }: SpotDetailShee
           <div className="flex gap-3 mb-2">
             <button
               onClick={handleOpenMaps}
-              className="flex-1 py-3 rounded-sm text-sm font-bold uppercase tracking-widest transition-colors duration-150"
+              className="flex-1 py-3 rounded-sm text-sm font-bold uppercase tracking-widest transition-colors duration-150 t-sans-white bg-boston-blue"
               style={{
-                fontFamily: "var(--font-sans)",
-                background: "#1871bd",
-                color: "#fff",
                 minHeight: "44px",
               }}
             >
@@ -271,11 +258,8 @@ export function SpotDetailSheet({ spot, onClose, onViewBuilder }: SpotDetailShee
             </button>
             <button
               onClick={handleShare}
-              className="flex-1 py-3 rounded-sm text-sm font-bold uppercase tracking-widest transition-colors duration-150"
+              className="flex-1 py-3 rounded-sm text-sm font-bold uppercase tracking-widest transition-colors duration-150 t-sans-white bg-navy"
               style={{
-                fontFamily: "var(--font-sans)",
-                background: "#091f2f",
-                color: "#fff",
                 minHeight: "44px",
                 border: "none",
                 cursor: "pointer",
@@ -289,10 +273,8 @@ export function SpotDetailSheet({ spot, onClose, onViewBuilder }: SpotDetailShee
               href={spot.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center py-3 rounded-sm text-sm font-bold uppercase tracking-widest border-2 border-[#1871bd] transition-colors duration-150 mb-2"
+              className="flex items-center justify-center py-3 rounded-sm text-sm font-bold uppercase tracking-widest border-2 border-[#1871bd] transition-colors duration-150 mb-2 t-sans-blue"
               style={{
-                fontFamily: "var(--font-sans)",
-                color: "#1871bd",
                 minHeight: "44px",
                 textDecoration: "none",
                 width: "100%",
@@ -304,10 +286,8 @@ export function SpotDetailSheet({ spot, onClose, onViewBuilder }: SpotDetailShee
           {/* Secondary close action — less visual weight */}
           <button
             onClick={handleClose}
-            className="w-full py-2.5 rounded-sm text-xs font-bold uppercase tracking-widest border border-[#e0e0e0] transition-colors duration-150 hover:border-[#091f2f]"
+            className="w-full py-2.5 rounded-sm text-xs font-bold uppercase tracking-widest border border-[#e0e0e0] transition-colors duration-150 hover:border-[#091f2f] t-sans-gray"
             style={{
-              fontFamily: "var(--font-sans)",
-              color: "#828282",
               background: "transparent",
               minHeight: "40px",
             }}

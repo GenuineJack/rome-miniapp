@@ -224,11 +224,10 @@ export function isSportsCacheFresh(cache: SportsCache): boolean {
 function LiveDot() {
   return (
     <span
-      className="inline-block rounded-full animate-pulse shrink-0"
+      className="inline-block rounded-full animate-pulse shrink-0 bg-boston-red"
       style={{
         width: "6px",
         height: "6px",
-        background: "#d22d23",
         marginRight: "4px",
         verticalAlign: "middle",
       }}
@@ -248,32 +247,27 @@ function GameCard({ game }: { game: BostonGame }) {
 
   return (
     <div
-      className="shrink-0 flex flex-col justify-between p-3"
+      className="shrink-0 flex flex-col justify-between p-3 bg-white"
       style={{
         width: "160px",
         border: `2px solid ${isLive ? "#1871bd" : "#e0e0e0"}`,
-        background: "#fff",
         borderRadius: "3px",
       }}
     >
       <div>
         <p
-          className="font-bold uppercase leading-tight"
+          className="font-bold uppercase leading-tight t-sans-navy"
           style={{
-            fontFamily: "var(--font-sans)",
             fontSize: "11px",
-            color: "#091f2f",
             marginBottom: "2px",
           }}
         >
           {game.emoji} {game.team}
         </p>
         <p
-          className="italic leading-snug"
+          className="italic leading-snug t-serif-body"
           style={{
-            fontFamily: "var(--font-serif)",
             fontSize: "13px",
-            color: "#58585b",
             marginBottom: "8px",
           }}
         >
@@ -282,9 +276,8 @@ function GameCard({ game }: { game: BostonGame }) {
       </div>
       <div>
         <p
-          className="uppercase leading-tight"
+          className="uppercase leading-tight t-sans"
           style={{
-            fontFamily: "var(--font-sans)",
             fontSize: "9px",
             color: isLive ? "#d22d23" : "#828282",
             fontWeight: "600",
@@ -303,11 +296,9 @@ function GameCard({ game }: { game: BostonGame }) {
           )}
         </p>
         <p
-          className="uppercase leading-tight mt-0.5"
+          className="uppercase leading-tight mt-0.5 t-sans-gray"
           style={{
-            fontFamily: "var(--font-sans)",
             fontSize: "9px",
-            color: "#828282",
             letterSpacing: "0.05em",
           }}
         >
@@ -349,22 +340,20 @@ export function SportsRow({ games, loading, fetchFailed }: SportsRowProps) {
         style={{ borderBottom: "5px solid #091f2f", marginBottom: "12px" }}
       >
         <span
+          className="t-sans-navy"
           style={{
-            fontFamily: "var(--font-sans)",
             fontSize: "10px",
             fontWeight: "700",
             textTransform: "uppercase",
             letterSpacing: "0.15em",
-            color: "#091f2f",
           }}
         >
           Boston Sports
         </span>
         <span
+          className="t-sans-gray"
           style={{
-            fontFamily: "var(--font-sans)",
             fontSize: "9px",
-            color: "#828282",
           }}
         >
           Next 48 hrs
@@ -375,24 +364,24 @@ export function SportsRow({ games, loading, fetchFailed }: SportsRowProps) {
         <SportsSkeleton />
       ) : fetchFailed ? (
         <div
-          className="flex items-center justify-center px-4 py-5"
-          style={{ border: "2px solid #e0e0e0", borderRadius: "3px", background: "#fff" }}
+          className="flex items-center justify-center px-4 py-5 bg-white"
+          style={{ border: "2px solid #e0e0e0", borderRadius: "3px" }}
         >
           <p
-            className="italic text-center"
-            style={{ fontFamily: "var(--font-serif)", fontSize: "13px", color: "#828282" }}
+            className="italic text-center t-serif-gray"
+            style={{ fontSize: "13px" }}
           >
             Scores unavailable. ESPN might be having a moment.
           </p>
         </div>
       ) : games.length === 0 ? (
         <div
-          className="flex items-center justify-center px-4 py-5"
-          style={{ border: "2px solid #e0e0e0", borderRadius: "3px", background: "#fff" }}
+          className="flex items-center justify-center px-4 py-5 bg-white"
+          style={{ border: "2px solid #e0e0e0", borderRadius: "3px" }}
         >
           <p
-            className="italic text-center"
-            style={{ fontFamily: "var(--font-serif)", fontSize: "13px", color: "#828282" }}
+            className="italic text-center t-serif-gray"
+            style={{ fontSize: "13px" }}
           >
             No games in the next 48 hours. Rest up, Boston.
           </p>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const STORAGE_KEY = "boston-onboarding-seen";
 
@@ -25,18 +25,20 @@ const STEPS = [
 export function OnboardingOverlay({ onDismiss }: { onDismiss: () => void }) {
   const [step, setStep] = useState(0);
   const [visible, setVisible] = useState(false);
+  const onDismissRef = useRef(onDismiss);
+  onDismissRef.current = onDismiss;
 
   useEffect(() => {
     try {
       if (localStorage.getItem(STORAGE_KEY)) {
-        onDismiss();
+        onDismissRef.current();
         return;
       }
     } catch {
       // localStorage unavailable — show overlay
     }
     setVisible(true);
-  }, [onDismiss]);
+  }, []);
 
   function handleNext() {
     if (step < STEPS.length - 1) {
@@ -66,19 +68,18 @@ export function OnboardingOverlay({ onDismiss }: { onDismiss: () => void }) {
       style={{ background: "rgba(9,31,47,0.92)" }}
     >
       <div
-        className="flex flex-col items-center text-center px-8 py-10 mx-6 rounded-sm"
-        style={{ background: "#fff", maxWidth: "340px", width: "100%" }}
+        className="flex flex-col items-center text-center px-8 py-10 mx-6 rounded-sm bg-white"
+        style={{ maxWidth: "340px", width: "100%" }}
       >
         <span className="text-4xl mb-4">{current.emoji}</span>
         <h2
-          className="text-lg font-black uppercase tracking-tight mb-2"
-          style={{ fontFamily: "var(--font-sans)", color: "#091f2f" }}
+          className="text-lg font-black uppercase tracking-tight mb-2 t-sans-navy"
         >
           {current.title}
         </h2>
         <p
-          className="text-sm italic leading-relaxed mb-6"
-          style={{ fontFamily: "var(--font-serif)", color: "#58585b", maxWidth: "260px" }}
+          className="text-sm italic leading-relaxed mb-6 t-serif-body"
+          style={{ maxWidth: "260px" }}
         >
           {current.desc}
         </p>
@@ -101,11 +102,8 @@ export function OnboardingOverlay({ onDismiss }: { onDismiss: () => void }) {
 
         <button
           onClick={handleNext}
-          className="w-full py-3 rounded-sm text-xs font-bold uppercase tracking-widest mb-2"
+          className="w-full py-3 rounded-sm text-xs font-bold uppercase tracking-widest mb-2 t-sans-white bg-navy"
           style={{
-            fontFamily: "var(--font-sans)",
-            background: "#091f2f",
-            color: "#fff",
             border: "none",
             minHeight: "44px",
             cursor: "pointer",
@@ -117,8 +115,8 @@ export function OnboardingOverlay({ onDismiss }: { onDismiss: () => void }) {
         {step < STEPS.length - 1 && (
           <button
             onClick={handleDismiss}
-            className="text-[10px] font-bold uppercase tracking-widest"
-            style={{ fontFamily: "var(--font-sans)", color: "#828282", background: "none", border: "none", cursor: "pointer", padding: "8px 0" }}
+            className="text-[10px] font-bold uppercase tracking-widest t-sans-gray"
+            style={{ background: "none", border: "none", cursor: "pointer", padding: "8px 0" }}
           >
             Skip
           </button>

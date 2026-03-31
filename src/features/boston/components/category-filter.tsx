@@ -19,9 +19,8 @@ export function CategoryFilterBar({ active, onChange }: CategoryFilterBarProps) 
           <button
             key={cat}
             onClick={() => onChange(cat)}
-            className="shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors duration-150 focus:outline-none"
+            className="shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors duration-150 focus:outline-none t-sans"
             style={{
-              fontFamily: "var(--font-sans)",
               background: isActive ? "#091f2f" : "transparent",
               color: isActive ? "#fff" : "#091f2f",
               border: `2px solid #091f2f`,
