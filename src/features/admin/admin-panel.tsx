@@ -11,6 +11,7 @@ import {
   toggleTouristPick,
 } from "@/db/actions/boston-actions";
 import { getDispatchForDate, updateDispatchContent } from "@/db/actions/dispatch-actions";
+import { verifyAdminSecret, getAdminFid } from "@/db/actions/admin-auth";
 import type { Spot } from "@/features/boston/types";
 
 const ADMIN_FID = 218957;
@@ -35,14 +36,64 @@ export function AdminPanel() {
   const [regenerating, setRegenerating] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // Desktop secret auth state
+  const [secretAuthed, setSecretAuthed] = useState(false);
+  const [secretInput, setSecretInput] = useState("");
+  const [secretError, setSecretError] = useState("");
+  const [secretChecking, setSecretChecking] = useState(true);
+  const [adminFid, setAdminFid] = useState<number>(ADMIN_FID);
+
   const todayStr = new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD
 
+  // Effective identity: Farcaster user FID or admin FID from secret auth
+  const effectiveFid = user?.fid ?? (secretAuthed ? adminFid : null);
+  const isAuthed = effectiveFid === ADMIN_FID;
+
+  // Auto-login from localStorage on mount
+  useEffect(() => {
+    async function checkStoredSecret() {
+      const stored = localStorage.getItem("admin-secret");
+      if (stored) {
+        const valid = await verifyAdminSecret(stored);
+        if (valid) {
+          const fid = await getAdminFid();
+          setAdminFid(fid);
+          setSecretAuthed(true);
+        } else {
+          localStorage.removeItem("admin-secret");
+        }
+      }
+      setSecretChecking(false);
+    }
+    checkStoredSecret();
+  }, []);
+
+  async function handleSecretLogin(e: React.FormEvent) {
+    e.preventDefault();
+    setSecretError("");
+    const valid = await verifyAdminSecret(secretInput);
+    if (valid) {
+      localStorage.setItem("admin-secret", secretInput);
+      const fid = await getAdminFid();
+      setAdminFid(fid);
+      setSecretAuthed(true);
+    } else {
+      setSecretError("Invalid secret.");
+    }
+  }
+
+  function handleSecretLogout() {
+    localStorage.removeItem("admin-secret");
+    setSecretAuthed(false);
+    setSecretInput("");
+  }
+
   const loadData = useCallback(async () => {
-    if (!user?.fid) return;
+    if (!effectiveFid) return;
     setLoading(true);
     const [p, e, spots, dispatch] = await Promise.all([
-      getPendingSpots(user.fid),
-      getSubmissionErrors(50, user.fid),
+      getPendingSpots(effectiveFid),
+      getSubmissionErrors(50, effectiveFid),
       getSpots({ limit: 200 }),
       getDispatchForDate(todayStr),
     ]);
@@ -54,15 +105,15 @@ export function AdminPanel() {
       setDispatchDraft(dispatch.content);
     }
     setLoading(false);
-  }, [user?.fid, todayStr]);
+  }, [effectiveFid, todayStr]);
 
   useEffect(() => {
-    if (user?.fid === ADMIN_FID) {
+    if (isAuthed) {
       loadData();
     }
-  }, [user, loadData]);
+  }, [isAuthed, loadData]);
 
-  if (isLoading) {
+  if (isLoading || secretChecking) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-boston-gray-50">
         <p className="t-sans-gray text-xs">Loading...</p>
@@ -70,30 +121,45 @@ export function AdminPanel() {
     );
   }
 
-  if (!user || user.fid !== ADMIN_FID) {
+  if (!isAuthed) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-8 text-center bg-boston-gray-50">
-        <h1
-          className="text-xl font-black uppercase tracking-tight mb-2 t-sans-navy"
-        >
+        <h1 className="text-xl font-black uppercase tracking-tight mb-2 t-sans-navy">
           Admin
         </h1>
-        <p
-          className="text-sm italic t-serif-gray"
-        >
-          Not authorized. This page is restricted.
+        <p className="text-sm italic t-serif-gray mb-6">
+          Sign in to access the admin panel.
         </p>
+        <form onSubmit={handleSecretLogin} className="w-full max-w-xs flex flex-col gap-3">
+          <input
+            type="password"
+            value={secretInput}
+            onChange={(e) => setSecretInput(e.target.value)}
+            placeholder="Admin secret"
+            autoComplete="current-password"
+            className="w-full px-3 py-2 text-sm border border-boston-gray-200 rounded-sm t-sans-navy focus:outline-none focus:border-boston-blue"
+          />
+          {secretError && (
+            <p className="text-xs t-sans-red">{secretError}</p>
+          )}
+          <button
+            type="submit"
+            className="px-4 py-2 rounded-sm text-[10px] font-bold uppercase tracking-widest t-sans-white bg-boston-blue border-none cursor-pointer"
+          >
+            Sign In
+          </button>
+        </form>
       </div>
     );
   }
 
   async function handleApprove(id: string) {
-    await approveSpot(id, user!.fid);
+    await approveSpot(id, effectiveFid!);
     setPending((prev) => prev.filter((s) => s.id !== id));
   }
 
   async function handleReject(id: string) {
-    await rejectSpot(id, user!.fid);
+    await rejectSpot(id, effectiveFid!);
     setPending((prev) => prev.filter((s) => s.id !== id));
   }
 
@@ -124,7 +190,7 @@ export function AdminPanel() {
   }
 
   async function handleToggleTouristPick(spotId: string, currentValue: boolean) {
-    await toggleTouristPick(spotId, !currentValue, user!.fid);
+    await toggleTouristPick(spotId, !currentValue, effectiveFid!);
     setAllSpots((prev) =>
       prev.map((s) => s.id === spotId ? { ...s, touristPick: !currentValue } : s)
     );
@@ -133,19 +199,23 @@ export function AdminPanel() {
   return (
     <div className="min-h-screen bg-boston-gray-50">
       {/* Header */}
-      <div
-        className="px-4 py-3 bg-navy-bar"
-      >
-        <h1
-          className="text-lg font-black uppercase tracking-tight t-sans-white"
-        >
-          Admin Panel
-        </h1>
-        <p
-          className="text-[10px] uppercase tracking-widest t-sans text-white/50"
-        >
-          FID {user.fid} · @{user.username}
-        </p>
+      <div className="px-4 py-3 bg-navy-bar flex items-center justify-between">
+        <div>
+          <h1 className="text-lg font-black uppercase tracking-tight t-sans-white">
+            Admin Panel
+          </h1>
+          <p className="text-[10px] uppercase tracking-widest t-sans text-white/50">
+            {user ? `FID ${user.fid} · @${user.username}` : `FID ${adminFid} · Desktop Admin`}
+          </p>
+        </div>
+        {secretAuthed && (
+          <button
+            onClick={handleSecretLogout}
+            className="text-[10px] font-bold uppercase tracking-widest text-white/50 hover:text-white/80 bg-transparent border-none cursor-pointer"
+          >
+            Sign Out
+          </button>
+        )}
       </div>
 
       <div className="p-4 space-y-6">

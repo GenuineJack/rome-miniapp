@@ -2,6 +2,7 @@
 
 import { NeynarAPIClient, Configuration } from "@neynar/nodejs-sdk";
 import { privateConfig } from "@/config/private-config";
+import { timingSafeEqual } from "crypto";
 
 const ADMIN_FID = 218957;
 
@@ -13,6 +14,28 @@ function getClient() {
     );
   }
   return _client;
+}
+
+/**
+ * Verify the admin secret for desktop/browser admin access.
+ * Uses timing-safe comparison to prevent timing attacks.
+ */
+export async function verifyAdminSecret(secret: string): Promise<boolean> {
+  const adminSecret = process.env.ADMIN_SECRET;
+  if (!adminSecret || !secret) return false;
+  if (secret.length !== adminSecret.length) return false;
+  try {
+    return timingSafeEqual(Buffer.from(secret), Buffer.from(adminSecret));
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Get the admin FID constant (for use after secret-based auth).
+ */
+export async function getAdminFid(): Promise<number> {
+  return ADMIN_FID;
 }
 
 /**
