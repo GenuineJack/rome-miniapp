@@ -16,10 +16,11 @@ type DispatchContent = {
   whatYouMissed: { headline: string; url: string }[];
   lastNight: { team: string; result: string; summary: string; url: string }[] | null;
   getAroundToday: string | null;
-  tonight: { title: string; detail: string; url?: string }[];
+  tonight: { title: string; detail: string; url?: string }[] | null;
   todaysSpot: { name: string; neighborhood: string; reason: string; spotId?: string };
-  onThisDay: string;
-  theNumber: { number: string; context: string };
+  onThisDay: string | null;
+  theNumber: { number: string; context: string } | null;
+  sendOff: string;
   weatherWatch?: string;
 };
 
@@ -220,7 +221,7 @@ export function WhatsNewTab({ spots, onSelectSpot }: WhatsNewTabProps) {
         )}
 
         {/* Tonight */}
-        {dispatch.tonight.length > 0 && (
+        {dispatch.tonight && dispatch.tonight.length > 0 && (
           <div className="px-4 py-4 border-b border-[#e0e0e0]">
             <SectionHeader emoji="🌆" title="Tonight" />
             <div className="flex flex-col gap-2">
@@ -253,25 +254,38 @@ export function WhatsNewTab({ spots, onSelectSpot }: WhatsNewTabProps) {
         </div>
 
         {/* On This Day */}
-        <div className="px-4 py-4 border-b border-[#e0e0e0]">
-          <SectionHeader emoji="🗓" title="On This Day" />
-          <p className="text-xs italic t-serif-body">{dispatch.onThisDay}</p>
-        </div>
+        {dispatch.onThisDay && (
+          <div className="px-4 py-4 border-b border-[#e0e0e0]">
+            <SectionHeader emoji="🗓" title="On This Day" />
+            <p className="text-xs italic t-serif-body">{dispatch.onThisDay}</p>
+          </div>
+        )}
 
         {/* The Number */}
-        <div className="px-4 py-4">
-          <SectionHeader emoji="🔢" title="The Number" />
-          <div className="flex items-baseline gap-3">
-            <span className="text-3xl font-black t-sans-navy">{dispatch.theNumber.number}</span>
-            <p className="text-xs italic t-serif-body flex-1">{dispatch.theNumber.context}</p>
+        {dispatch.theNumber && (
+          <div className="px-4 py-4 border-b border-[#e0e0e0]">
+            <SectionHeader emoji="🔢" title="The Number" />
+            <div className="flex items-baseline gap-3">
+              <span className="text-3xl font-black t-sans-navy">{dispatch.theNumber.number}</span>
+              <p className="text-xs italic t-serif-body flex-1">{dispatch.theNumber.context}</p>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Weather Watch */}
         {dispatch.weatherWatch && (
-          <div className="px-4 py-4 border-t border-[#e0e0e0]">
+          <div className="px-4 py-4 border-b border-[#e0e0e0]">
             <SectionHeader emoji="⛈️" title="Weather Watch" />
             <p className="text-xs italic t-serif-body">{dispatch.weatherWatch}</p>
+          </div>
+        )}
+
+        {/* Send-Off */}
+        {dispatch.sendOff && (
+          <div className="px-4 pt-5 pb-4">
+            <p className="text-xs italic leading-relaxed t-serif-body text-boston-gray-400">
+              {dispatch.sendOff}
+            </p>
           </div>
         )}
       </div>
