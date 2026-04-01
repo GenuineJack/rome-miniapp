@@ -131,7 +131,6 @@ export function SubmitHappeningForm({ onSuccess }: Props) {
         </p>
         <button
           onClick={() => { setForm(EMPTY_FORM); setState("form"); onSuccess(); }}
-          className="w-full py-3 rounded-sm text-sm font-bold uppercase tracking-widest t-sans-white bg-navy"
           className="w-full py-3 rounded-sm text-sm font-bold uppercase tracking-widest t-sans-white bg-navy min-h-11"
         >
           Done
