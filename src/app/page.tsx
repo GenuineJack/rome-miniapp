@@ -1,6 +1,7 @@
 import { publicConfig } from "@/config/public-config";
 import { MiniApp } from "@/features/app/mini-app";
 import { getFarcasterPageMetadata } from "@/neynar-farcaster-sdk/src/nextjs/get-farcaster-page-metadata";
+import { getSpots } from "@/db/actions/boston-actions";
 import { Metadata } from "next";
 
 export async function generateMetadata({
@@ -20,6 +21,12 @@ export async function generateMetadata({
   });
 }
 
-export default function Home() {
-  return <MiniApp />;
+export default async function Home() {
+  let initialSpots;
+  try {
+    initialSpots = await getSpots();
+  } catch {
+    initialSpots = [];
+  }
+  return <MiniApp initialSpots={initialSpots} />;
 }

@@ -28,14 +28,14 @@ const TABS: { id: ActiveTab; label: string; icon: string; isCenter?: boolean }[]
   { id: "new", label: "Dispatch", icon: "📰" },
 ];
 
-export function MiniApp() {
+export function MiniApp({ initialSpots = [] }: { initialSpots?: Spot[] }) {
   const [activeTab, setActiveTab] = useState<ActiveTab>("explore");
   const [showSubmitOverlay, setShowSubmitOverlay] = useState(false);
   const [submitMode, setSubmitMode] = useState<SubmitMode>("picker");
 
   // Lifted state — persists across tab switches
-  const [spots, setSpots] = useState<Spot[]>([]);
-  const [spotsLoading, setSpotsLoading] = useState(true);
+  const [spots, setSpots] = useState<Spot[]>(initialSpots);
+  const [spotsLoading, setSpotsLoading] = useState(initialSpots.length === 0);
   const [spotsError, setSpotsError] = useState(false);
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>("All");
   const [neighborhoodFilter, setNeighborhoodFilter] = useState<string | null>(null);
@@ -65,6 +65,8 @@ export function MiniApp() {
   const [newsCache, setNewsCache] = useState<NewsItem[] | null>(null);
 
   useEffect(() => {
+    // Skip fetch if we already have server-provided data
+    if (initialSpots.length > 0) return;
     getSpots()
       .then((data) => {
         setSpots(data as Spot[]);
@@ -74,7 +76,7 @@ export function MiniApp() {
         setSpotsError(true);
         setSpotsLoading(false);
       });
-  }, []);
+  }, [initialSpots.length]);
 
   // Deep link: ?spotId=... opens spot detail, ?builderId=... opens builder detail
   useEffect(() => {
