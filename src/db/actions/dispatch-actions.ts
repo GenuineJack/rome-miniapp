@@ -42,3 +42,22 @@ export async function updateDispatchContent(
 export async function deleteDispatchForDate(date: string) {
   await db.delete(dispatch).where(eq(dispatch.date, date));
 }
+
+const ADMIN_FID = 218957;
+
+/**
+ * Admin server action: generate (or regenerate) today's dispatch.
+ * Runs server-side so secrets stay safe.
+ */
+export async function triggerDispatchGeneration(
+  adminFid: number,
+  force: boolean,
+): Promise<{ ok: boolean; error?: string }> {
+  if (adminFid !== ADMIN_FID) {
+    return { ok: false, error: "Unauthorized" };
+  }
+
+  // Dynamic import to avoid pulling AI deps into every server action bundle
+  const { generateDispatchContent } = await import("@/lib/dispatch-generator");
+  return generateDispatchContent({ force });
+}

@@ -10,7 +10,7 @@ import {
   getSpots,
   toggleTouristPick,
 } from "@/db/actions/boston-actions";
-import { getDispatchForDate, updateDispatchContent } from "@/db/actions/dispatch-actions";
+import { getDispatchForDate, updateDispatchContent, triggerDispatchGeneration } from "@/db/actions/dispatch-actions";
 import { verifyAdminSecret, getAdminFid } from "@/db/actions/admin-auth";
 import type { Spot } from "@/features/boston/types";
 
@@ -34,6 +34,7 @@ export function AdminPanel() {
   const [dispatchEditing, setDispatchEditing] = useState(false);
   const [dispatchDraft, setDispatchDraft] = useState("");
   const [regenerating, setRegenerating] = useState(false);
+  const [dispatchError, setDispatchError] = useState("");
   const [loading, setLoading] = useState(true);
 
   // Desktop secret auth state
@@ -163,20 +164,22 @@ export function AdminPanel() {
     setPending((prev) => prev.filter((s) => s.id !== id));
   }
 
-  async function handleRegenerateDispatch() {
+  async function handleGenerateDispatch(force: boolean) {
     setRegenerating(true);
+    setDispatchError("");
     try {
-      const res = await fetch("/api/dispatch/generate", {
-        method: "POST",
-        headers: { "Authorization": `Bearer ${process.env.NEXT_PUBLIC_CRON_SECRET ?? ""}` },
-      });
-      if (res.ok) {
-        const dispatch = await getDispatchForDate(todayStr);
-        if (dispatch) {
-          setTodayDispatch({ date: dispatch.date, content: dispatch.content });
-          setDispatchDraft(dispatch.content);
-        }
+      const result = await triggerDispatchGeneration(effectiveFid!, force);
+      if (!result.ok) {
+        setDispatchError(result.error ?? "Generation failed");
+        return;
       }
+      const d = await getDispatchForDate(todayStr);
+      if (d) {
+        setTodayDispatch({ date: d.date, content: d.content });
+        setDispatchDraft(d.content);
+      }
+    } catch {
+      setDispatchError("Generation failed unexpectedly");
     } finally {
       setRegenerating(false);
     }
@@ -326,8 +329,11 @@ export function AdminPanel() {
           {!loading && !todayDispatch && (
             <div className="bg-white rounded-sm p-3 box-bordered">
               <p className="text-xs italic t-serif-gray mb-3">No dispatch generated for today.</p>
+              {dispatchError && (
+                <p className="text-xs t-sans-red mb-2">{dispatchError}</p>
+              )}
               <button
-                onClick={handleRegenerateDispatch}
+                onClick={() => handleGenerateDispatch(false)}
                 disabled={regenerating}
                 className="px-4 py-2 rounded-sm text-[10px] font-bold uppercase tracking-widest t-sans-white bg-boston-blue border-none cursor-pointer disabled:opacity-50"
               >
@@ -352,7 +358,7 @@ export function AdminPanel() {
                     </button>
                   )}
                   <button
-                    onClick={handleRegenerateDispatch}
+                    onClick={() => handleGenerateDispatch(true)}
                     disabled={regenerating}
                     className="text-[10px] font-bold uppercase tracking-widest t-sans-gray cursor-pointer bg-transparent border-none disabled:opacity-50"
                   >
@@ -360,6 +366,9 @@ export function AdminPanel() {
                   </button>
                 </div>
               </div>
+              {dispatchError && (
+                <p className="text-xs t-sans-red mb-2">{dispatchError}</p>
+              )}
               {dispatchEditing ? (
                 <div>
                   <textarea
