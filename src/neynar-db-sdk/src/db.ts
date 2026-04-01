@@ -21,14 +21,17 @@ let db: ReturnType<typeof drizzle<typeof schema>>;
 let connection: postgres.Sql;
 
 if (process.env.DATABASE_URL) {
+  // Supabase (and most hosted Postgres) requires SSL
+  const pgOptions = { ssl: "require" as const };
+
   if (process.env.NODE_ENV === "production") {
     // Production: Create new connection
-    connection = postgres(process.env.DATABASE_URL);
+    connection = postgres(process.env.DATABASE_URL, pgOptions);
     db = drizzle(connection, { schema });
   } else {
     // Development: Reuse connection to avoid hot reload issues
     if (!globalThis.__dbConnection) {
-      globalThis.__dbConnection = postgres(process.env.DATABASE_URL);
+      globalThis.__dbConnection = postgres(process.env.DATABASE_URL, pgOptions);
       globalThis.__db = drizzle(globalThis.__dbConnection, { schema });
     }
     connection = globalThis.__dbConnection;

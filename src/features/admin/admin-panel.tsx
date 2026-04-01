@@ -296,6 +296,7 @@ export function AdminPanel() {
                     value={dispatchDraft}
                     onChange={(e) => setDispatchDraft(e.target.value)}
                     rows={12}
+                    aria-label="Dispatch content editor"
                     className="w-full text-xs font-mono p-2 border border-boston-gray-200 rounded-sm mb-2 resize-y"
                   />
                   <div className="flex gap-2">

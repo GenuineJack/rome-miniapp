@@ -89,7 +89,7 @@ function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots, onSe
           zoom={14}
         />
         {!spotsLoading && inlineSpots.length === 0 && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ position: "relative", marginTop: "-100px", height: 0 }}>
+          <div className="relative flex items-center justify-center pointer-events-none -mt-[100px] h-0">
             <span className="bg-navy/80 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-sm t-sans">
               No spots here yet
             </span>

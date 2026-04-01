@@ -1,7 +1,9 @@
 import { publicConfig } from "@/config/public-config";
 import { MiniApp } from "@/features/app/mini-app";
 import { getFarcasterPageMetadata } from "@/neynar-farcaster-sdk/src/nextjs/get-farcaster-page-metadata";
-import { getSpots } from "@/db/actions/boston-actions";
+import { db } from "@/neynar-db-sdk/db";
+import { spots as spotsTable } from "@/db/schema";
+import { eq, desc, and } from "drizzle-orm";
 import { Metadata } from "next";
 
 export async function generateMetadata({
@@ -22,11 +24,16 @@ export async function generateMetadata({
 }
 
 export default async function Home() {
-  let initialSpots: Awaited<ReturnType<typeof getSpots>> = [];
+  let initialSpots: (typeof spotsTable.$inferSelect)[] = [];
   try {
-    initialSpots = await getSpots();
-  } catch {
-    initialSpots = [];
+    initialSpots = await db
+      .select()
+      .from(spotsTable)
+      .where(eq(spotsTable.status, "approved"))
+      .orderBy(desc(spotsTable.createdAt))
+      .limit(100);
+  } catch (e) {
+    console.error("[page] Failed to load initial spots:", e);
   }
   return <MiniApp initialSpots={initialSpots} />;
 }

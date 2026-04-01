@@ -634,7 +634,7 @@ export function HappeningsSection({ onNavigateToNeighborhood, onOpenWorldCup, co
 
       {/* Source filter pills */}
       {events.length > 0 && (
-        <div className="flex gap-1.5 overflow-x-auto pb-2 mb-3 -mx-1 px-1" style={{ scrollbarWidth: "none" }}>
+        <div className="flex gap-1.5 overflow-x-auto pb-2 mb-3 -mx-1 px-1 scrollbar-hide">
           {SOURCE_FILTERS.map((f) => (
             <button
               key={f.id}

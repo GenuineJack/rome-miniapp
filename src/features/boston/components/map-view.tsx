@@ -51,7 +51,7 @@ export function MapView({ spots, onSpotClick }: MapViewProps) {
   const spotsWithCoords = spots.filter((s) => s.latitude !== null && s.longitude !== null);
 
   return (
-    <div className="relative w-full shrink-0 overflow-hidden" style={{ height: MAP_HEIGHT }}>
+    <div className="relative w-full shrink-0 overflow-hidden h-[clamp(180px,30vh,240px)]">
       <LeafletMapInner spots={spots} onSpotClick={onSpotClick} height="100%" />
 
       {/* Spot count badge */}
