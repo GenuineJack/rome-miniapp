@@ -1,5 +1,3 @@
-import { SketchHeading, SketchCard } from "@/components/sketch";
-
 const STEPS = [
   {
     num: "01",
@@ -23,41 +21,32 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <section>
-      <SketchHeading level={2} className="text-[var(--primary-navy)] text-center mb-2">
+    <section className="py-16 sm:py-20 border-t border-[#e0e0e0]">
+      <h2 className="t-sans font-bold text-2xl sm:text-3xl text-[#091f2f] text-center tracking-tight">
         How It Works
-      </SketchHeading>
-      <p className="t-serif-body text-sm text-center mb-8 opacity-70">
+      </h2>
+      <p className="t-serif text-[#828282] text-base text-center mt-2 mb-12">
         Three steps from zero to a live city app
       </p>
 
-      <div className="flex flex-col gap-4">
-        {STEPS.map((step, i) => (
-          <SketchCard key={step.num} padding="md">
-            <div className="flex gap-4 items-start">
-              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[var(--primary-navy)] text-white flex items-center justify-center t-sans font-bold text-xs">
-                {step.num}
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="t-sans font-bold text-sm uppercase tracking-wider text-[var(--primary-navy)] mb-1">
-                  <span className="mr-2">{step.icon}</span>
-                  {step.title}
-                </h3>
-                <p className="t-serif-body text-sm leading-relaxed">
-                  {step.desc}
-                </p>
-              </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {STEPS.map((step) => (
+          <div key={step.num} className="text-center">
+            <div className="w-14 h-14 rounded-full bg-[#091f2f] text-white flex items-center justify-center t-sans font-bold text-sm mx-auto mb-5">
+              {step.num}
             </div>
-            {i < STEPS.length - 1 && (
-              <div className="flex justify-center mt-3">
-                <div className="w-px h-4 bg-[var(--border-gray)]" />
-              </div>
-            )}
-          </SketchCard>
+            <div className="text-2xl mb-2">{step.icon}</div>
+            <h3 className="t-sans font-bold text-sm uppercase tracking-[0.1em] text-[#091f2f] mb-2">
+              {step.title}
+            </h3>
+            <p className="t-serif text-sm text-[#58585b] leading-relaxed">
+              {step.desc}
+            </p>
+          </div>
         ))}
       </div>
 
-      <p className="t-serif-body text-xs text-center mt-4 italic opacity-60">
+      <p className="t-serif text-xs text-center mt-10 italic text-[#828282]">
         Developers can skip step 2 and configure manually — it&apos;s just one
         config file.
       </p>

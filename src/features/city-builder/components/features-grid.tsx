@@ -1,5 +1,3 @@
-import { SketchHeading, SketchCard } from "@/components/sketch";
-
 const FEATURES = [
   {
     emoji: "🗺",
@@ -35,23 +33,28 @@ const FEATURES = [
 
 export function FeaturesGrid() {
   return (
-    <section>
-      <SketchHeading level={2} className="text-[var(--primary-navy)] text-center mb-2">
+    <section className="py-16 sm:py-20">
+      <h2 className="t-sans font-bold text-2xl sm:text-3xl text-[#091f2f] text-center tracking-tight">
         What You Get
-      </SketchHeading>
-      <p className="t-serif-body text-sm text-center mb-8 opacity-70">
+      </h2>
+      <p className="t-serif text-[#828282] text-base text-center mt-2 mb-10">
         A complete community mini-app — out of the box
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {FEATURES.map((f) => (
-          <SketchCard key={f.title} padding="md">
-            <div className="text-2xl mb-2">{f.emoji}</div>
-            <h3 className="t-sans font-bold text-sm uppercase tracking-wider text-[var(--primary-navy)] mb-1">
+          <div
+            key={f.title}
+            className="border-2 border-[#e0e0e0] rounded-sm p-6 hover:border-[#1871bd] transition-colors"
+          >
+            <div className="text-3xl mb-3">{f.emoji}</div>
+            <h3 className="t-sans font-bold text-xs uppercase tracking-[0.1em] text-[#091f2f] mb-2">
               {f.title}
             </h3>
-            <p className="t-serif-body text-sm leading-relaxed">{f.desc}</p>
-          </SketchCard>
+            <p className="t-serif text-sm text-[#58585b] leading-relaxed">
+              {f.desc}
+            </p>
+          </div>
         ))}
       </div>
     </section>

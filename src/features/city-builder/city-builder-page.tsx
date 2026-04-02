@@ -1,6 +1,5 @@
 "use client";
 
-import { SketchFilters } from "@/components/sketch";
 import { HeroSection } from "@/features/city-builder/components/hero-section";
 import { FeaturesGrid } from "@/features/city-builder/components/features-grid";
 import { HowItWorks } from "@/features/city-builder/components/how-it-works";
@@ -12,19 +11,19 @@ import { BuilderFooter } from "@/features/city-builder/components/builder-footer
 
 export function CityBuilderPage() {
   return (
-    <div className="min-h-screen bg-[var(--white)]">
-      <SketchFilters />
+    <div className="min-h-screen bg-white">
+      <HeroSection />
 
-      <div className="max-w-2xl mx-auto px-4 py-8 flex flex-col gap-16">
-        <HeroSection />
+      <div className="max-w-5xl mx-auto px-6 sm:px-8">
         <FeaturesGrid />
         <HowItWorks />
         <AiResearch />
         <Architecture />
         <GetStarted />
         <CitiesBuilt />
-        <BuilderFooter />
       </div>
+
+      <BuilderFooter />
     </div>
   );
 }
