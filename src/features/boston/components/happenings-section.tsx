@@ -485,7 +485,7 @@ function CommunityCard({ happening }: { happening: CommunityHappening }) {
         <p className="uppercase t-sans-blue happening-timing">
           {happening.emoji} {happening.dateLabel}
         </p>
-        <span className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-sm t-sans-blue region-badge">
+        <span className="text-[11px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-sm t-sans-blue region-badge">
           Community
         </span>
       </div>
@@ -520,11 +520,11 @@ function CommunityCard({ happening }: { happening: CommunityHappening }) {
             loading="lazy"
             className="w-5 h-5 rounded-full object-cover shrink-0" />
         ) : (
-          <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0 bg-boston-blue">
+          <div className="w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0 bg-boston-blue">
             {happening.submittedByDisplayName[0]?.toUpperCase() ?? "?"}
           </div>
         )}
-        <span className="text-[10px] t-sans-gray">
+        <span className="text-xs t-sans-gray">
           📍 {happening.neighborhood} · <span className="text-boston-blue">@{happening.submittedByUsername}</span>
         </span>
       </div>
@@ -559,16 +559,16 @@ function EventCard({ event }: { event: EventItem }) {
       className="block rounded-sm bg-white p-3 no-underline text-inherit border border-boston-gray-100 transition-colors hover:bg-boston-gray-50"
     >
       <div className="flex items-center justify-between mb-1">
-        <span className="text-[10px] font-bold uppercase tracking-widest t-sans-blue">
+        <span className="text-xs font-bold uppercase tracking-widest t-sans-blue">
           {CATEGORY_EMOJI[event.category] ?? "📅"} {event.source}
         </span>
         {eventTimeAgo(event.date) && (
-          <span className="text-[10px] t-sans-gray">{eventTimeAgo(event.date)}</span>
+          <span className="text-xs t-sans-gray">{eventTimeAgo(event.date)}</span>
         )}
       </div>
       <p className="text-xs font-bold leading-tight t-sans-navy mb-1">{event.title}</p>
       {event.description && (
-        <p className="text-[10px] leading-relaxed t-serif-gray line-clamp-2">{event.description}</p>
+        <p className="text-xs leading-relaxed t-serif-gray line-clamp-2">{event.description}</p>
       )}
     </ExternalLink>
   );
@@ -636,7 +636,7 @@ export function HappeningsSection({ onNavigateToNeighborhood, onOpenWorldCup, co
             <button
               key={f.id}
               onClick={() => setSourceFilter(f.id)}
-              className={`shrink-0 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest cursor-pointer border-none transition-colors ${
+              className={`shrink-0 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest cursor-pointer border-none transition-colors ${
                 sourceFilter === f.id
                   ? "bg-boston-blue text-white"
                   : "bg-boston-gray-100 t-sans-gray"
@@ -673,7 +673,7 @@ export function HappeningsSection({ onNavigateToNeighborhood, onOpenWorldCup, co
 
       {/* Explore More */}
       <div className="mt-4 pt-3 border-t border-boston-gray-100">
-          <p className="text-[10px] font-bold uppercase tracking-widest t-sans-gray mb-2">
+          <p className="text-xs font-bold uppercase tracking-widest t-sans-gray mb-2">
             Explore More Events
           </p>
           <div className="flex flex-wrap gap-2">
@@ -681,7 +681,7 @@ export function HappeningsSection({ onNavigateToNeighborhood, onOpenWorldCup, co
               <ExternalLink
                 key={link.name}
                 href={link.url}
-                className="px-3 py-1.5 rounded-full bg-boston-gray-50 text-[10px] font-bold t-sans-blue no-underline hover:bg-boston-gray-100 transition-colors"
+                className="px-3 py-1.5 rounded-full bg-boston-gray-50 text-xs font-bold t-sans-blue no-underline hover:bg-boston-gray-100 transition-colors"
               >
                 {link.name} ↗
               </ExternalLink>

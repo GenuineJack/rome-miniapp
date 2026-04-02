@@ -18,10 +18,10 @@ function MbtaMarquee({ alert }: { alert: MbtaAlert | null }) {
   return (
     <div className="bg-boston-gray-50 border-b border-boston-gray-100 overflow-hidden whitespace-nowrap">
       <div className="inline-flex animate-marquee py-1.5">
-        <span className="text-[11px] font-bold uppercase tracking-wide t-sans px-4" style={{ color: "#091f2f" }}>
+        <span className="text-xs font-bold uppercase tracking-wide t-sans px-4" style={{ color: "#091f2f" }}>
           {text}
         </span>
-        <span className="text-[11px] font-bold uppercase tracking-wide t-sans px-4" style={{ color: "#091f2f" }}>
+        <span className="text-xs font-bold uppercase tracking-wide t-sans px-4" style={{ color: "#091f2f" }}>
           {text}
         </span>
       </div>
@@ -117,7 +117,7 @@ export function TodayTab({
       <MbtaMarquee alert={mbtaAlert} />
       {todayIntro && (
         <div className="px-4 py-2.5 border-b border-boston-gray-100 bg-white">
-          <p className="text-[13px] italic leading-snug t-serif-body">{todayIntro}</p>
+          <p className="text-sm italic leading-snug t-serif-body">{todayIntro}</p>
         </div>
       )}
       <div className="flex flex-col pb-6">

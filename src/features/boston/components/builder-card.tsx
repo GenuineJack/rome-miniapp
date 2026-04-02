@@ -80,7 +80,7 @@ export function BuilderCard({ builder, onClick, onSpotFilterClick }: BuilderCard
 
           {/* Username */}
           <p
-            className="text-[10px] leading-none mt-0.5 t-sans-blue"
+            className="text-xs leading-none mt-0.5 t-sans-blue"
           >
             @{builder.username}
           </p>
@@ -88,7 +88,7 @@ export function BuilderCard({ builder, onClick, onSpotFilterClick }: BuilderCard
           {/* Neighborhood */}
           {builder.neighborhood && (
             <p
-              className="text-[10px] mt-1 t-sans-gray"
+              className="text-xs mt-1 t-sans-gray"
             >
               📍 {builder.neighborhood}
             </p>
@@ -103,7 +103,7 @@ export function BuilderCard({ builder, onClick, onSpotFilterClick }: BuilderCard
               return (
                 <span
                   key={cat}
-                  className="inline-flex items-center gap-1 px-2 py-1 rounded-sm text-[9px] font-bold uppercase tracking-widest text-white t-sans bg-navy"
+                  className="inline-flex items-center gap-1 px-2 py-1 rounded-sm text-[11px] font-bold uppercase tracking-widest text-white t-sans bg-navy"
                 >
                   {icon} {cat}
                 </span>
@@ -136,7 +136,7 @@ export function BuilderCard({ builder, onClick, onSpotFilterClick }: BuilderCard
       {/* Bio */}
       {builder.bio && (
         <p
-          className="text-xs italic leading-snug mb-3 line-clamp-2 t-serif-body"
+          className="text-[13px] italic leading-snug mb-3 line-clamp-2 t-serif-body"
         >
           &ldquo;{builder.bio}&rdquo;
         </p>
@@ -151,7 +151,7 @@ export function BuilderCard({ builder, onClick, onSpotFilterClick }: BuilderCard
             e.stopPropagation();
             if (spotCount > 0) onSpotFilterClick?.(builder.fid, builder.username);
           }}
-          className={`text-[10px] font-medium leading-none focus:outline-none t-sans btn-link-base ${spotCount > 0 ? "text-boston-blue cursor-pointer" : "text-boston-gray-400 cursor-default"}`}
+          className={`text-xs font-medium leading-none focus:outline-none t-sans btn-link-base ${spotCount > 0 ? "text-boston-blue cursor-pointer" : "text-boston-gray-400 cursor-default"}`}
         >
           {spotCount > 0 ? `🗺 ${spotCount} spot${spotCount === 1 ? "" : "s"} in the guide` : "🗺 No spots yet"}
         </button>
@@ -159,7 +159,7 @@ export function BuilderCard({ builder, onClick, onSpotFilterClick }: BuilderCard
         <span className="dot-sep">·</span>
 
         <span
-          className="text-[10px] leading-none t-sans-gray"
+          className="text-xs leading-none t-sans-gray"
         >
           Joined {joinDate}
         </span>

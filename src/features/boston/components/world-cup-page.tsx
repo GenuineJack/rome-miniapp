@@ -67,7 +67,7 @@ export function WorldCupPage({ onBack, spots = [], onSelectSpot }: WorldCupPageP
       <div className="bg-navy px-4 pt-4 pb-6">
         <button
           onClick={onBack}
-          className="flex items-center gap-1.5 mb-4 text-[10px] font-bold uppercase tracking-widest text-white opacity-60 hover:opacity-100 transition-opacity t-sans"
+          className="flex items-center gap-1.5 mb-4 text-xs font-bold uppercase tracking-widest text-white opacity-60 hover:opacity-100 transition-opacity t-sans"
         >
           ← Back
         </button>
@@ -77,7 +77,7 @@ export function WorldCupPage({ onBack, spots = [], onSelectSpot }: WorldCupPageP
             <h1 className="text-xl font-black uppercase tracking-tight text-white t-sans leading-tight">
               FIFA World Cup 2026
             </h1>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-boston-blue t-sans">
+            <p className="text-xs font-bold uppercase tracking-widest text-boston-blue t-sans">
               Boston Host City — Boston Stadium (Gillette)
             </p>
           </div>
@@ -85,7 +85,7 @@ export function WorldCupPage({ onBack, spots = [], onSelectSpot }: WorldCupPageP
         {daysUntil > 0 && (
           <div className="flex items-baseline gap-2 mt-2">
             <span className="text-3xl font-black text-white t-sans">{daysUntil}</span>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white/60 t-sans">
+            <span className="text-xs font-bold uppercase tracking-widest text-white/60 t-sans">
               days until first match
             </span>
           </div>
@@ -96,7 +96,7 @@ export function WorldCupPage({ onBack, spots = [], onSelectSpot }: WorldCupPageP
       <div className="px-4 py-4 border-b border-[#e0e0e0]">
         <div className="flex items-center gap-2 mb-3">
           <span className="text-sm">🏟</span>
-          <h2 className="text-[10px] font-bold uppercase tracking-widest t-sans-navy">
+          <h2 className="text-xs font-bold uppercase tracking-widest t-sans-navy">
             Match Schedule — Boston Stadium
           </h2>
         </div>
@@ -105,9 +105,9 @@ export function WorldCupPage({ onBack, spots = [], onSelectSpot }: WorldCupPageP
             <div key={match.id} className="flex items-center justify-between p-3 rounded-sm bg-boston-gray-50">
               <div>
                 <p className="text-xs font-bold t-sans-navy">{match.teams}</p>
-                <p className="text-[10px] t-sans-gray">{match.date} · {match.time}</p>
+                <p className="text-xs t-sans-gray">{match.date} · {match.time}</p>
               </div>
-              <span className={`text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-sm t-sans ${
+              <span className={`text-[11px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-sm t-sans ${
                 match.round === "Quarterfinal" ? "bg-[#c8102e] text-white" : match.round.startsWith("Round") ? "bg-boston-blue text-white" : "bg-[#e0e0e0] text-navy"
               }`}>
                 {match.round}
@@ -122,7 +122,7 @@ export function WorldCupPage({ onBack, spots = [], onSelectSpot }: WorldCupPageP
         <div className="px-4 pt-4 pb-2">
           <div className="flex items-center gap-2 mb-2">
             <span className="text-sm">📍</span>
-            <h2 className="text-[10px] font-bold uppercase tracking-widest t-sans-navy">
+            <h2 className="text-xs font-bold uppercase tracking-widest t-sans-navy">
               Venue — Gillette Stadium, Foxborough
             </h2>
           </div>
@@ -140,26 +140,26 @@ export function WorldCupPage({ onBack, spots = [], onSelectSpot }: WorldCupPageP
       <div className="px-4 py-4 border-b border-[#e0e0e0]">
         <div className="flex items-center gap-2 mb-3">
           <span className="text-sm">🚇</span>
-          <h2 className="text-[10px] font-bold uppercase tracking-widest t-sans-navy">
+          <h2 className="text-xs font-bold uppercase tracking-widest t-sans-navy">
             Getting There
           </h2>
         </div>
         <div className="flex flex-col gap-3">
           <div className="p-3 rounded-sm bg-boston-gray-50">
             <p className="text-xs font-bold t-sans-navy mb-1">MBTA + Shuttle</p>
-            <p className="text-xs italic t-serif-body">
+            <p className="text-[13px] italic t-serif-body">
               Take the Commuter Rail Foxboro Pilot from South Station or Back Bay. MBTA typically runs special event service for major Gillette events. Check mbta.com for World Cup schedules.
             </p>
           </div>
           <div className="p-3 rounded-sm bg-boston-gray-50">
             <p className="text-xs font-bold t-sans-navy mb-1">Driving</p>
-            <p className="text-xs italic t-serif-body">
+            <p className="text-[13px] italic t-serif-body">
               35 miles south of Boston via I-93 S to I-95 S. Budget 90+ minutes on game days. Parking at Gillette opens 4 hours before kickoff.
             </p>
           </div>
           <div className="p-3 rounded-sm bg-boston-gray-50">
             <p className="text-xs font-bold t-sans-navy mb-1">Fan Zones</p>
-            <p className="text-xs italic t-serif-body">
+            <p className="text-[13px] italic t-serif-body">
               FIFA fan zones expected in Downtown Boston and at Gillette. Official viewing parties TBD. Check back as the schedule solidifies.
             </p>
           </div>
@@ -171,7 +171,7 @@ export function WorldCupPage({ onBack, spots = [], onSelectSpot }: WorldCupPageP
         <div className="px-4 py-4 border-b border-[#e0e0e0]">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-sm">📺</span>
-            <h2 className="text-[10px] font-bold uppercase tracking-widest t-sans-navy">
+            <h2 className="text-xs font-bold uppercase tracking-widest t-sans-navy">
               Where to Watch in Boston
             </h2>
           </div>
@@ -184,9 +184,9 @@ export function WorldCupPage({ onBack, spots = [], onSelectSpot }: WorldCupPageP
               >
                 <div>
                   <span className="text-xs font-bold t-sans-navy">{spot.name}</span>
-                  <span className="text-[10px] t-sans-gray ml-2">{spot.neighborhood}</span>
+                  <span className="text-xs t-sans-gray ml-2">{spot.neighborhood}</span>
                 </div>
-                <span className="text-[10px] t-sans-blue shrink-0">→</span>
+                <span className="text-xs t-sans-blue shrink-0">→</span>
               </button>
             ))}
           </div>
@@ -197,11 +197,11 @@ export function WorldCupPage({ onBack, spots = [], onSelectSpot }: WorldCupPageP
       <div className="px-4 py-4 pb-8">
         <div className="flex items-center gap-2 mb-3">
           <span className="text-sm">📋</span>
-          <h2 className="text-[10px] font-bold uppercase tracking-widest t-sans-navy">
+          <h2 className="text-xs font-bold uppercase tracking-widest t-sans-navy">
             Need to Know
           </h2>
         </div>
-        <div className="flex flex-col gap-2 text-xs italic t-serif-body">
+        <div className="flex flex-col gap-2 text-[13px] italic t-serif-body">
           <p>· Boston is hosting 7 matches: 5 group stage, 1 Round of 32, and a quarterfinal at Gillette Stadium (Boston Stadium for the tournament).</p>
           <p>· Matches feature England, France, Scotland, Norway, Morocco, Ghana, and Haiti — plus knockout rounds.</p>
           <p>· Gillette is in Foxborough, ~35 miles south of Boston. Plan transportation early.</p>

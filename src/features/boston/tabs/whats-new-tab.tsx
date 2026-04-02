@@ -41,7 +41,7 @@ function BannerStrip({ banner }: { banner: DispatchContent["banner"] }) {
   if (banner.transit) parts.push(banner.transit);
   if (banner.countdown) parts.push(banner.countdown);
   return (
-    <div className="px-4 py-2 bg-navy text-[10px] t-sans text-white/70 flex items-center gap-1.5 flex-wrap">
+    <div className="px-4 py-2 bg-navy text-xs t-sans text-white/70 flex items-center gap-1.5 flex-wrap">
       {parts.map((p, i) => (
         <span key={i}>
           {i > 0 && <span className="opacity-40 mr-1.5">·</span>}
@@ -56,7 +56,7 @@ function SectionHeader({ emoji, title }: { emoji: string; title: string }) {
   return (
     <div className="flex items-center gap-2 mb-2">
       <span className="text-sm">{emoji}</span>
-      <h3 className="text-[10px] font-bold uppercase tracking-widest t-sans-navy">{title}</h3>
+      <h3 className="text-xs font-bold uppercase tracking-widest t-sans-navy">{title}</h3>
     </div>
   );
 }
@@ -116,7 +116,7 @@ export function WhatsNewTab({ spots, onSelectSpot }: WhatsNewTabProps) {
           <h2 className="text-lg font-black uppercase tracking-tight text-white t-sans">
             The Dispatch
           </h2>
-          <p className="text-xs italic text-white/60 mt-0.5 t-serif">
+          <p className="text-[13px] italic text-white/60 mt-0.5 t-serif">
             Your daily Boston briefing
           </p>
         </div>
@@ -130,10 +130,10 @@ export function WhatsNewTab({ spots, onSelectSpot }: WhatsNewTabProps) {
             <div key={b.id} className="p-4 rounded-sm bg-navy">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-lg">{b.emoji}</span>
-                <span className="text-[9px] font-bold uppercase tracking-widest t-sans text-white/40">Seasonal</span>
+                <span className="text-[11px] font-bold uppercase tracking-widest t-sans text-white/40">Seasonal</span>
               </div>
               <h3 className="text-sm font-bold mb-1.5 t-sans-white">{b.title}</h3>
-              <p className="text-xs italic leading-relaxed t-serif text-white/75">{b.desc}</p>
+              <p className="text-[13px] italic leading-relaxed t-serif text-white/75">{b.desc}</p>
             </div>
           ))}
         </div>
@@ -157,7 +157,7 @@ export function WhatsNewTab({ spots, onSelectSpot }: WhatsNewTabProps) {
 
       {/* Date header */}
       <div className="px-4 pt-4 pb-3 bg-navy border-b border-white/10">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 t-sans mb-1">
+        <p className="text-xs font-bold uppercase tracking-widest text-white/50 t-sans mb-1">
           {dispatch.date}
         </p>
         <h2 className="text-xl font-black uppercase tracking-tight text-white t-sans">
@@ -180,7 +180,7 @@ export function WhatsNewTab({ spots, onSelectSpot }: WhatsNewTabProps) {
                 <ExternalLink
                   key={i}
                   href={item.url}
-                  className="text-xs leading-snug t-sans-navy hover:underline block"
+                  className="text-[13px] leading-snug t-sans-navy hover:underline block"
                 >
                   <span className="text-boston-gray-400 mr-1.5">·</span>
                   {item.headline}
@@ -200,11 +200,11 @@ export function WhatsNewTab({ spots, onSelectSpot }: WhatsNewTabProps) {
                 <div key={i} className="p-3 rounded-sm bg-boston-gray-50">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-xs font-bold t-sans-navy">{game.team}</span>
-                    <span className={`text-[10px] font-bold uppercase tracking-widest t-sans ${game.result.startsWith("Won") ? "text-[#007A33]" : "text-boston-red"}`}>
+                    <span className={`text-xs font-bold uppercase tracking-widest t-sans ${game.result.startsWith("Won") ? "text-[#007A33]" : "text-boston-red"}`}>
                       {game.result}
                     </span>
                   </div>
-                  <p className="text-xs italic t-serif-body">{game.summary}</p>
+                  <p className="text-[13px] italic t-serif-body">{game.summary}</p>
                 </div>
               ))}
             </div>
@@ -215,7 +215,7 @@ export function WhatsNewTab({ spots, onSelectSpot }: WhatsNewTabProps) {
         {dispatch.getAroundToday && (
           <div className="px-4 py-4 border-b border-[#e0e0e0]">
             <SectionHeader emoji="🚇" title="Get Around Today" />
-            <p className="text-xs italic t-serif-body">{dispatch.getAroundToday}</p>
+            <p className="text-[13px] italic t-serif-body">{dispatch.getAroundToday}</p>
           </div>
         )}
 
@@ -227,9 +227,9 @@ export function WhatsNewTab({ spots, onSelectSpot }: WhatsNewTabProps) {
               {dispatch.tonight.map((ev, i) => (
                 <div key={i}>
                   <p className="text-xs font-bold t-sans-navy">{ev.title}</p>
-                  <p className="text-[11px] italic t-serif-body">{ev.detail}</p>
+                  <p className="text-[13px] italic t-serif-body">{ev.detail}</p>
                   {ev.url && (
-                    <ExternalLink href={ev.url} className="text-[10px] font-bold t-sans-blue hover:underline">
+                    <ExternalLink href={ev.url} className="text-xs font-bold t-sans-blue hover:underline">
                       Details →
                     </ExternalLink>
                   )}
@@ -246,17 +246,17 @@ export function WhatsNewTab({ spots, onSelectSpot }: WhatsNewTabProps) {
         >
           <SectionHeader emoji="📍" title="Today's Spot" />
           <p className="text-sm font-bold t-sans-navy">{dispatch.todaysSpot.name}</p>
-          <p className="text-[10px] uppercase tracking-widest t-sans-gray mb-1">
+          <p className="text-xs uppercase tracking-widest t-sans-gray mb-1">
             {dispatch.todaysSpot.neighborhood}
           </p>
-          <p className="text-xs italic t-serif-body">{dispatch.todaysSpot.reason}</p>
+          <p className="text-[13px] italic t-serif-body">{dispatch.todaysSpot.reason}</p>
         </div>
 
         {/* On This Day */}
         {dispatch.onThisDay && (
           <div className="px-4 py-4 border-b border-[#e0e0e0]">
             <SectionHeader emoji="🗓" title="On This Day" />
-            <p className="text-xs italic t-serif-body">{dispatch.onThisDay}</p>
+            <p className="text-[13px] italic t-serif-body">{dispatch.onThisDay}</p>
           </div>
         )}
 
@@ -266,7 +266,7 @@ export function WhatsNewTab({ spots, onSelectSpot }: WhatsNewTabProps) {
             <SectionHeader emoji="🔢" title="The Number" />
             <div className="flex items-baseline gap-3">
               <span className="text-3xl font-black t-sans-navy">{dispatch.theNumber.number}</span>
-              <p className="text-xs italic t-serif-body flex-1">{dispatch.theNumber.context}</p>
+              <p className="text-[13px] italic t-serif-body flex-1">{dispatch.theNumber.context}</p>
             </div>
           </div>
         )}
@@ -275,14 +275,14 @@ export function WhatsNewTab({ spots, onSelectSpot }: WhatsNewTabProps) {
         {dispatch.weatherWatch && (
           <div className="px-4 py-4 border-b border-[#e0e0e0]">
             <SectionHeader emoji="⛈️" title="Weather Watch" />
-            <p className="text-xs italic t-serif-body">{dispatch.weatherWatch}</p>
+            <p className="text-[13px] italic t-serif-body">{dispatch.weatherWatch}</p>
           </div>
         )}
 
         {/* Send-Off */}
         {dispatch.sendOff && (
           <div className="px-4 pt-5 pb-4">
-            <p className="text-xs italic leading-relaxed t-serif-body text-boston-gray-400">
+            <p className="text-[13px] italic leading-relaxed t-serif-body text-boston-gray-400">
               {dispatch.sendOff}
             </p>
           </div>

@@ -31,7 +31,7 @@ export function FeaturedBuilderCard({ builder, onClick, onSpotFilterClick }: Fea
     >
       {/* Featured label */}
       <div
-        className="text-[9px] font-bold uppercase tracking-widest mb-3 t-sans text-boston-yellow"
+        className="text-[11px] font-bold uppercase tracking-widest mb-3 t-sans text-boston-yellow"
       >
         ★ Featured Builder
       </div>
@@ -60,7 +60,7 @@ export function FeaturedBuilderCard({ builder, onClick, onSpotFilterClick }: Fea
 
           {/* Username */}
           <p
-            className="text-[10px] leading-none mt-0.5 t-sans text-boston-blue-light"
+            className="text-xs leading-none mt-0.5 t-sans text-boston-blue-light"
           >
             @{builder.username}
           </p>
@@ -68,7 +68,7 @@ export function FeaturedBuilderCard({ builder, onClick, onSpotFilterClick }: Fea
           {/* Neighborhood */}
           {builder.neighborhood && (
             <p
-              className="text-[10px] mt-1 t-sans text-white/50"
+              className="text-xs mt-1 t-sans text-white/50"
             >
               📍 {builder.neighborhood}
             </p>
@@ -78,7 +78,7 @@ export function FeaturedBuilderCard({ builder, onClick, onSpotFilterClick }: Fea
         {/* Category pill */}
         {builder.category && categoryIcon && (
           <span
-            className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-sm text-[9px] font-bold uppercase tracking-widest t-sans bg-white/10 text-white/85"
+            className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-sm text-[11px] font-bold uppercase tracking-widest t-sans bg-white/10 text-white/85"
           >
             {categoryIcon} {builder.category}
           </span>
@@ -108,7 +108,7 @@ export function FeaturedBuilderCard({ builder, onClick, onSpotFilterClick }: Fea
       {/* Bio — full text, no line clamp */}
       {builder.bio && (
         <p
-          className="text-xs italic leading-snug mb-3 t-serif text-white/80"
+          className="text-[13px] italic leading-snug mb-3 t-serif text-white/80"
         >
           &ldquo;{builder.bio}&rdquo;
         </p>
@@ -123,7 +123,7 @@ export function FeaturedBuilderCard({ builder, onClick, onSpotFilterClick }: Fea
             e.stopPropagation();
             if (spotCount > 0) onSpotFilterClick?.(builder.fid, builder.username);
           }}
-          className={`text-[10px] font-medium leading-none focus:outline-none t-sans btn-link-base ${spotCount > 0 ? "text-boston-blue-light cursor-pointer" : "text-white/40 cursor-default"}`}
+          className={`text-xs font-medium leading-none focus:outline-none t-sans btn-link-base ${spotCount > 0 ? "text-boston-blue-light cursor-pointer" : "text-white/40 cursor-default"}`}
         >
           {spotCount > 0 ? `🗺 ${spotCount} spot${spotCount === 1 ? "" : "s"} in the guide` : "🗺 No spots yet"}
         </button>
@@ -131,7 +131,7 @@ export function FeaturedBuilderCard({ builder, onClick, onSpotFilterClick }: Fea
         <span className="dot-sep-dark">·</span>
 
         <span
-          className="text-[10px] leading-none t-sans text-white/40"
+          className="text-xs leading-none t-sans text-white/40"
         >
           Joined {joinDate}
         </span>

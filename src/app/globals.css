@@ -121,7 +121,7 @@
 /* Label style (matches the repeated labelStyle() function) */
 .label-boston {
   font-family: var(--font-sans);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -161,7 +161,7 @@
 
 /* Header "+ ADD" button */
 .btn-add-header {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.2em;
@@ -181,7 +181,7 @@
 
 /* Overlay back button */
 .btn-overlay-back {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.15em;
@@ -193,7 +193,7 @@
 
 /* Overlay header label */
 .overlay-header-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.15em;
@@ -272,7 +272,7 @@
 
 /* Verified badge */
 .badge-verified {
-  font-size: 7px;
+  font-size: 8px;
   font-weight: 900;
 }
 
@@ -287,11 +287,11 @@
 /* Dot separator */
 .dot-sep {
   color: #c0c0c0;
-  font-size: 10px;
+  font-size: 12px;
 }
 .dot-sep-dark {
   color: rgba(255,255,255,0.2);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 /* Identity card border */
@@ -318,7 +318,7 @@
 /* Spot detail chevron separator */
 .chevron-sep {
   color: #c0c0c0;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 /* Builder detail sheet panel */
@@ -396,20 +396,20 @@
   margin-bottom: 4px;
 }
 .news-source-label {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 .news-headline {
   margin: 0;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.4;
   font-weight: 500;
 }
 .news-disclaimer {
   margin: 8px 16px 0;
-  font-size: 10px;
+  font-size: 12px;
 }
 .news-skeleton {
   height: 68px;
@@ -441,7 +441,7 @@
   text-align: center;
 }
 .onboarding-step-indicator {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.15em;
@@ -452,7 +452,7 @@
   border: none;
   border-radius: 3px;
   padding: 12px 24px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.15em;
@@ -465,7 +465,7 @@
 .onboarding-btn-skip {
   background: none;
   border: none;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -483,7 +483,7 @@
   border: 2px solid #e0e0e0;
   border-radius: 2px;
   padding: 10px 12px 10px 36px;
-  font-size: 13px;
+  font-size: 14px;
   outline: none;
 }
 .search-input:focus {
@@ -497,7 +497,7 @@
   border: none;
   border-radius: 2px;
   padding: 8px 14px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -538,7 +538,7 @@
   background: none;
   border: none;
   padding: 0;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -570,7 +570,7 @@
 
 /* Builders tab heading */
 .builders-heading {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.04em;
 }
@@ -596,7 +596,7 @@
 
 /* ── Builder join form ── */
 .form-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -605,7 +605,7 @@
 }
 
 .form-input {
-  font-size: 13px;
+  font-size: 14px;
   color: #091f2f;
   background: #fff;
   border: 2px solid #e0e0e0;
@@ -626,13 +626,13 @@
 }
 
 .form-hint {
-  font-size: 11px;
+  font-size: 12px;
   margin-top: 4px;
   font-style: italic;
 }
 
 .form-select {
-  font-size: 11px;
+  font-size: 12px;
   color: #091f2f;
   background: #fff;
   border: 2px solid #e0e0e0;
@@ -657,7 +657,7 @@
   position: absolute;
   right: 10px;
   bottom: 10px;
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .form-error {
@@ -722,7 +722,7 @@
 }
 
 .btn-show-map {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.15em;
@@ -731,7 +731,7 @@
 }
 
 .explore-search-input {
-  font-size: 12px;
+  font-size: 14px;
   border-radius: 3px;
   height: 36px;
   padding-left: 36px;
@@ -752,7 +752,7 @@
 
 /* ── Neighborhoods tab ── */
 .region-divider-label {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.15em;
@@ -773,7 +773,7 @@
 
 /* ── Builders tab ── */
 .btn-join-banner {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.2em;
@@ -792,7 +792,7 @@
 }
 
 .builders-overlay-back {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.15em;
@@ -803,7 +803,7 @@
 }
 
 .builders-overlay-title {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.15em;
@@ -818,7 +818,7 @@
   border: 2px solid #e0e0e0;
   border-radius: 3px;
   padding: 10px 12px;
-  font-size: 13px;
+  font-size: 14px;
   width: 100%;
   outline: none;
   min-height: 44px;
@@ -850,26 +850,26 @@
   font-size: 15px;
 }
 .weather-date {
-  font-size: 11px;
+  font-size: 12px;
 }
 .weather-date-sm {
-  font-size: 10px;
+  font-size: 12px;
   opacity: 0.6;
 }
 .weather-time {
-  font-size: 11px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.7);
   margin-top: 2px;
 }
 .weather-time-sm {
-  font-size: 11px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.7);
   margin-top: 3px;
   line-height: 1;
 }
 .weather-unavailable {
   color: rgba(255, 255, 255, 0.5);
-  font-size: 13px;
+  font-size: 14px;
 }
 .weather-temp {
   font-size: 22px;
@@ -877,12 +877,12 @@
   line-height: 1;
 }
 .weather-condition {
-  font-size: 11px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.75);
   line-height: 1.2;
 }
 .weather-hilo {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -906,20 +906,20 @@
   border-color: #1871bd;
 }
 .game-team {
-  font-size: 11px;
+  font-size: 12px;
   margin-bottom: 2px;
 }
 .game-opponent {
-  font-size: 13px;
+  font-size: 14px;
   margin-bottom: 8px;
 }
 .game-status {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.08em;
 }
 .game-venue {
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 0.05em;
 }
 
@@ -950,14 +950,14 @@
 }
 
 .section-heading {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.15em;
 }
 
 .section-subheading {
-  font-size: 9px;
+  font-size: 11px;
 }
 
 /* ── Sports skeleton ── */
@@ -988,7 +988,7 @@
 }
 
 .happening-timing {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.15em;
   line-height: 1;
@@ -999,12 +999,12 @@
 }
 
 .happening-desc {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
 }
 
 .happening-link {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
   background: none;
@@ -1014,7 +1014,7 @@
 }
 
 .happening-ext-link {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-decoration: none;

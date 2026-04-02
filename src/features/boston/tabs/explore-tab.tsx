@@ -156,7 +156,7 @@ export function ExploreTab({
       {activeCategory === "Tourist Picks" && (
         <div className="flex items-center gap-2 px-4 py-2 bg-[#1871bd]">
           <span className="text-sm">✈️</span>
-          <span className="text-[10px] font-bold uppercase tracking-widest text-white t-sans">
+          <span className="text-xs font-bold uppercase tracking-widest text-white t-sans">
             Visitor Mode — Local-approved picks for out-of-towners
           </span>
         </div>

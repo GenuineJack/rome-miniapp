@@ -50,7 +50,7 @@ function SuccessSpotPreview({
     >
       <div className="flex items-start justify-between gap-2 mb-1.5">
         <span
-          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest t-sans-white bg-navy"
+          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-bold uppercase tracking-widest t-sans-white bg-navy"
         >
           {icon} {data.category}
         </span>
@@ -61,14 +61,14 @@ function SuccessSpotPreview({
         {data.name}
       </h3>
       <div
-        className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-wide t-sans-gray"
+        className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide t-sans-gray"
       >
         {pfpUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={pfpUrl} alt={displayName} className="w-5 h-5 rounded-full object-cover shrink-0" />
         ) : (
           <div
-            className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0 bg-boston-blue"
+            className="w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0 bg-boston-blue"
           >
             {displayName[0]?.toUpperCase() ?? "?"}
           </div>
@@ -263,7 +263,7 @@ export function SubmitTab() {
             className={`submit-input ${errors.name ? "submit-input-error" : ""}`}
           />
           {errors.name && (
-            <p className="text-[10px] mt-1 font-bold t-sans-red">
+            <p className="text-xs mt-1 font-bold t-sans-red">
               {errors.name}
             </p>
           )}
@@ -284,7 +284,7 @@ export function SubmitTab() {
             ))}
           </select>
           {errors.category && (
-            <p className="text-[10px] mt-1 font-bold t-sans-red">
+            <p className="text-xs mt-1 font-bold t-sans-red">
               {errors.category}
             </p>
           )}
@@ -305,7 +305,7 @@ export function SubmitTab() {
             ))}
           </select>
           {errors.neighborhood && (
-            <p className="text-[10px] mt-1 font-bold t-sans-red">
+            <p className="text-xs mt-1 font-bold t-sans-red">
               {errors.neighborhood}
             </p>
           )}
@@ -323,12 +323,12 @@ export function SubmitTab() {
           />
           <div className="flex justify-between items-center mt-1">
             {errors.description ? (
-              <p className="text-[10px] font-bold t-sans-red">
+              <p className="text-xs font-bold t-sans-red">
                 {errors.description}
               </p>
             ) : <span />}
             <span
-              className={`text-[10px] font-medium t-sans ${form.description.length > 130 ? "text-boston-red" : "text-boston-gray-400"}`}
+              className={`text-xs font-medium t-sans ${form.description.length > 130 ? "text-boston-red" : "text-boston-gray-400"}`}
             >
               {form.description.length}/140
             </span>
@@ -362,7 +362,7 @@ export function SubmitTab() {
             className={`submit-input ${errors.link ? "submit-input-error" : ""}`}
           />
           {errors.link && (
-            <p className="text-[10px] mt-1 font-bold t-sans-red">
+            <p className="text-xs mt-1 font-bold t-sans-red">
               {errors.link}
             </p>
           )}
@@ -375,14 +375,14 @@ export function SubmitTab() {
           >
             <p className="uppercase tracking-wide mb-1">Submission failed</p>
             {serverError && (
-              <p className="font-normal text-[11px] italic t-serif">
+              <p className="font-normal text-xs italic t-serif">
                 {serverError}
               </p>
             )}
             <button
               type="button"
               onClick={() => { setState("form"); setServerError(null); }}
-              className="mt-2 text-[10px] font-bold uppercase tracking-widest underline bg-transparent border-0 cursor-pointer text-boston-red p-0"
+              className="mt-2 text-xs font-bold uppercase tracking-widest underline bg-transparent border-0 cursor-pointer text-boston-red p-0"
             >
               Dismiss
             </button>

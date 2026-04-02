@@ -24,7 +24,7 @@ export function CategoryFilterBar({ active, onChange }: CategoryFilterBarProps) 
           <button
             key={cat}
             onClick={() => onChange(cat)}
-            className={`shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors duration-150 focus:outline-none t-sans cat-filter-btn ${
+            className={`shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-sm text-xs font-bold uppercase tracking-widest transition-colors duration-150 focus:outline-none t-sans cat-filter-btn ${
               isActive ? "bg-navy text-white" : "bg-transparent text-navy"
             }`}
           >

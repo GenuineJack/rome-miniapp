@@ -52,7 +52,7 @@ export function TeamDetailSheet({ teamName, games, onClose }: TeamDetailSheetPro
       <div className="bg-navy px-4 pt-4 pb-5">
         <button
           onClick={onClose}
-          className="flex items-center gap-1.5 mb-4 text-[10px] font-bold uppercase tracking-widest text-white opacity-60 hover:opacity-100 transition-opacity t-sans"
+          className="flex items-center gap-1.5 mb-4 text-xs font-bold uppercase tracking-widest text-white opacity-60 hover:opacity-100 transition-opacity t-sans"
         >
           ← Back
         </button>
@@ -62,7 +62,7 @@ export function TeamDetailSheet({ teamName, games, onClose }: TeamDetailSheetPro
             <h1 className="text-xl font-black uppercase tracking-tight text-white t-sans leading-tight">
               {meta.fullName}
             </h1>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-boston-blue t-sans">
+            <p className="text-xs font-bold uppercase tracking-widest text-boston-blue t-sans">
               {meta.sport} · Est. {meta.founded}
             </p>
           </div>
@@ -79,17 +79,17 @@ export function TeamDetailSheet({ teamName, games, onClose }: TeamDetailSheetPro
           zoom={15}
         />
         <div className="px-4 py-2 bg-boston-gray-50 flex items-center justify-between">
-          <span className="text-[10px] font-bold uppercase tracking-widest t-sans-navy">
+          <span className="text-xs font-bold uppercase tracking-widest t-sans-navy">
             📍 {meta.venue}
           </span>
-          <span className="text-[10px] t-sans-gray">{meta.colors}</span>
+          <span className="text-xs t-sans-gray">{meta.colors}</span>
         </div>
       </div>
 
       {/* Upcoming Games */}
       {teamGames.length > 0 && (
         <div className="px-4 py-4 border-b border-[#e0e0e0]">
-          <h2 className="text-[10px] font-bold uppercase tracking-widest t-sans-navy mb-3">
+          <h2 className="text-xs font-bold uppercase tracking-widest t-sans-navy mb-3">
             Upcoming
           </h2>
           <div className="flex flex-col gap-2">
@@ -102,7 +102,7 @@ export function TeamDetailSheet({ teamName, games, onClose }: TeamDetailSheetPro
 
       {/* Bio */}
       <div className="px-4 py-4 border-b border-[#e0e0e0]">
-        <h2 className="text-[10px] font-bold uppercase tracking-widest t-sans-navy mb-2">
+        <h2 className="text-xs font-bold uppercase tracking-widest t-sans-navy mb-2">
           About
         </h2>
         <p className="text-sm italic leading-relaxed t-serif-body">{meta.bio}</p>
@@ -111,14 +111,14 @@ export function TeamDetailSheet({ teamName, games, onClose }: TeamDetailSheetPro
       {/* Championships */}
       {meta.championships.length > 0 && (
         <div className="px-4 py-4 border-b border-[#e0e0e0]">
-          <h2 className="text-[10px] font-bold uppercase tracking-widest t-sans-navy mb-2">
+          <h2 className="text-xs font-bold uppercase tracking-widest t-sans-navy mb-2">
             🏆 Championships ({meta.championships.length})
           </h2>
           <div className="flex flex-wrap gap-1.5">
             {meta.championships.map((year) => (
               <span
                 key={year}
-                className="px-2 py-0.5 rounded-sm bg-navy text-[10px] font-bold text-white t-sans"
+                className="px-2 py-0.5 rounded-sm bg-navy text-xs font-bold text-white t-sans"
               >
                 {year}
               </span>
@@ -148,21 +148,21 @@ function GameRow({ game }: { game: BostonGame }) {
     <div className={`flex items-center justify-between p-3 rounded-sm ${isLive ? "bg-boston-red/10 border border-boston-red/30" : "bg-boston-gray-50"}`}>
       <div>
         <p className="text-xs font-bold t-sans-navy">vs {game.opponent}</p>
-        <p className="text-[10px] t-sans-gray">{game.venue.split(",")[0]}</p>
+        <p className="text-xs t-sans-gray">{game.venue.split(",")[0]}</p>
       </div>
       <div className="text-right">
         {isLive ? (
-          <p className="text-[10px] font-bold uppercase t-sans text-boston-red">
+          <p className="text-xs font-bold uppercase t-sans text-boston-red">
             🔴 LIVE {game.score ? `${game.score.home}–${game.score.away}` : ""}
           </p>
         ) : isFinal ? (
-          <p className="text-[10px] font-bold uppercase t-sans-gray">
+          <p className="text-xs font-bold uppercase t-sans-gray">
             Final {game.score ? `${game.score.home}–${game.score.away}` : ""}
           </p>
         ) : (
           <>
-            <p className="text-[10px] font-bold t-sans-navy">{game.time}</p>
-            <p className="text-[10px] t-sans-gray">{game.date}</p>
+            <p className="text-xs font-bold t-sans-navy">{game.time}</p>
+            <p className="text-xs t-sans-gray">{game.date}</p>
           </>
         )}
       </div>

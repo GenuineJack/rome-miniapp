@@ -154,7 +154,7 @@ export function BuilderDetailSheet({
                 </h2>
                 {builder.verified && (
                   <span
-                    className="inline-flex items-center justify-center w-4 h-4 rounded-full text-white shrink-0 bg-boston-blue text-[9px] font-black"
+                    className="inline-flex items-center justify-center w-4 h-4 rounded-full text-white shrink-0 bg-boston-blue text-[11px] font-black"
                     aria-label="Verified"
                   >
                     ✓
@@ -174,7 +174,7 @@ export function BuilderDetailSheet({
                   return (
                     <span
                       key={cat}
-                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-widest t-sans-white bg-navy"
+                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[11px] font-bold uppercase tracking-widest t-sans-white bg-navy"
                     >
                       {icon} {cat}
                     </span>
@@ -182,7 +182,7 @@ export function BuilderDetailSheet({
                 })}
                 {builder.neighborhood && (
                   <span
-                    className="text-[10px] t-sans-gray"
+                    className="text-xs t-sans-gray"
                   >
                     📍 {builder.neighborhood}
                   </span>
@@ -207,7 +207,7 @@ export function BuilderDetailSheet({
           {(builder.projectName || allLinks.length > 0) && (
             <div className="mb-4">
               <p
-                className="text-[9px] font-bold uppercase tracking-widest mb-1 t-sans-gray"
+                className="text-[11px] font-bold uppercase tracking-widest mb-1 t-sans-gray"
               >
                 Building
               </p>
@@ -222,7 +222,7 @@ export function BuilderDetailSheet({
                 <ExternalLink
                   key={i}
                   href={link}
-                  className="block text-[11px] font-bold uppercase tracking-widest hover:underline truncate mb-0.5 t-sans-blue"
+                  className="block text-xs font-bold uppercase tracking-widest hover:underline truncate mb-0.5 t-sans-blue"
                 >
                   ↗ {(() => { try { return new URL(link).hostname.replace(/^www\./, ""); } catch { return link; } })()}
                 </ExternalLink>
@@ -234,12 +234,12 @@ export function BuilderDetailSheet({
           {builder.talkAbout && (
             <div className="mb-4">
               <p
-                className="text-[9px] font-bold uppercase tracking-widest mb-1 t-sans-gray"
+                className="text-[11px] font-bold uppercase tracking-widest mb-1 t-sans-gray"
               >
                 Talk to me about
               </p>
               <p
-                className="text-xs italic leading-relaxed t-serif-body"
+                className="text-[13px] italic leading-relaxed t-serif-body"
               >
                 {builder.talkAbout}
               </p>
@@ -253,7 +253,7 @@ export function BuilderDetailSheet({
           <div className="mb-6">
             <div className="flex items-center justify-between mb-3">
               <p
-                className="text-[9px] font-bold uppercase tracking-widest t-sans-gray"
+                className="text-[11px] font-bold uppercase tracking-widest t-sans-gray"
               >
                 Spots in the guide
               </p>
@@ -264,7 +264,7 @@ export function BuilderDetailSheet({
                     onViewBuilderSpots?.(builder.fid, builder.username);
                     handleClose();
                   }}
-                  className="text-[10px] font-bold uppercase tracking-widest hover:underline focus:outline-none t-sans-blue btn-link-base"
+                  className="text-xs font-bold uppercase tracking-widest hover:underline focus:outline-none t-sans-blue btn-link-base"
                 >
                   See all →
                 </button>

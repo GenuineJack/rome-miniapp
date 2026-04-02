@@ -34,7 +34,7 @@ export function BuilderFilterBar({
               <button
                 key={cat}
                 onClick={() => onCategoryChange(cat)}
-                className={`t-sans inline-flex items-center gap-1 px-3 py-1.5 rounded-sm text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition-colors duration-150 focus:outline-none min-h-9 border ${
+                className={`t-sans inline-flex items-center gap-1 px-3 py-1.5 rounded-sm text-xs font-bold uppercase tracking-widest whitespace-nowrap transition-colors duration-150 focus:outline-none min-h-9 border ${
                   isActive
                     ? "bg-navy text-white border-navy"
                     : "bg-transparent text-navy border-boston-gray-200"
@@ -52,7 +52,7 @@ export function BuilderFilterBar({
         className="t-sans flex items-center gap-2 px-4 pb-3"
       >
         <span
-          className="text-[10px] font-bold uppercase tracking-widest shrink-0 text-boston-gray-400"
+          className="text-xs font-bold uppercase tracking-widest shrink-0 text-boston-gray-400"
         >
           📍 Neighborhood
         </span>
@@ -60,7 +60,7 @@ export function BuilderFilterBar({
           value={activeNeighborhood}
           onChange={(e) => onNeighborhoodChange(e.target.value)}
           aria-label="Filter by neighborhood"
-          className="t-sans-navy bg-white flex-1 text-[11px] font-medium focus:outline-none select-filter"
+          className="t-sans-navy bg-white flex-1 text-xs font-medium focus:outline-none select-filter"
         >
           <option value="All">All neighborhoods</option>
           <optgroup label="Boston Neighborhoods">

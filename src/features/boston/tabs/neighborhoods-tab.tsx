@@ -39,7 +39,7 @@ function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots, onSe
       <div className="px-4 pt-4 pb-5 bg-navy">
         <button
           onClick={onBack}
-          className="flex items-center gap-1.5 mb-4 text-[10px] font-bold uppercase tracking-widest text-white opacity-60 hover:opacity-100 transition-opacity t-sans"
+          className="flex items-center gap-1.5 mb-4 text-xs font-bold uppercase tracking-widest text-white opacity-60 hover:opacity-100 transition-opacity t-sans"
         >
           ← Back
         </button>
@@ -90,7 +90,7 @@ function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots, onSe
         />
         {!spotsLoading && inlineSpots.length === 0 && (
           <div className="relative flex items-center justify-center pointer-events-none -mt-[100px] h-0">
-            <span className="bg-navy/80 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-sm t-sans">
+            <span className="bg-navy/80 text-white text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-sm t-sans">
               No spots here yet
             </span>
           </div>
@@ -100,7 +100,7 @@ function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots, onSe
       {/* Inline spots */}
       <div className="p-4">
         <p
-          className="text-[9px] font-bold uppercase tracking-widest mb-3 t-sans-gray"
+          className="text-[11px] font-bold uppercase tracking-widest mb-3 t-sans-gray"
         >
           Spots in {neighborhood.name}
         </p>
@@ -138,7 +138,7 @@ function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots, onSe
                     {spot.name}
                   </span>
                   <span
-                    className="inline-flex items-center px-1.5 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-widest shrink-0 t-sans-white bg-navy"
+                    className="inline-flex items-center px-1.5 py-0.5 rounded-sm text-[11px] font-bold uppercase tracking-widest shrink-0 t-sans-white bg-navy"
                   >
                     {spot.category}
                   </span>
@@ -148,7 +148,7 @@ function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots, onSe
             {spotCount > 5 && (
               <button
                 onClick={() => onViewSpots(neighborhood.id)}
-                className="mt-3 text-[10px] font-bold uppercase tracking-widest t-sans-blue btn-unstyled"
+                className="mt-3 text-xs font-bold uppercase tracking-widest t-sans-blue btn-unstyled"
               >
                 View all in Explore →
               </button>
@@ -184,7 +184,7 @@ function NeighborhoodCard({ neighborhood, spotCount, onClick }: NeighborhoodCard
       </p>
       <div className="flex items-center justify-between">
         <span
-          className="text-[10px] font-bold uppercase tracking-widest text-[#1871bd] group-hover:text-white/70 transition-colors duration-200 t-sans"
+          className="text-xs font-bold uppercase tracking-widest text-[#1871bd] group-hover:text-white/70 transition-colors duration-200 t-sans"
         >
           📍 {spotCount} {spotCount === 1 ? "spot" : "spots"}
         </span>
@@ -208,7 +208,7 @@ function RegionCard({ neighborhood, spotCount, onClick }: RegionCardProps) {
     >
       <div className="flex items-center gap-2 mb-1.5">
         <span
-          className="text-[8px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-sm t-sans-blue region-badge"
+          className="text-xs font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-sm t-sans-blue region-badge"
         >
           Region
         </span>
@@ -224,7 +224,7 @@ function RegionCard({ neighborhood, spotCount, onClick }: RegionCardProps) {
         {neighborhood.description}
       </p>
       <span
-        className="text-[10px] font-bold uppercase tracking-widest t-sans-blue"
+        className="text-xs font-bold uppercase tracking-widest t-sans-blue"
       >
         {spotCount > 0 ? `📍 ${spotCount} ${spotCount === 1 ? "spot" : "spots"}` : "Be the first to add a spot in this region"}
       </span>
@@ -283,7 +283,7 @@ export function NeighborhoodsTab({ onNavigateToExplore, onSelectSpot }: Neighbor
       {/* City Neighborhoods — 2-column grid */}
       <div className="p-4">
         <p
-          className="text-[9px] font-bold uppercase tracking-widest mb-3 t-sans-navy"
+          className="text-[11px] font-bold uppercase tracking-widest mb-3 t-sans-navy"
         >
           Boston Neighborhoods
         </p>

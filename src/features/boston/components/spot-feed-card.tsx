@@ -27,12 +27,12 @@ export function SpotFeedCard({ spot, onClick }: { spot: Spot; onClick?: (spot: S
     >
       <div className="flex items-start justify-between gap-2 mb-2">
         <span
-          className="t-sans-white bg-navy inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest"
+          className="t-sans-white bg-navy inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-bold uppercase tracking-widest"
         >
           {icon} {spot.category}
         </span>
         <span
-          className="t-sans-gray text-[10px] font-medium uppercase tracking-wide shrink-0"
+          className="t-sans-gray text-xs font-medium uppercase tracking-wide shrink-0"
         >
           {timeAgo(spot.createdAt)}
         </span>
@@ -45,7 +45,7 @@ export function SpotFeedCard({ spot, onClick }: { spot: Spot; onClick?: (spot: S
       </h3>
 
       <p
-        className="t-serif-body text-xs italic leading-snug mb-3"
+        className="t-serif-body text-[13px] italic leading-snug mb-3"
       >
         &ldquo;{spot.description}&rdquo;
       </p>
@@ -61,13 +61,13 @@ export function SpotFeedCard({ spot, onClick }: { spot: Spot; onClick?: (spot: S
           />
         ) : (
           <div
-            className="bg-boston-blue w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0"
+            className="bg-boston-blue w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"
           >
             {spot.submittedByDisplayName[0]?.toUpperCase() ?? "?"}
           </div>
         )}
         <span
-          className="t-sans-gray text-[10px] font-medium min-w-0"
+          className="t-sans-gray text-xs font-medium min-w-0"
         >
           Added by{" "}
           <span className="text-boston-blue">@{spot.submittedByUsername}</span>{" "}

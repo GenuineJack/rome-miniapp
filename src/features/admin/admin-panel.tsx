@@ -145,7 +145,7 @@ export function AdminPanel() {
           )}
           <button
             type="submit"
-            className="px-4 py-2 rounded-sm text-[10px] font-bold uppercase tracking-widest t-sans-white bg-boston-blue border-none cursor-pointer"
+            className="px-4 py-2 rounded-sm text-xs font-bold uppercase tracking-widest t-sans-white bg-boston-blue border-none cursor-pointer"
           >
             Sign In
           </button>
@@ -207,14 +207,14 @@ export function AdminPanel() {
           <h1 className="text-lg font-black uppercase tracking-tight t-sans-white">
             Admin Panel
           </h1>
-          <p className="text-[10px] uppercase tracking-widest t-sans text-white/50">
+          <p className="text-xs uppercase tracking-widest t-sans text-white/50">
             {user ? `FID ${user.fid} · @${user.username}` : `FID ${adminFid} · Desktop Admin`}
           </p>
         </div>
         {secretAuthed && (
           <button
             onClick={handleSecretLogout}
-            className="text-[10px] font-bold uppercase tracking-widest text-white/50 hover:text-white/80 bg-transparent border-none cursor-pointer"
+            className="text-xs font-bold uppercase tracking-widest text-white/50 hover:text-white/80 bg-transparent border-none cursor-pointer"
           >
             Sign Out
           </button>
@@ -248,7 +248,7 @@ export function AdminPanel() {
                   <p className="text-sm font-bold t-sans-navy">
                     {spot.name}
                   </p>
-                  <p className="text-[10px] t-sans-gray">
+                  <p className="text-xs t-sans-gray">
                     {spot.category} · {spot.neighborhood} · @{spot.submittedByUsername}
                   </p>
                 </div>
@@ -259,13 +259,13 @@ export function AdminPanel() {
               <div className="flex gap-2">
                 <button
                   onClick={() => handleApprove(spot.id)}
-                  className="px-4 py-2 rounded-sm text-[10px] font-bold uppercase tracking-widest t-sans-white bg-boston-blue border-none cursor-pointer"
+                  className="px-4 py-2 rounded-sm text-xs font-bold uppercase tracking-widest t-sans-white bg-boston-blue border-none cursor-pointer"
                 >
                   Approve
                 </button>
                 <button
                   onClick={() => handleReject(spot.id)}
-                  className="px-4 py-2 rounded-sm text-[10px] font-bold uppercase tracking-widest t-sans-red bg-transparent border border-boston-red cursor-pointer"
+                  className="px-4 py-2 rounded-sm text-xs font-bold uppercase tracking-widest t-sans-red bg-transparent border border-boston-red cursor-pointer"
                 >
                   Reject
                 </button>
@@ -297,11 +297,11 @@ export function AdminPanel() {
             >
               <div className="flex items-center gap-2 mb-1">
                 <span
-                  className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-sm t-sans-red admin-error-badge"
+                  className="text-[11px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-sm t-sans-red admin-error-badge"
                 >
                   {err.type}
                 </span>
-                <span className="text-[10px] t-sans-gray">
+                <span className="text-xs t-sans-gray">
                   FID {err.userFid} · {new Date(err.createdAt).toLocaleString()}
                 </span>
               </div>
@@ -309,10 +309,10 @@ export function AdminPanel() {
                 {err.errorMessage}
               </p>
               <details>
-                <summary className="text-[10px] cursor-pointer t-sans-gray">
+                <summary className="text-xs cursor-pointer t-sans-gray">
                   Payload
                 </summary>
-                <pre className="text-[10px] mt-1 p-2 overflow-x-auto bg-boston-gray-50 admin-pre">
+                <pre className="text-xs mt-1 p-2 overflow-x-auto bg-boston-gray-50 admin-pre">
                   {err.payload}
                 </pre>
               </details>
@@ -335,7 +335,7 @@ export function AdminPanel() {
               <button
                 onClick={() => handleGenerateDispatch(false)}
                 disabled={regenerating}
-                className="px-4 py-2 rounded-sm text-[10px] font-bold uppercase tracking-widest t-sans-white bg-boston-blue border-none cursor-pointer disabled:opacity-50"
+                className="px-4 py-2 rounded-sm text-xs font-bold uppercase tracking-widest t-sans-white bg-boston-blue border-none cursor-pointer disabled:opacity-50"
               >
                 {regenerating ? "Generating..." : "Generate Dispatch"}
               </button>
@@ -345,14 +345,14 @@ export function AdminPanel() {
           {todayDispatch && (
             <div className="bg-white rounded-sm p-3 box-bordered">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-bold uppercase tracking-widest t-sans-gray">
+                <span className="text-xs font-bold uppercase tracking-widest t-sans-gray">
                   {todayDispatch.date}
                 </span>
                 <div className="flex gap-2">
                   {!dispatchEditing && (
                     <button
                       onClick={() => setDispatchEditing(true)}
-                      className="text-[10px] font-bold uppercase tracking-widest t-sans-blue cursor-pointer bg-transparent border-none"
+                      className="text-xs font-bold uppercase tracking-widest t-sans-blue cursor-pointer bg-transparent border-none"
                     >
                       Edit
                     </button>
@@ -360,7 +360,7 @@ export function AdminPanel() {
                   <button
                     onClick={() => handleGenerateDispatch(true)}
                     disabled={regenerating}
-                    className="text-[10px] font-bold uppercase tracking-widest t-sans-gray cursor-pointer bg-transparent border-none disabled:opacity-50"
+                    className="text-xs font-bold uppercase tracking-widest t-sans-gray cursor-pointer bg-transparent border-none disabled:opacity-50"
                   >
                     {regenerating ? "..." : "Regenerate"}
                   </button>
@@ -381,20 +381,20 @@ export function AdminPanel() {
                   <div className="flex gap-2">
                     <button
                       onClick={handleSaveDispatch}
-                      className="px-3 py-1.5 rounded-sm text-[10px] font-bold uppercase tracking-widest t-sans-white bg-boston-blue border-none cursor-pointer"
+                      className="px-3 py-1.5 rounded-sm text-xs font-bold uppercase tracking-widest t-sans-white bg-boston-blue border-none cursor-pointer"
                     >
                       Save
                     </button>
                     <button
                       onClick={() => { setDispatchEditing(false); setDispatchDraft(todayDispatch.content); }}
-                      className="px-3 py-1.5 rounded-sm text-[10px] font-bold uppercase tracking-widest t-sans-gray bg-transparent border border-boston-gray-200 cursor-pointer"
+                      className="px-3 py-1.5 rounded-sm text-xs font-bold uppercase tracking-widest t-sans-gray bg-transparent border border-boston-gray-200 cursor-pointer"
                     >
                       Cancel
                     </button>
                   </div>
                 </div>
               ) : (
-                <pre className="text-[10px] whitespace-pre-wrap overflow-x-auto max-h-48 overflow-y-auto bg-boston-gray-50 p-2 rounded-sm t-sans-navy">
+                <pre className="text-xs whitespace-pre-wrap overflow-x-auto max-h-48 overflow-y-auto bg-boston-gray-50 p-2 rounded-sm t-sans-navy">
                   {todayDispatch.content.slice(0, 500)}{todayDispatch.content.length > 500 ? "..." : ""}
                 </pre>
               )}
@@ -407,7 +407,7 @@ export function AdminPanel() {
           <h2 className="text-sm font-bold uppercase tracking-widest mb-3 t-sans-navy">
             ✈️ Tourist Picks ({allSpots.filter(s => s.touristPick).length})
           </h2>
-          <p className="text-[10px] t-sans-gray mb-3">
+          <p className="text-xs t-sans-gray mb-3">
             Toggle spots as tourist picks. These appear under the ✈️ Tourist Picks filter.
           </p>
           <div className="flex flex-col gap-1">
@@ -421,11 +421,11 @@ export function AdminPanel() {
                 >
                   <div className="min-w-0">
                     <p className="text-xs font-bold t-sans-navy truncate">{spot.name}</p>
-                    <p className="text-[10px] t-sans-gray">{spot.neighborhood} · {spot.category}</p>
+                    <p className="text-xs t-sans-gray">{spot.neighborhood} · {spot.category}</p>
                   </div>
                   <button
                     onClick={() => handleToggleTouristPick(spot.id, spot.touristPick)}
-                    className={`shrink-0 px-2 py-1 rounded-sm text-[9px] font-bold uppercase tracking-widest cursor-pointer border-none ${
+                    className={`shrink-0 px-2 py-1 rounded-sm text-[11px] font-bold uppercase tracking-widest cursor-pointer border-none ${
                       spot.touristPick ? "bg-boston-blue text-white" : "bg-boston-gray-100 t-sans-gray"
                     }`}
                   >

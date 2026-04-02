@@ -17,7 +17,7 @@ export function CitiesBuilt() {
               <h3 className="t-sans font-bold text-lg text-[#091f2f]">
                 Boston
               </h3>
-              <span className="t-sans text-[9px] font-bold uppercase tracking-[0.15em] text-[#1871bd]">
+              <span className="t-sans text-[11px] font-bold uppercase tracking-[0.15em] text-[#1871bd]">
                 Flagship
               </span>
             </div>
@@ -27,13 +27,13 @@ export function CitiesBuilt() {
             scores, daily dispatch, and a growing builder community.
           </p>
           <div className="flex gap-2 flex-wrap">
-            <span className="text-[10px] bg-[#f3f3f3] px-2.5 py-1 rounded-sm t-sans font-semibold text-[#58585b]">
+            <span className="text-xs bg-[#f3f3f3] px-2.5 py-1 rounded-sm t-sans font-semibold text-[#58585b]">
               60+ spots
             </span>
-            <span className="text-[10px] bg-[#f3f3f3] px-2.5 py-1 rounded-sm t-sans font-semibold text-[#58585b]">
+            <span className="text-xs bg-[#f3f3f3] px-2.5 py-1 rounded-sm t-sans font-semibold text-[#58585b]">
               5 sports teams
             </span>
-            <span className="text-[10px] bg-[#f3f3f3] px-2.5 py-1 rounded-sm t-sans font-semibold text-[#58585b]">
+            <span className="text-xs bg-[#f3f3f3] px-2.5 py-1 rounded-sm t-sans font-semibold text-[#58585b]">
               16 neighborhoods
             </span>
           </div>

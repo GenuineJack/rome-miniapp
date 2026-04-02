@@ -56,7 +56,7 @@ export function MapView({ spots, onSpotClick }: MapViewProps) {
 
       {/* Spot count badge */}
       <div
-        className="absolute top-3 right-3 px-2 py-1 rounded-sm text-[10px] font-bold uppercase tracking-widest z-[1000] pointer-events-none t-sans-white bg-navy map-badge-border"
+        className="absolute top-3 right-3 px-2 py-1 rounded-sm text-xs font-bold uppercase tracking-widest z-[1000] pointer-events-none t-sans-white bg-navy map-badge-border"
       >
         {spots.length} {spots.length === 1 ? "spot" : "spots"}
         {spotsWithCoords.length < spots.length && (
@@ -70,19 +70,19 @@ export function MapView({ spots, onSpotClick }: MapViewProps) {
       <div className="absolute bottom-3 left-3 flex items-center gap-3 z-[1000] pointer-events-none">
         <div className="flex items-center gap-1">
           <div className="w-2.5 h-2.5 rounded-full bg-boston-red" />
-          <span className="text-[9px] font-bold uppercase tracking-wide text-white opacity-60 t-sans">
+          <span className="text-[11px] font-bold uppercase tracking-wide text-white opacity-60 t-sans">
             Spot
           </span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-2.5 h-2.5 rounded-full bg-boston-yellow" />
-          <span className="text-[9px] font-bold uppercase tracking-wide text-white opacity-60 t-sans">
+          <span className="text-[11px] font-bold uppercase tracking-wide text-white opacity-60 t-sans">
             Featured
           </span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-2.5 h-2.5 rounded-full bg-boston-blue" />
-          <span className="text-[9px] font-bold uppercase tracking-wide text-white opacity-60 t-sans">
+          <span className="text-[11px] font-bold uppercase tracking-wide text-white opacity-60 t-sans">
             New
           </span>
         </div>

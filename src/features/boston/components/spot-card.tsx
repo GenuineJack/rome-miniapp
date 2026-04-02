@@ -35,20 +35,20 @@ export function SpotCard({ spot, onClick, isNew }: SpotCardProps) {
     >
       <div className="flex items-start justify-between gap-2 mb-1.5">
         <span
-          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest t-sans-white bg-navy"
+          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-bold uppercase tracking-widest t-sans-white bg-navy"
         >
           {icon} {spot.category}
         </span>
         {isNew && (
           <span
-            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest shrink-0 t-sans-white bg-boston-blue"
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-bold uppercase tracking-widest shrink-0 t-sans-white bg-boston-blue"
           >
             New
           </span>
         )}
         {spot.featured && !isNew && (
           <span
-            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest shrink-0 t-sans-navy bg-boston-yellow"
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-bold uppercase tracking-widest shrink-0 t-sans-navy bg-boston-yellow"
           >
             ★ Pick
           </span>
@@ -62,7 +62,7 @@ export function SpotCard({ spot, onClick, isNew }: SpotCardProps) {
       </h3>
 
       <p
-        className="text-xs italic leading-snug mb-2 line-clamp-2 t-serif-body"
+        className="text-[13px] italic leading-snug mb-2 line-clamp-2 t-serif-body"
       >
         &ldquo;{spot.description}&rdquo;
       </p>
@@ -70,7 +70,7 @@ export function SpotCard({ spot, onClick, isNew }: SpotCardProps) {
       {/* Bottom row: meta + quick actions */}
       <div className="flex items-center justify-between gap-2">
         <div
-          className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-wide min-w-0 t-sans-gray"
+          className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide min-w-0 t-sans-gray"
         >
           <span className="truncate">📍 {spot.neighborhood}</span>
           <span className="shrink-0">·</span>

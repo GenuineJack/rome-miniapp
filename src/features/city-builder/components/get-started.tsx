@@ -20,7 +20,7 @@ export function GetStarted() {
         <div className="border-2 border-[#1871bd] rounded-sm p-6 sm:p-8 flex flex-col">
           <div className="flex items-center gap-2 mb-4">
             <span className="text-2xl">🤖</span>
-            <span className="t-sans text-[9px] font-bold uppercase tracking-[0.15em] text-[#1871bd]">
+            <span className="t-sans text-[11px] font-bold uppercase tracking-[0.15em] text-[#1871bd]">
               Recommended
             </span>
           </div>
@@ -46,7 +46,7 @@ export function GetStarted() {
         <div className="border-2 border-[#e0e0e0] rounded-sm p-6 sm:p-8 flex flex-col">
           <div className="flex items-center gap-2 mb-4">
             <span className="text-2xl">🛠</span>
-            <span className="t-sans text-[9px] font-bold uppercase tracking-[0.15em] text-[#828282]">
+            <span className="t-sans text-[11px] font-bold uppercase tracking-[0.15em] text-[#828282]">
               For Developers
             </span>
           </div>
@@ -77,7 +77,7 @@ export function GetStarted() {
           {API_KEYS.map((key) => (
             <div key={key.name} className="flex items-start gap-4">
               <span
-                className={`t-sans text-[9px] font-bold mt-1 flex-shrink-0 tracking-wider ${
+                className={`t-sans text-[11px] font-bold mt-1 flex-shrink-0 tracking-wider ${
                   key.required ? "text-[#1871bd]" : "text-[#828282]"
                 }`}
               >

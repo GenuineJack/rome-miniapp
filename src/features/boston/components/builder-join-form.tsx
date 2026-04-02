@@ -278,13 +278,13 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
               {user.displayName ?? user.username}
             </p>
             <p
-              className="text-[10px] truncate t-sans-blue"
+              className="text-xs truncate t-sans-blue"
             >
               @{user.username}
             </p>
           </div>
           <span
-            className="ml-auto text-[9px] font-bold uppercase tracking-widest shrink-0 t-sans-gray"
+            className="ml-auto text-[11px] font-bold uppercase tracking-widest shrink-0 t-sans-gray"
           >
             Joining as
           </span>
@@ -328,7 +328,7 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
             <button
               type="button"
               onClick={addLink}
-              className="text-[10px] font-bold uppercase tracking-widest t-sans-blue btn-unstyled"
+              className="text-xs font-bold uppercase tracking-widest t-sans-blue btn-unstyled"
             >
               + Add another link
             </button>
@@ -376,7 +376,7 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
                   type="button"
                   onClick={() => toggleCategory(cat)}
                   disabled={isDisabled}
-                  className={`inline-flex items-center gap-1 px-3 py-2 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors duration-150 focus:outline-none t-sans min-h-[34px] ${
+                  className={`inline-flex items-center gap-1 px-3 py-2 rounded-sm text-xs font-bold uppercase tracking-widest transition-colors duration-150 focus:outline-none t-sans min-h-[34px] ${
                     isSelected
                       ? "bg-navy text-white border border-navy"
                       : isDisabled

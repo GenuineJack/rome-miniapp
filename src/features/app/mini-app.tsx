@@ -143,12 +143,12 @@ export function MiniApp({ initialSpots = [] }: { initialSpots?: Spot[] }) {
       >
         <div>
           <span
-            className="font-black uppercase tracking-tight leading-none block t-sans-white text-[15px]"
+            className="font-black uppercase tracking-tight leading-none block t-sans-white text-base"
           >
             The Boston Miniapp
           </span>
           <span
-            className="leading-none block mt-0.5 t-serif-white text-[10px] italic opacity-60"
+            className="leading-none block mt-0.5 t-serif-white text-xs italic opacity-60"
           >
             curated by the people who live here
           </span>
@@ -240,7 +240,7 @@ export function MiniApp({ initialSpots = [] }: { initialSpots?: Spot[] }) {
             <div className="flex-1 overflow-y-auto">
               {submitMode === "picker" && (
                 <div className="flex flex-col p-6 gap-4">
-                  <p className="italic text-center mb-2 t-serif-gray text-[13px]">
+                  <p className="italic text-center mb-2 t-serif-gray text-sm">
                     What are you adding to the guide?
                   </p>
 
@@ -312,7 +312,7 @@ export function MiniApp({ initialSpots = [] }: { initialSpots?: Spot[] }) {
                   </span>
                 </div>
                 <span
-                  className={`text-[9px] font-bold uppercase tracking-widest leading-none t-sans ${isActive ? "tab-label-active" : "tab-label-inactive"}`}
+                  className={`text-[11px] font-bold uppercase tracking-widest leading-none t-sans ${isActive ? "tab-label-active" : "tab-label-inactive"}`}
                 >
                   {tab.label}
                 </span>
@@ -336,7 +336,7 @@ export function MiniApp({ initialSpots = [] }: { initialSpots?: Spot[] }) {
                 {tab.icon}
               </span>
               <span
-                className={`text-[9px] font-bold uppercase tracking-widest leading-none t-sans ${isActive ? "tab-label-active" : "tab-label-inactive"}`}
+                className={`text-[11px] font-bold uppercase tracking-widest leading-none t-sans ${isActive ? "tab-label-active" : "tab-label-inactive"}`}
               >
                 {tab.label}
               </span>

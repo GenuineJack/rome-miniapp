@@ -182,7 +182,7 @@ export function SubmitHappeningForm({ onSuccess }: Props) {
           className={`submit-input ${errors.title ? "submit-input-error" : ""}`}
         />
         {errors.title && (
-          <p className="text-[10px] mt-1 font-bold t-sans-red">
+          <p className="text-xs mt-1 font-bold t-sans-red">
             {errors.title}
           </p>
         )}
@@ -203,7 +203,7 @@ export function SubmitHappeningForm({ onSuccess }: Props) {
           ))}
         </select>
         {errors.neighborhood && (
-          <p className="text-[10px] mt-1 font-bold t-sans-red">
+          <p className="text-xs mt-1 font-bold t-sans-red">
             {errors.neighborhood}
           </p>
         )}
@@ -219,11 +219,11 @@ export function SubmitHappeningForm({ onSuccess }: Props) {
           onChange={(e) => handleFieldChange({ dateLabel: e.target.value })}
           className={`submit-input ${errors.dateLabel ? "submit-input-error" : ""}`}
         />
-        <p className="text-[10px] mt-1 t-sans-gray">
+        <p className="text-xs mt-1 t-sans-gray">
           Write it how you&apos;d say it out loud.
         </p>
         {errors.dateLabel && (
-          <p className="text-[10px] mt-1 font-bold t-sans-red">
+          <p className="text-xs mt-1 font-bold t-sans-red">
             {errors.dateLabel}
           </p>
         )}
@@ -250,7 +250,7 @@ export function SubmitHappeningForm({ onSuccess }: Props) {
             className="submit-input"
             aria-label="End date"
           />
-          <p className="text-[10px] mt-1 t-sans-gray">
+          <p className="text-xs mt-1 t-sans-gray">
             Event hides after this date.
           </p>
         </div>
@@ -268,11 +268,11 @@ export function SubmitHappeningForm({ onSuccess }: Props) {
         />
         <div className="flex justify-between items-center mt-1">
           {errors.description ? (
-            <p className="text-[10px] font-bold t-sans-red">
+            <p className="text-xs font-bold t-sans-red">
               {errors.description}
             </p>
           ) : <span />}
-          <span className={`text-[10px] font-medium t-sans ${form.description.length > 180 ? "text-boston-red" : "text-boston-gray-400"}`}>
+          <span className={`text-xs font-medium t-sans ${form.description.length > 180 ? "text-boston-red" : "text-boston-gray-400"}`}>
             {form.description.length}/200
           </span>
         </div>
@@ -291,7 +291,7 @@ export function SubmitHappeningForm({ onSuccess }: Props) {
           className={`submit-input ${errors.url ? "submit-input-error" : ""}`}
         />
         {errors.url && (
-          <p className="text-[10px] mt-1 font-bold t-sans-red">
+          <p className="text-xs mt-1 font-bold t-sans-red">
             {errors.url}
           </p>
         )}

@@ -103,7 +103,7 @@ export function OnboardingOverlay({ onDismiss }: { onDismiss: () => void }) {
         {step < STEPS.length - 1 && (
           <button
             onClick={handleDismiss}
-            className="text-[10px] font-bold uppercase tracking-widest t-sans-gray bg-transparent border-none cursor-pointer py-2 px-0"
+            className="text-xs font-bold uppercase tracking-widest t-sans-gray bg-transparent border-none cursor-pointer py-2 px-0"
           >
             Skip
           </button>

@@ -137,7 +137,7 @@ export function LeafletMapInner({ spots, onSpotClick, height, center, zoom }: Le
           border: 1px solid #1871bd;
           color: #fff;
           font-family: var(--font-sans);
-          font-size: 10px;
+          font-size: 12px;
           font-weight: 700;
           text-transform: uppercase;
           letter-spacing: 0.08em;
@@ -150,7 +150,7 @@ export function LeafletMapInner({ spots, onSpotClick, height, center, zoom }: Le
         }
         .leaflet-attribution-flag { display: none !important; }
         .leaflet-control-attribution {
-          font-size: 8px !important;
+          font-size: 10px !important;
           background: rgba(9,31,47,0.7) !important;
           color: rgba(255,255,255,0.4) !important;
           padding: 1px 4px !important;

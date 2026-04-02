@@ -68,7 +68,7 @@ export function NewsSection({ cachedNews, onNewsLoaded }: NewsSectionProps) {
                 {item.source}
               </span>
               {timeAgo(item.pubDate) && (
-                <span className="t-sans-gray text-[10px]">
+                <span className="t-sans-gray text-xs">
                   {timeAgo(item.pubDate)}
                 </span>
               )}

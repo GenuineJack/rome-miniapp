@@ -125,7 +125,7 @@ export function WeatherStrip({ weather, loading, error, todayLabel, mbtaAlert, c
     >
       {/* Context strip — one-line weather + countdown */}
       {!loading && weather && countdown && (
-        <div className="text-[10px] text-white/70 mb-2 t-sans flex items-center gap-1.5 flex-wrap">
+        <div className="text-xs text-white/70 mb-2 t-sans flex items-center gap-1.5 flex-wrap">
           <span>{weather.emoji} {weather.tempF}°F</span>
           {countdown && (
             <>

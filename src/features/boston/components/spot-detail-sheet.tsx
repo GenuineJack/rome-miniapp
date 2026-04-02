@@ -144,13 +144,13 @@ export function SpotDetailSheet({ spot, onClose, onViewBuilder }: SpotDetailShee
           {/* Category tag */}
           <div className="flex items-center gap-2 mb-3">
             <span
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest t-sans-white bg-navy"
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-bold uppercase tracking-widest t-sans-white bg-navy"
             >
               {icon} {spot.category}
             </span>
             {spot.featured && (
               <span
-                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest t-sans-navy bg-boston-yellow"
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-bold uppercase tracking-widest t-sans-navy bg-boston-yellow"
               >
                 ★ Staff Pick
               </span>
@@ -203,14 +203,14 @@ export function SpotDetailSheet({ spot, onClose, onViewBuilder }: SpotDetailShee
                 {spot.submittedByDisplayName}
               </p>
               <p
-                className="text-[10px] truncate t-sans-blue"
+                className="text-xs truncate t-sans-blue"
               >
                 @{spot.submittedByUsername}
               </p>
             </div>
             <div className="ml-auto text-right shrink-0 flex items-center gap-2">
               <p
-                className="text-[10px] font-medium uppercase tracking-wide t-sans-gray"
+                className="text-xs font-medium uppercase tracking-wide t-sans-gray"
               >
                 📍 {spot.neighborhood}
               </p>

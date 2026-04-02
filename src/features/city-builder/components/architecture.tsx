@@ -42,7 +42,7 @@ export function Architecture() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
           {STACK.map((item) => (
             <div key={item.label}>
-              <span className="t-sans text-[9px] font-bold uppercase tracking-[0.1em] text-[#828282] block mb-1">
+              <span className="t-sans text-[11px] font-bold uppercase tracking-[0.1em] text-[#828282] block mb-1">
                 {item.label}
               </span>
               <span className="t-sans text-sm font-semibold text-[#091f2f]">

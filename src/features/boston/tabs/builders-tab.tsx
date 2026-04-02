@@ -114,7 +114,7 @@ export function BuildersTab({ onViewBuilderSpots, onSpotClick, pendingBuilderVie
         </div>
         {!loading && allBuilders.length > 0 && (
           <span
-            className="text-[9px] font-bold uppercase tracking-widest shrink-0 mb-0.5 t-sans text-white/50"
+            className="text-[11px] font-bold uppercase tracking-widest shrink-0 mb-0.5 t-sans text-white/50"
           >
             {allBuilders.length} builder{allBuilders.length === 1 ? "" : "s"}
           </span>
@@ -144,7 +144,7 @@ export function BuildersTab({ onViewBuilderSpots, onSpotClick, pendingBuilderVie
             </div>
             <ExternalLink
               href="https://warpcast.com/~/mini-app/launch?domain=boston.neynar.com"
-              className="shrink-0 px-3 py-1.5 rounded-sm text-[10px] font-bold uppercase tracking-widest t-sans bg-boston-blue text-white hover:opacity-90 transition-opacity"
+              className="shrink-0 px-3 py-1.5 rounded-sm text-xs font-bold uppercase tracking-widest t-sans bg-boston-blue text-white hover:opacity-90 transition-opacity"
             >
               Open →
             </ExternalLink>
@@ -183,13 +183,13 @@ export function BuildersTab({ onViewBuilderSpots, onSpotClick, pendingBuilderVie
             className="flex items-center justify-between gap-3 px-4 py-2 bg-boston-gray-50 border-b border-boston-gray-100"
           >
             <p
-              className="text-[10px] font-bold uppercase tracking-widest t-sans-gray"
+              className="text-xs font-bold uppercase tracking-widest t-sans-gray"
             >
               Your profile
             </p>
             <button
               onClick={() => setShowJoinOverlay(true)}
-              className="text-[10px] font-bold uppercase tracking-widest focus:outline-none t-sans-blue btn-unstyled"
+              className="text-xs font-bold uppercase tracking-widest focus:outline-none t-sans-blue btn-unstyled"
             >
               Edit →
             </button>
