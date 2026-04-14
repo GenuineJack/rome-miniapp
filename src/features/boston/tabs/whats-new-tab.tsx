@@ -13,6 +13,7 @@ type DispatchContent = {
     transit: string | null;
     countdown: string | null;
   };
+  lede?: string;
   intro: string;
   whatYouMissed: { headline: string; url: string }[];
   lastNight: { team: string; result: string; summary: string; url: string }[] | null;
@@ -166,6 +167,20 @@ export function WhatsNewTab({ spots, onSelectSpot }: WhatsNewTabProps) {
       </div>
 
       <div className="flex flex-col gap-0 pb-6">
+        {/* The Lede */}
+        {dispatch.lede && (
+          <div className="px-4 py-5 border-b border-[#e0e0e0]">
+            {dispatch.lede.split("\n\n").map((paragraph, i) => (
+              <p
+                key={i}
+                className={`text-[15px] leading-[1.7] t-serif-body ${i > 0 ? "mt-3" : ""}`}
+              >
+                {paragraph}
+              </p>
+            ))}
+          </div>
+        )}
+
         {/* Intro */}
         <div className="px-4 py-4 border-b border-[#e0e0e0]">
           <p className="text-sm italic leading-relaxed t-serif-body">{dispatch.intro}</p>
