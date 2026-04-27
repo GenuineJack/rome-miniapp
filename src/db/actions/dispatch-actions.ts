@@ -1,8 +1,8 @@
 "use server";
 
 import { db } from "@/neynar-db-sdk/db";
-import { dispatch } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { dispatch, dispatchPollResponses } from "@/db/schema";
+import { and, eq, sql } from "drizzle-orm";
 import { randomUUID } from "crypto";
 
 export async function getDispatchForDate(date: string) {
@@ -41,6 +41,75 @@ export async function updateDispatchContent(
 
 export async function deleteDispatchForDate(date: string) {
   await db.delete(dispatch).where(eq(dispatch.date, date));
+}
+
+// ─── Daily Poll ──────────────────────────────────────────────────────────────
+
+export type PollResultRow = {
+  option: string;
+  count: number;
+  percentage: number;
+};
+
+export type PollResults = {
+  date: string;
+  results: PollResultRow[];
+  total: number;
+};
+
+export async function getPollResults(date: string): Promise<PollResults> {
+  const rows = await db
+    .select({
+      option: dispatchPollResponses.option,
+      count: sql<number>`count(*)::int`,
+    })
+    .from(dispatchPollResponses)
+    .where(eq(dispatchPollResponses.dispatchDate, date))
+    .groupBy(dispatchPollResponses.option);
+
+  const total = rows.reduce((acc, r) => acc + Number(r.count), 0);
+  const results: PollResultRow[] = rows.map((r) => ({
+    option: r.option,
+    count: Number(r.count),
+    percentage: total === 0 ? 0 : Math.round((Number(r.count) / total) * 100),
+  }));
+
+  return { date, results, total };
+}
+
+export async function recordPollVote(
+  date: string,
+  option: string,
+  fid: string | null,
+): Promise<{ ok: true; results: PollResults } | { ok: false; error: string; status: number }> {
+  if (!date || !option) {
+    return { ok: false, error: "Missing date or option", status: 400 };
+  }
+
+  if (fid) {
+    const existing = await db
+      .select({ id: dispatchPollResponses.id })
+      .from(dispatchPollResponses)
+      .where(
+        and(
+          eq(dispatchPollResponses.dispatchDate, date),
+          eq(dispatchPollResponses.fid, fid),
+        ),
+      )
+      .limit(1);
+    if (existing.length > 0) {
+      return { ok: false, error: "Already voted", status: 409 };
+    }
+  }
+
+  await db.insert(dispatchPollResponses).values({
+    dispatchDate: date,
+    option,
+    fid: fid ?? null,
+  });
+
+  const results = await getPollResults(date);
+  return { ok: true, results };
 }
 
 const ADMIN_FID = 218957;

@@ -1,129 +1,149 @@
 import { getDispatchForDate, saveDispatch, deleteDispatchForDate } from "@/db/actions/dispatch-actions";
 import { getRecentSpots, getCommunityHappenings } from "@/db/actions/boston-actions";
+import { fetchMarketData, isWeekend, type MarketSnapshot } from "@/lib/markets";
 
 // ─── Dispatch Content Type (for reference in the prompt) ─────────────────────
 
 const DISPATCH_TYPE_REFERENCE = `
 type DispatchContent = {
-  date: string;                    // "Wednesday, April 1, 2026"
-  banner: {
-    weather: string;               // "68°F and sunny"
-    transit: string | null;        // "Red Line slow near JFK/UMass" or null
-    countdown: string | null;      // "Marathon Monday in 18 days" or null
+  date: string;                        // "Sunday, April 26, 2026"
+
+  greeting: string;                    // 2-3 sentences. Dry, specific, Boston-native.
+                                       // References something real happening today.
+
+  oneBigThing: {
+    headline: string;                  // One declarative sentence
+    whatIsHappening: string;           // 2-3 sentences of context
+    whyItMatters: string;              // 1-2 sentences
+    whatItMeansForYou: string;         // 1-2 sentences, direct second-person
+    url: string;                       // Source link
   };
-  lede: string;                    // 2-4 paragraphs editorial opener — the signature section. Paragraphs separated by \\n\\n.
-  intro: string;                   // 1-2 sentence transitional line after the lede, before the sections
-  whatYouMissed: {
-    headline: string;              // one punchy sentence — a reason to click, not a headline rewrite
-    url: string;                   // link to source
-  }[];                             // 3 items, all in the same tonal register
-  lastNight: {
-    team: string;
-    result: string;                // "Won 114-99" or "Lost 9-2"
-    summary: string;               // 1-2 sentence recap
+
+  todayInBoston: {
+    sports: {
+      team: string;
+      result: string;                  // "Won 4–2" or "Lost 99–114" or "Tonight at 7pm vs. Toronto"
+      summary: string;                 // 1 sentence
+      url?: string;
+    }[] | null;                        // null if nothing relevant
+    events: {
+      title: string;
+      detail: string;
+      url?: string;
+    }[];                               // 2-4 items worth knowing about today
+    headsUp: string | null;            // One sentence. MBTA disruptions, road closures,
+                                       // weather advisories. null if nothing worth flagging.
+  };
+
+  markets: {
+    nasdaq: string;                    // e.g. "17,204 ▲ 0.4%"
+    dow: string;
+    sp500: string;
+    btc: string;
+    eth: string;
+    sol: string;
+    localSpotlight: {
+      ticker: string;                  // e.g. "BKNG" or "ACVA"
+      company: string;                 // Full company name
+      price: string;                   // e.g. "$142.30 ▼ 1.2%"
+      note: string;                    // One sentence on why it's notable today
+    } | null;                          // null on days with no local story
+  } | null;                            // null on weekends/holidays
+
+  localBusinessNews: {
+    headline: string;
+    summary: string;                   // Max 2 sentences
     url: string;
-  }[] | null;                      // null if no games last night
-  getAroundToday: string | null;   // one transit fact, one implication, done. null if nothing.
-  tonight: {
-    title: string;                 // specific venue/event name, not a placeholder
-    detail: string;
-    url?: string;
-  }[] | null;                      // null on slow nights. only include if genuinely worth doing.
-  todaysSpot: {
-    name: string;                  // specific place name
-    neighborhood: string;
-    reason: string;                // opinionated reason to go TODAY specifically
-    spotId?: string;               // if it's in the DB, link to it
+  }[];                                 // Always exactly 3 items
+
+  dailyPoll: {
+    question: string;                  // One question about today's city happenings
+    options: string[];                 // 2-4 options
   };
-  onThisDay: string | null;        // null if the fact doesn't reframe something about present-day Boston
-  theNumber: {
-    number: string;                // e.g. "18"
-    context: string;               // one line, no padding
-  } | null;                        // null if the number is obvious or already covered elsewhere
-  sendOff: string;                 // 1-3 sentence human sign-off closing the Dispatch, datestamped
-  weatherWatch?: string;           // only present if weather is newsworthy
-  todayIntro?: string;             // one-sentence editorial greeting for the Today tab (separate from newsletter intro)
+
+  dailyTrivia: {
+    question: string;                  // Boston trivia question
+    hint?: string;                     // Optional short hint
+    answer: string;                    // Revealed at bottom of Dispatch
+    funFact: string;                   // 1 sentence of extra context after reveal
+  };
+
+  placeOfTheDay: {
+    name: string;
+    neighborhood: string;
+    reason: string;                    // Editorial reason why today specifically
+    spotId?: string;                   // DB id if this place exists in the map
+  };
+
+  numberofTheDay: {
+    number: string;                    // The figure itself: "47,000" or "Day 12"
+    context: string;                   // One sentence of context
+  };
+
+  signOff: string;                     // 1-2 sentences. Closes the tonal loop opened
+                                       // by the greeting. Must not be generic.
 };`;
 
-const DISPATCH_SYSTEM_PROMPT = `You are the editorial voice of The Boston Dispatch — a daily morning newsletter for people who live in Boston. This is a culture-first product that happens to be useful, not a utility product with cultural garnish. Every section should feel like it was written by a person with opinions, not filled in by a template.
+const BOSTON_PUBLIC_COMPANIES_SEED = `Wayfair (W), DraftKings (DKNG), Toast (TOST), Klaviyo (KVYO),
+Iron Mountain (IRM), Liberty Mutual (private), Vertex Pharmaceuticals (VRTX),
+Biogen (BIIB), TripAdvisor (TRIP), Rapid7 (RPD), EzShield (private),
+Acquia (private), Brightcove (BCOV), Quanterix (QTRX), GreenLight Biosciences (GRNA)`;
 
-Voice & Identity:
-- Dry, Boston-insider tone throughout. You love the city and are exasperated by it in equal measure.
-- Morning Brew energy but more local and more opinionated.
-- You are allowed to be sarcastic, especially about the Red Sox and the MBTA.
-- Short sentences. No listicles. No bullet points in the prose sections.
-- Write like you have a point of view. You do.
-- Include specific street names, venue names, neighborhoods when relevant.
-- Links are important — every news item in whatYouMissed must have a URL. Use the URLs provided in the context data.
-- Never say "vibrant," "something for everyone," "world-class," "add that to your commute math," or "plan accordingly." Trust the reader.
+const DISPATCH_SYSTEM_PROMPT = `You are the editor of The Dispatch, Boston's daily city briefing.
+You write with dry Boston wit — specific, never tourist-guide,
+never corporate civic. You are a builder-native Bostonian who
+respects the reader's time.
 
-You will receive structured data about today in Boston. Use what's relevant. Never make things up. If you don't have real URLs for news items, use the source URLs provided.
+Your output is always a single valid JSON object matching the
+DispatchContent type. No markdown. No preamble. No explanation.
+Just the JSON.
 
---- SECTION-BY-SECTION EDITORIAL GUIDELINES ---
+VOICE RULES:
+- The greeting sets the tone for the day. Make it specific to today.
+  Never generic ("It's a great day in Boston!").
+  Reference something actually happening.
+- The sign-off closes the tonal loop opened by the greeting.
+  If the greeting is dry, the sign-off is drier.
+  Never "See you tomorrow!" or "Stay warm out there."
+- Second-person ("you", "your") is appropriate in
+  oneBigThing.whatItMeansForYou. Avoid it everywhere else.
+- Headlines are declarative statements, not clickbait questions.
 
-THE LEDE (lede):
-- The signature section of the Dispatch. 2–4 paragraphs, separated by \\n\\n. This is where the editorial voice lives. 150-250 words.
-- Pick the single most interesting thing happening in Boston today and give it the full treatment. Not a summary — a take. Think Morning Brew's top story treatment, but hyper-local.
-- Write like you're explaining it to a smart friend over coffee. Use specific names, places, numbers. Reference the neighborhood. Land a punchline or a kicker at the end.
-- If today has a big sports result, a major city development, a weather event, or a cultural moment — that's your lede. If nothing stands out, lead with a seasonal/atmospheric piece about what it feels like to be in Boston right now.
-- Use data from the context: market moves, sports scores, news headlines, events. Weave them into a narrative, don't just list them.
-- This section alone should make someone glad they opened the Dispatch.
+STRUCTURAL RULES:
+- localBusinessNews must always have exactly 3 items.
+- markets is null on weekends and market holidays.
+- localSpotlight within markets should only appear when there is a
+  genuine news reason for a Boston-headquartered company today.
+  If there isn't one, set localSpotlight to null.
+- todayInBoston.headsUp is null unless something genuinely affects
+  commutes or plans. Do not fabricate alerts.
+- dailyTrivia.answer must appear verbatim in the JSON — it is revealed
+  at the bottom of the Dispatch UI as a retention mechanic.
+  Do not be coy about it in the question.
+- placeOfTheDay.reason must be specific to today, not evergreen
+  ("great for a spring Sunday morning" beats "a great neighborhood spot").
+- signOff must be 1-2 sentences. Never use filler closings.
 
-INTRO (intro):
-- A brief 1–2 sentence transitional line that bridges the lede into the rest of the Dispatch. "Here's what else is going on" energy.
-- Keep it tight. The lede already did the heavy lifting.
+CONTEXT YOU WILL RECEIVE:
+- Today's date and day of week
+- Current Boston weather
+- MBTA active alerts
+- Last night's Boston sports scores
+- Market data (pre-fetched — use as-is, do not invent figures)
+- Recent community submissions and events from the DB
+- Recent spots added to the map
 
-WHAT YOU MISSED (whatYouMissed):
-- Exactly 3 bullets. All three must live in the same tonal register. Don't mix hard news with whimsy — pick one mode for the day and stay in it.
-- Each bullet should be a reason to click, not just a headline rewrite. The parenthetical voice ("because that's a normal Tuesday") is the value-add; protect it.
+Only reference information you can verify from the provided context
+or from your training data. Do not invent news stories, scores,
+or market figures.
 
-GET AROUND TODAY (getAroundToday):
-- Keep it ruthlessly short. One transit fact, one implication, done.
-- Avoid filler phrases. Trust the reader.
-- Null if there's nothing noteworthy.
+LOCAL SPOTLIGHT GUIDANCE:
+When choosing a Boston-headquartered public company for
+markets.localSpotlight, reason from this seed list as a starting
+point but do not feel limited to it. Choose based on news
+relevance for today, not rotation:
 
-TONIGHT (tonight):
-- ONLY include this section if there's something genuinely worth doing. Set to null on slow nights rather than padding with filler.
-- Name specifics: a gallery, a venue, an event. "Gallery walks in the South End" is a placeholder; "Praise Shadows at Kingston Gallery opens tonight" is editorial.
-- If included, 1-3 items max, each with a real venue/event name.
-
-TODAY'S SPOT (todaysSpot):
-- The most shareable section. A local's pick with a specific, opinionated reason to go.
-- The spot should stand on its own merit, not be chosen because it's in the news. A news tie-in is a bonus, not the justification.
-- Formula: Place name + neighborhood + one sentence that makes someone want to go there today specifically.
-
-ON THIS DAY (onThisDay):
-- High bar only. If the historical fact doesn't reframe something about the present-day city, set to null.
-- The editorial kicker ("proving we've been doing things first and complaining about them ever since") is the whole point — every entry needs one.
-
-THE NUMBER (theNumber):
-- The number should feel surprising or reframing — something the reader wouldn't have guessed.
-- If the number is obvious or already covered elsewhere in the Dispatch, set to null.
-- One number. One line. No padding.
-
-THE SEND-OFF (sendOff):
-- Every Dispatch closes with a 1–3 sentence signed-off outro. Think newsletter closing line or column kicker.
-- It should feel like a human signing off, not a system completing a form.
-- Reflect the mood or theme of that day's Dispatch.
-- End on something warm, wry, or motivating — this is the last impression.
-- Always end with a datestamp like "— The Dispatch, April 1"
-- Example: "Stay dry, take the Green Line if the Blue Line's still sulking, and remember: the city has survived worse Tuesdays. See you tomorrow. — The Dispatch, April 1"
-
---- GENERAL RULES ---
-
-1. Don't fill sections for the sake of filling them. A Dispatch with five strong sections beats one with eight mediocre ones. Set weak sections to null.
-2. No section should repeat information from another section. If a story appears in the lede, it shouldn't also anchor The Number or appear in whatYouMissed.
-3. If a sentence sounds like it was written by software, rewrite it.
-4. Use ONLY real data from the context provided. For lastNight, use the actual scores and ESPN URLs from the sports data. For whatYouMissed, use the actual URLs from the news data. Never fabricate URLs.
-5. For lastNight: if sports data is provided, use those exact scores and URLs. If no sports data is provided, set lastNight to null. Do not guess scores.
-6. For tonight: if events data is provided, use those real events with their URLs. If nothing looks genuinely interesting tonight, set to null.
-7. For theNumber: market data, sports stats, and news facts are all fair game. Pick whichever number is most surprising.
-
---- OUTPUT FORMAT ---
-
-You must respond with ONLY valid JSON matching the DispatchContent type. No preamble, no markdown, no explanation. Just the JSON object.
-
-The "todayIntro" field is a single-sentence editorial greeting that appears at the top of the Today tab (separate from the newsletter). It should be timely, opinionated, and reflect what's happening in Boston today — weather, events, sports, or just the vibe. Examples: "Patriots finally have a quarterback and the city can't shut up about it.", "Marathon Monday — hide your car, move your life, enjoy the chaos.", "48 degrees and raining in April. Classic."
+${BOSTON_PUBLIC_COMPANIES_SEED}
 
 ${DISPATCH_TYPE_REFERENCE}`;
 
@@ -346,60 +366,6 @@ async function fetchTodayEvents(): Promise<EventResult[]> {
   }
 }
 
-// ─── Market Data ─────────────────────────────────────────────────────────────
-
-type MarketDataPoint = {
-  ticker: string;
-  label: string;
-  price: number;
-  changePercent: number;
-};
-
-async function fetchMarketSnapshot(): Promise<MarketDataPoint[]> {
-  const tickers = [
-    { symbol: "SPY", label: "S&P 500" },
-    { symbol: "BTC-USD", label: "Bitcoin" },
-    { symbol: "XBI", label: "Biotech (XBI)" },
-  ];
-
-  try {
-    const results = await Promise.allSettled(
-      tickers.map(async ({ symbol, label }) => {
-        const res = await fetch(
-          `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?range=2d&interval=1d`,
-          {
-            headers: { "User-Agent": "Boston Miniapp/1.0" },
-            signal: AbortSignal.timeout(6000),
-          },
-        );
-        if (!res.ok) return null;
-        const json = await res.json();
-        const quote = json.chart?.result?.[0];
-        if (!quote) return null;
-
-        const closes = quote.indicators?.quote?.[0]?.close ?? [];
-        const prevClose = quote.meta?.chartPreviousClose ?? closes[0];
-        const lastClose = closes[closes.length - 1] ?? quote.meta?.regularMarketPrice;
-
-        if (!prevClose || !lastClose) return null;
-
-        return {
-          ticker: symbol,
-          label,
-          price: Math.round(lastClose * 100) / 100,
-          changePercent: Math.round(((lastClose - prevClose) / prevClose) * 10000) / 100,
-        };
-      }),
-    );
-
-    return results
-      .filter((r): r is PromiseFulfilledResult<MarketDataPoint> => r.status === "fulfilled" && r.value !== null)
-      .map((r) => r.value);
-  } catch {
-    return [];
-  }
-}
-
 // ─── On This Day (Wikipedia) ─────────────────────────────────────────────────
 
 type OnThisDayEvent = {
@@ -464,7 +430,8 @@ function buildContextMessage(ctx: {
   newsHeadlines: { title: string; url: string; source: string; description: string }[];
   sportsScores: SportsResult[];
   events: EventResult[];
-  markets: MarketDataPoint[];
+  markets: MarketSnapshot | null;
+  marketsClosed: boolean;
   onThisDay: OnThisDayEvent[];
   recentSpots: { name: string; neighborhood: string; category: string }[];
   happenings: { title: string; neighborhood: string; description: string }[];
@@ -479,12 +446,16 @@ function buildContextMessage(ctx: {
   );
 
   // Markets
-  if (ctx.markets.length > 0) {
-    sections.push(`\n─── MARKETS ───`);
-    for (const m of ctx.markets) {
-      const sign = m.changePercent >= 0 ? "+" : "";
-      sections.push(`${m.label} (${m.ticker}): $${m.price.toLocaleString()} (${sign}${m.changePercent}%)`);
-    }
+  sections.push(`\n─── MARKETS ───`);
+  if (ctx.marketsClosed) {
+    sections.push("Weekend or market holiday — set markets to null in response.");
+  } else if (ctx.markets) {
+    sections.push(JSON.stringify(ctx.markets));
+    sections.push(
+      "Use these strings verbatim for the markets fields. Choose a Boston-headquartered public company for localSpotlight only if a real news reason supports it today; otherwise null.",
+    );
+  } else {
+    sections.push("Market data fetch failed — set markets to null in response.");
   }
 
   // MBTA
@@ -582,6 +553,9 @@ export async function generateDispatchContent(options?: { force?: boolean }): Pr
     return { ok: true, date: today, message: "Dispatch already generated for today" };
   }
 
+  const todayDate = new Date();
+  const marketsClosed = isWeekend(todayDate);
+
   // Gather context in parallel
   const [weather, mbtaAlerts, newsHeadlines, sportsScores, events, markets, onThisDay, recentSpotsRaw, happeningsRaw] = await Promise.all([
     fetchWeatherContext(),
@@ -589,13 +563,13 @@ export async function generateDispatchContent(options?: { force?: boolean }): Pr
     fetchNewsHeadlines(),
     fetchBostonSportsScores(),
     fetchTodayEvents(),
-    fetchMarketSnapshot(),
+    marketsClosed ? Promise.resolve(null) : fetchMarketData(),
     fetchOnThisDay(),
     getRecentSpots(10),
     getCommunityHappenings(10),
   ]);
 
-  const now = new Date();
+  const now = todayDate;
   const twoDaysAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000);
   const recentSpots = (recentSpotsRaw as { name: string; neighborhood: string; category: string; createdAt: Date }[])
     .filter((s) => new Date(s.createdAt) >= twoDaysAgo)
@@ -624,6 +598,7 @@ export async function generateDispatchContent(options?: { force?: boolean }): Pr
     sportsScores,
     events,
     markets,
+    marketsClosed,
     onThisDay,
     recentSpots,
     happenings,
@@ -680,15 +655,15 @@ export async function generateDispatchContent(options?: { force?: boolean }): Pr
           body: JSON.stringify({
             model: "claude-sonnet-4-20250514",
             max_tokens: 4096,
-            system: `You are a senior editor reviewing a draft of The Boston Dispatch — a daily morning newsletter for Boston locals. Your voice mandate: dry, opinionated, Morning Brew energy, hyper-local.
+            system: `You are a senior editor reviewing a draft of The Dispatch — Boston's daily city briefing. Your voice mandate: dry Boston wit, specific, never tourist-guide, never corporate civic.
 
 Your job:
 1. CATCH bland or generic language. Rewrite any sentence that sounds like software wrote it. Inject specificity — street names, neighborhoods, local references.
 2. CATCH hallucinated facts. Compare every claim in the draft against the SOURCE DATA provided. If the draft mentions a score, URL, event, or fact not in the source data, remove or correct it.
-3. CATCH repetition. No story, number, or fact should appear in more than one section. If the lede covers a topic, it should not also appear in whatYouMissed or theNumber.
-4. IMPROVE the lede. This is the signature section — it should be 2-4 paragraphs, 150-250 words, with a real editorial take and a kicker. If the draft lede is thin, expand it with more texture from the source data.
-5. NULL weak sections. If a section is filler (generic, no real data behind it), set it to null rather than keeping mediocre copy.
-6. VERIFY all URLs in the output match URLs from the source data. Do not invent URLs.
+3. CATCH repetition. No story, number, or fact should appear in more than one section.
+4. ENFORCE structure: localBusinessNews must be exactly 3 items. localSpotlight only when there is a genuine Boston-headquartered news reason — otherwise null. headsUp null unless something genuinely affects commutes or plans. markets null on weekends/holidays.
+5. IMPROVE the greeting and signOff so they form a tonal loop — both specific to today, never generic.
+6. VERIFY all URLs in the output match URLs from the source data. Do not invent URLs or market figures.
 
 Return ONLY the corrected JSON. No preamble, no markdown, no explanation.
 

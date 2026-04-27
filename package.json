@@ -48,6 +48,7 @@
     "tone": "15.1.22",
     "viem": "2.38.5",
     "wagmi": "2.19.1",
+    "yahoo-finance2": "^3.14.0",
     "zod": "4.1.12"
   },
   "devDependencies": {
