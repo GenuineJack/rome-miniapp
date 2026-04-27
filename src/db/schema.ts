@@ -1,4 +1,4 @@
-import { pgTable, text, integer, boolean, timestamp, real } from "drizzle-orm/pg-core";
+import { pgTable, text, integer, boolean, timestamp, real, serial } from "drizzle-orm/pg-core";
 
 /**
  * Key-Value Store Table
@@ -112,4 +112,15 @@ export const dispatch = pgTable("dispatch", {
   content: text("content").notNull(),    // JSON string of structured dispatch
   generatedAt: timestamp("generated_at").defaultNow().notNull(),
   adminOverride: boolean("admin_override").default(false).notNull(),
+});
+
+/**
+ * Dispatch poll responses — one row per vote on the daily dispatch poll
+ */
+export const dispatchPollResponses = pgTable("dispatch_poll_responses", {
+  id: serial("id").primaryKey(),
+  dispatchDate: text("dispatch_date").notNull(),  // "2026-04-26"
+  option: text("option").notNull(),               // The option text selected
+  fid: text("fid"),                               // Farcaster FID if authenticated, null if anonymous
+  createdAt: timestamp("created_at").defaultNow(),
 });
