@@ -42,7 +42,9 @@ type CommunityRow = {
   id: string;
   title: string;
   description: string;
-  category: string;
+  neighborhood: string;
+  dateLabel: string;
+  emoji: string;
   startDate: string | null;
   endDate: string | null;
   status: string;
@@ -654,7 +656,7 @@ export function AdminPanel() {
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <p className="h-eyebrow">{c.category}</p>
+                          <p className="h-eyebrow">{c.emoji} {c.neighborhood} · {c.dateLabel}</p>
                           {expired && (
                             <span className="text-[10px] uppercase tracking-widest px-1 py-0.5 rounded-sm bg-boston-gray-100 t-sans-gray">
                               Expired
