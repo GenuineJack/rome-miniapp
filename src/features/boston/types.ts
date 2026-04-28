@@ -1,3 +1,22 @@
+import {
+  Pizza,
+  Coffee,
+  Wine,
+  Trees,
+  Palette,
+  ShoppingBag,
+  Wrench,
+  Gem,
+  Code2,
+  Handshake,
+  Compass,
+  Link2,
+  Rocket,
+  DollarSign,
+  Sparkles,
+  type LucideIcon,
+} from "lucide-react";
+
 export type Category =
   | "Food & Drink"
   | "Coffee"
@@ -163,6 +182,28 @@ export const CATEGORY_ICONS: Record<Category, string> = {
   "Shopping": "🛍️",
   "Services": "🔧",
   "Hidden Gems": "💎",
+};
+
+export const CATEGORY_LUCIDE: Record<Category, LucideIcon> = {
+  "Food & Drink": Pizza,
+  "Coffee": Coffee,
+  "Nightlife": Wine,
+  "Outdoors": Trees,
+  "Culture": Palette,
+  "Shopping": ShoppingBag,
+  "Services": Wrench,
+  "Hidden Gems": Gem,
+};
+
+export const BUILDER_CATEGORY_LUCIDE: Record<BuilderCategory, LucideIcon> = {
+  "Shipping Code": Code2,
+  "Design & Creative": Palette,
+  "Community": Handshake,
+  "Strategy & Ops": Compass,
+  "Crypto Native": Link2,
+  "Founder": Rocket,
+  "Investor": DollarSign,
+  "Other": Sparkles,
 };
 
 export const NEIGHBORHOODS: NeighborhoodInfo[] = [

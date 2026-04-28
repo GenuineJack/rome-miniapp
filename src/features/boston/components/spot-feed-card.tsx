@@ -1,6 +1,7 @@
 "use client";
 
-import { Spot, CATEGORY_ICONS, Category } from "@/features/boston/types";
+import { Spot, CATEGORY_LUCIDE, Category } from "@/features/boston/types";
+import { Sparkles } from "lucide-react";
 
 export function timeAgo(date: Date): string {
   const ms = Date.now() - new Date(date).getTime();
@@ -17,7 +18,7 @@ export function timeAgo(date: Date): string {
 }
 
 export function SpotFeedCard({ spot, onClick }: { spot: Spot; onClick?: (spot: Spot) => void }) {
-  const icon = CATEGORY_ICONS[spot.category as Category] ?? "📍";
+  const Icon = CATEGORY_LUCIDE[spot.category as Category] ?? Sparkles;
 
   return (
     <div
@@ -29,7 +30,7 @@ export function SpotFeedCard({ spot, onClick }: { spot: Spot; onClick?: (spot: S
         <span
           className="t-sans-white bg-navy inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-bold uppercase tracking-widest"
         >
-          {icon} {spot.category}
+          <Icon size={14} aria-hidden="true" /> {spot.category}
         </span>
         <span
           className="t-sans-gray text-xs font-medium uppercase tracking-wide shrink-0"

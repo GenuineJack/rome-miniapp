@@ -340,7 +340,7 @@ export function AdminPanel() {
 
   // ── Render ──
   return (
-    <div className="min-h-screen bg-boston-gray-50">
+    <div className="admin-page min-h-screen bg-boston-gray-50">
       {/* Header */}
       <div className="px-4 pt-4 pb-2 flex items-end justify-between">
         <div>
@@ -352,7 +352,8 @@ export function AdminPanel() {
         {secretAuthed && (
           <button
             onClick={handleSecretLogout}
-            className="text-xs font-bold uppercase tracking-widest t-sans-gray bg-transparent border-none cursor-pointer"
+            className="admin-action-btn"
+            data-variant="ghost"
           >
             Sign Out
           </button>
@@ -465,7 +466,7 @@ export function AdminPanel() {
                       <button
                         onClick={() => handleToggleTouristPick(spot.id, spot.touristPick)}
                         className={`shrink-0 px-2 py-1 rounded-sm text-[11px] font-bold uppercase tracking-widest cursor-pointer border-none ${
-                          spot.touristPick ? "bg-boston-blue text-white" : "bg-boston-gray-100 t-sans-gray"
+                          spot.touristPick ? "bg-boston-blue text-white" : "bg-boston-gray-100 t-sans-navy"
                         }`}
                       >
                         {spot.touristPick ? "✈️ Pick" : "Add"}
@@ -486,7 +487,8 @@ export function AdminPanel() {
                 <button
                   onClick={() => handleGenerateDispatch(true)}
                   disabled={regenerating}
-                  className="text-xs font-bold uppercase tracking-widest t-sans-blue cursor-pointer bg-transparent border-none disabled:opacity-50"
+                  className="admin-action-btn"
+                  data-variant="primary"
                 >
                   {regenerating ? "Working…" : todayDispatch ? "Regenerate" : "Generate"}
                 </button>
@@ -504,7 +506,7 @@ export function AdminPanel() {
                   <span className="h-eyebrow">{todayDispatch.date}</span>
                   <button
                     onClick={() => setDispatchEditing((v) => !v)}
-                    className="text-xs font-bold uppercase tracking-widest t-sans-blue cursor-pointer bg-transparent border-none"
+                    className="admin-action-btn"
                   >
                     {dispatchEditing ? "Hide editor" : "Edit raw"}
                   </button>
@@ -584,7 +586,8 @@ export function AdminPanel() {
               <button
                 onClick={handleRegenerateMonthly}
                 disabled={monthlyRegenerating}
-                className="text-xs font-bold uppercase tracking-widest t-sans-blue cursor-pointer bg-transparent border-none disabled:opacity-50"
+                className="admin-action-btn"
+                data-variant="primary"
               >
                 {monthlyRegenerating ? "Working…" : "Regenerate Current"}
               </button>
@@ -634,7 +637,7 @@ export function AdminPanel() {
                     key={f}
                     onClick={() => setCommunityFilter(f)}
                     className={`text-[11px] font-bold uppercase tracking-widest px-2 py-1 rounded-sm cursor-pointer border-none ${
-                      communityFilter === f ? "bg-navy text-white" : "bg-boston-gray-100 t-sans-gray"
+                      communityFilter === f ? "bg-navy text-white" : "bg-boston-gray-100 t-sans-navy"
                     }`}
                   >
                     {f}

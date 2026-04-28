@@ -1,7 +1,8 @@
 "use client";
 
-import { Builder, BUILDER_CATEGORY_ICONS, BuilderCategory } from "@/features/boston/types";
+import { Builder, BUILDER_CATEGORY_LUCIDE, BuilderCategory } from "@/features/boston/types";
 import { ExternalLink } from "@/neynar-farcaster-sdk/mini";
+import { Sparkles } from "lucide-react";
 
 type BuilderCardProps = {
   builder: Builder & { spotCount?: number };
@@ -99,13 +100,13 @@ export function BuilderCard({ builder, onClick, onSpotFilterClick }: BuilderCard
         {allCategories.length > 0 && (
           <div className="shrink-0 flex flex-col gap-1">
             {allCategories.map((cat) => {
-              const icon = BUILDER_CATEGORY_ICONS[cat as BuilderCategory] ?? "✦";
+              const Icon = BUILDER_CATEGORY_LUCIDE[cat as BuilderCategory] ?? Sparkles;
               return (
                 <span
                   key={cat}
                   className="inline-flex items-center gap-1 px-2 py-1 rounded-sm text-[11px] font-bold uppercase tracking-widest text-white t-sans bg-navy"
                 >
-                  {icon} {cat}
+                  <Icon size={12} aria-hidden="true" /> {cat}
                 </span>
               );
             })}

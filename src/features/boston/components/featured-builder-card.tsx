@@ -1,8 +1,9 @@
 "use client";
 
-import { Builder, BUILDER_CATEGORY_ICONS, BuilderCategory } from "@/features/boston/types";
+import { Builder, BUILDER_CATEGORY_LUCIDE, BuilderCategory } from "@/features/boston/types";
 import { BuilderAvatar } from "@/features/boston/components/builder-card";
 import { ExternalLink } from "@/neynar-farcaster-sdk/mini";
+import { Sparkles } from "lucide-react";
 
 type FeaturedBuilderCardProps = {
   builder: Builder & { spotCount?: number };
@@ -11,8 +12,8 @@ type FeaturedBuilderCardProps = {
 };
 
 export function FeaturedBuilderCard({ builder, onClick, onSpotFilterClick }: FeaturedBuilderCardProps) {
-  const categoryIcon = builder.category
-    ? BUILDER_CATEGORY_ICONS[builder.category as BuilderCategory] ?? "✦"
+  const CategoryIcon = builder.category
+    ? BUILDER_CATEGORY_LUCIDE[builder.category as BuilderCategory] ?? Sparkles
     : null;
 
   const joinDate = new Date(builder.createdAt).toLocaleDateString("en-US", {
@@ -76,11 +77,11 @@ export function FeaturedBuilderCard({ builder, onClick, onSpotFilterClick }: Fea
         </div>
 
         {/* Category pill */}
-        {builder.category && categoryIcon && (
+        {builder.category && CategoryIcon && (
           <span
             className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-sm text-[11px] font-bold uppercase tracking-widest t-sans bg-white/10 text-white/85"
           >
-            {categoryIcon} {builder.category}
+            <CategoryIcon size={14} aria-hidden="true" /> {builder.category}
           </span>
         )}
       </div>

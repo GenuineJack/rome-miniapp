@@ -97,7 +97,7 @@ function DispatchHero({ date }: { date: string }) {
     <div className="relative w-full overflow-hidden bg-navy aspect-[1200/630]">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/dispatch-cover.jpg"
+        src="/dispatch-cover.jpeg"
         alt=""
         loading="eager"
         className="absolute inset-0 w-full h-full object-cover opacity-80"

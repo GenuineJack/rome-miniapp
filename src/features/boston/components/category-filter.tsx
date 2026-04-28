@@ -1,9 +1,10 @@
 "use client";
 
-import { Category, CATEGORIES, CATEGORY_ICONS, CategoryFilter } from "@/features/boston/types";
+import { Category, CATEGORIES, CATEGORY_LUCIDE, CategoryFilter } from "@/features/boston/types";
+import { Plane, Sparkles, type LucideIcon } from "lucide-react";
 
-const EXTRA_FILTERS: { id: CategoryFilter; icon: string }[] = [
-  { id: "Tourist Picks", icon: "✈️" },
+const EXTRA_FILTERS: { id: CategoryFilter; icon: LucideIcon }[] = [
+  { id: "Tourist Picks", icon: Plane },
 ];
 
 type CategoryFilterBarProps = {
@@ -19,7 +20,7 @@ export function CategoryFilterBar({ active, onChange }: CategoryFilterBarProps) 
       {all.map((cat) => {
         const isActive = active === cat;
         const extra = EXTRA_FILTERS.find(f => f.id === cat);
-        const icon = extra ? extra.icon : cat !== "All" ? CATEGORY_ICONS[cat as Category] : "✦";
+        const Icon: LucideIcon = extra ? extra.icon : cat !== "All" ? (CATEGORY_LUCIDE[cat as Category] ?? Sparkles) : Sparkles;
         return (
           <button
             key={cat}
@@ -28,7 +29,7 @@ export function CategoryFilterBar({ active, onChange }: CategoryFilterBarProps) 
               isActive ? "bg-navy text-white" : "bg-transparent text-navy"
             }`}
           >
-            <span>{icon}</span>
+            <Icon size={14} aria-hidden="true" />
             <span>{cat}</span>
           </button>
         );

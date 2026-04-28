@@ -3,7 +3,7 @@
 import { useState } from "react";
 import {
   BUILDER_CATEGORIES,
-  BUILDER_CATEGORY_ICONS,
+  BUILDER_CATEGORY_LUCIDE,
   BuilderCategory,
   NEIGHBORHOODS,
   REGION_IDS,
@@ -384,7 +384,7 @@ export function BuilderJoinForm({ onSuccess, onClose, existingBuilder }: JoinFor
                         : "bg-transparent text-navy border border-[#c0c0c0] cursor-pointer"
                   }`}
                 >
-                  {BUILDER_CATEGORY_ICONS[cat]} {cat}
+                  {(() => { const Icon = BUILDER_CATEGORY_LUCIDE[cat]; return <Icon size={14} aria-hidden="true" />; })()} {cat}
                 </button>
               );
             })}

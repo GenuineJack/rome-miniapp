@@ -1230,3 +1230,69 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
+/* ── Admin page contrast + button polish ── */
+.admin-page {
+  /* Page-scoped contrast bump: the global .t-sans-gray / .t-serif-gray
+     color (#828282) fails WCAG AA against the gray-50 surface. Within the
+     admin tool, force the muted text token instead. */
+  color: var(--text-primary);
+}
+.admin-page .t-sans-gray,
+.admin-page .t-serif-gray {
+  color: var(--text-muted);
+}
+.admin-page .h-eyebrow {
+  color: #3f4044;
+}
+.admin-page input::placeholder,
+.admin-page textarea::placeholder {
+  color: #6a6a6e;
+  opacity: 1;
+}
+.admin-page .admin-tab-count {
+  background: rgba(9, 31, 47, 0.12);
+  color: var(--text-primary);
+}
+
+/* Inline action button — used for Regenerate / Edit / Sign Out.
+   Reads as a real control instead of fading link text. */
+.admin-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.25rem;
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.admin-action-btn:hover {
+  border-color: #1871bd;
+  color: #1871bd;
+}
+.admin-action-btn[data-variant="primary"] {
+  color: #fff;
+  background: #1871bd;
+  border-color: #1871bd;
+}
+.admin-action-btn[data-variant="primary"]:hover {
+  background: #0f5a99;
+  border-color: #0f5a99;
+  color: #fff;
+}
+.admin-action-btn[data-variant="ghost"] {
+  background: transparent;
+}
+.admin-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+

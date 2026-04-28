@@ -1,8 +1,8 @@
 "use client";
 
-import { Spot, CATEGORY_ICONS, Category } from "@/features/boston/types";
+import { Spot, CATEGORY_LUCIDE, Category } from "@/features/boston/types";
 import { ExternalLink, openExternalUrl } from "@/neynar-farcaster-sdk/mini";
-import { Globe, MapPin, Share2 } from "lucide-react";
+import { Globe, MapPin, Share2, Sparkles } from "lucide-react";
 
 type SpotCardProps = {
   spot: Spot;
@@ -25,7 +25,7 @@ function handleShare(spot: Spot, e: React.MouseEvent) {
 }
 
 export function SpotCard({ spot, onClick, isNew }: SpotCardProps) {
-  const icon = CATEGORY_ICONS[spot.category as Category] ?? "📍";
+  const Icon = CATEGORY_LUCIDE[spot.category as Category] ?? Sparkles;
 
   return (
     <div
@@ -38,7 +38,7 @@ export function SpotCard({ spot, onClick, isNew }: SpotCardProps) {
         <span
           className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-bold uppercase tracking-widest t-sans-white bg-navy"
         >
-          {icon} {spot.category}
+          <Icon size={14} aria-hidden="true" /> {spot.category}
         </span>
         {isNew && (
           <span

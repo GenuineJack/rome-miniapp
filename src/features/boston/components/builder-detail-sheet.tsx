@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef, useState, useEffect, useCallback } from "react";
-import { Builder, Spot, BUILDER_CATEGORY_ICONS, BuilderCategory } from "@/features/boston/types";
+import { Builder, Spot, BUILDER_CATEGORY_LUCIDE, BuilderCategory } from "@/features/boston/types";
+import { Sparkles } from "lucide-react";
 import { getSpotsByBuilder } from "@/db/actions/boston-actions";
 import { SpotCard } from "@/features/boston/components/spot-card";
 import { BuilderAvatar } from "@/features/boston/components/builder-card";
@@ -89,8 +90,8 @@ export function BuilderDetailSheet({
 
   if (!builder) return null;
 
-  const _categoryIcon = builder.category
-    ? BUILDER_CATEGORY_ICONS[builder.category as BuilderCategory] ?? "✦"
+  const _CategoryIcon = builder.category
+    ? BUILDER_CATEGORY_LUCIDE[builder.category as BuilderCategory] ?? Sparkles
     : null;
 
   const allCategories = builder.categories?.length
@@ -170,13 +171,13 @@ export function BuilderDetailSheet({
 
               <div className="flex items-center gap-2 flex-wrap">
                 {allCategories.map((cat) => {
-                  const icon = BUILDER_CATEGORY_ICONS[cat as BuilderCategory] ?? "✦";
+                  const Icon = BUILDER_CATEGORY_LUCIDE[cat as BuilderCategory] ?? Sparkles;
                   return (
                     <span
                       key={cat}
                       className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[11px] font-bold uppercase tracking-widest t-sans-white bg-navy"
                     >
-                      {icon} {cat}
+                      <Icon size={12} aria-hidden="true" /> {cat}
                     </span>
                   );
                 })}

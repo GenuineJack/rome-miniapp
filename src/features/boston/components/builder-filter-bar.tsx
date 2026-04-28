@@ -1,6 +1,7 @@
 "use client";
 
-import { BUILDER_CATEGORIES, BUILDER_CATEGORY_ICONS, BuilderCategory, NEIGHBORHOODS, REGION_IDS } from "@/features/boston/types";
+import { BUILDER_CATEGORIES, BUILDER_CATEGORY_LUCIDE, BuilderCategory, NEIGHBORHOODS, REGION_IDS } from "@/features/boston/types";
+import { Sparkles } from "lucide-react";
 
 const CITY_NEIGHBORHOODS = NEIGHBORHOODS.filter((n) => !REGION_IDS.has(n.id));
 const REGIONS = NEIGHBORHOODS.filter((n) => REGION_IDS.has(n.id));
@@ -29,7 +30,7 @@ export function BuilderFilterBar({
         <div className="flex items-center gap-2 w-max">
           {allCategories.map((cat) => {
             const isActive = activeCategory === cat;
-            const icon = cat !== "All" ? BUILDER_CATEGORY_ICONS[cat as BuilderCategory] : "✦";
+            const Icon = cat !== "All" ? (BUILDER_CATEGORY_LUCIDE[cat as BuilderCategory] ?? Sparkles) : Sparkles;
             return (
               <button
                 key={cat}
@@ -40,7 +41,7 @@ export function BuilderFilterBar({
                     : "bg-transparent text-navy border-boston-gray-200"
                 }`}
               >
-                {icon} {cat}
+                <Icon size={14} aria-hidden="true" /> {cat}
               </button>
             );
           })}

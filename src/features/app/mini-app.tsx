@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import { Map, Building2, Sun, Users, Newspaper, type LucideIcon } from "lucide-react";
 import { ActiveTab, Spot, CategoryFilter } from "@/features/boston/types";
 import { ExploreTab } from "@/features/boston/tabs/explore-tab";
 import { NeighborhoodsTab } from "@/features/boston/tabs/neighborhoods-tab";
@@ -20,12 +21,12 @@ import type { NewsItem } from "@/app/api/news/route";
 
 type SubmitMode = "picker" | "spot" | "happening";
 
-const TABS: { id: ActiveTab; label: string; icon: string; isCenter?: boolean }[] = [
-  { id: "explore", label: "Explore", icon: "🗺" },
-  { id: "neighborhoods", label: "Areas", icon: "🏘" },
-  { id: "today", label: "Today", icon: "☀️", isCenter: true },
-  { id: "builders", label: "Builders", icon: "👥" },
-  { id: "new", label: "Dispatch", icon: "📰" },
+const TABS: { id: ActiveTab; label: string; icon: LucideIcon; isCenter?: boolean }[] = [
+  { id: "explore", label: "Explore", icon: Map },
+  { id: "neighborhoods", label: "Areas", icon: Building2 },
+  { id: "today", label: "Today", icon: Sun, isCenter: true },
+  { id: "builders", label: "Builders", icon: Users },
+  { id: "new", label: "Dispatch", icon: Newspaper },
 ];
 
 export function MiniApp({ initialSpots = [] }: { initialSpots?: Spot[] }) {
@@ -307,9 +308,12 @@ export function MiniApp({ initialSpots = [] }: { initialSpots?: Spot[] }) {
                 <div
                   className={`flex items-center justify-center transition-colors duration-150 tab-circle ${isActive ? "tab-circle-active" : "tab-circle-inactive"}`}
                 >
-                  <span className={`text-base leading-none ${isActive ? "opacity-100" : "opacity-60"}`}>
-                    {tab.icon}
-                  </span>
+                  <tab.icon
+                    size={20}
+                    strokeWidth={2}
+                    className={isActive ? "" : "opacity-60"}
+                    aria-hidden="true"
+                  />
                 </div>
                 <span
                   className={`text-[11px] font-bold uppercase tracking-widest leading-none t-sans ${isActive ? "tab-label-active" : "tab-label-inactive"}`}
@@ -332,9 +336,12 @@ export function MiniApp({ initialSpots = [] }: { initialSpots?: Spot[] }) {
                   className="absolute top-0 left-1/2 -translate-x-1/2 tab-indicator"
                 />
               )}
-              <span className={`text-base leading-none ${isActive ? "opacity-100" : "opacity-45"}`}>
-                {tab.icon}
-              </span>
+              <tab.icon
+                size={20}
+                strokeWidth={2}
+                className={isActive ? "" : "opacity-45"}
+                aria-hidden="true"
+              />
               <span
                 className={`text-[11px] font-bold uppercase tracking-widest leading-none t-sans ${isActive ? "tab-label-active" : "tab-label-inactive"}`}
               >

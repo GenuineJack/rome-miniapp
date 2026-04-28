@@ -1,8 +1,9 @@
 "use client";
 
 import { useRef, useState, useEffect, useCallback } from "react";
-import { Spot, CATEGORY_ICONS, Category } from "@/features/boston/types";
+import { Spot, CATEGORY_LUCIDE, Category } from "@/features/boston/types";
 import { useShare, ExternalLink, openExternalUrl } from "@/neynar-farcaster-sdk/mini";
+import { Sparkles } from "lucide-react";
 
 type SpotDetailSheetProps = {
   spot: Spot | null;
@@ -74,7 +75,7 @@ export function SpotDetailSheet({ spot, onClose, onViewBuilder }: SpotDetailShee
     touchStartY.current = null;
   }
 
-  const icon = spot ? CATEGORY_ICONS[spot.category as Category] ?? "📍" : "📍";
+  const Icon = spot ? CATEGORY_LUCIDE[spot.category as Category] ?? Sparkles : Sparkles;
 
   function handleOpenMaps() {
     if (spot?.address) {
@@ -180,7 +181,7 @@ export function SpotDetailSheet({ spot, onClose, onViewBuilder }: SpotDetailShee
             <span
               className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-bold uppercase tracking-widest t-sans-white bg-navy"
             >
-              {icon} {spot.category}
+              <Icon size={14} aria-hidden="true" /> {spot.category}
             </span>
             {spot.featured && (
               <span

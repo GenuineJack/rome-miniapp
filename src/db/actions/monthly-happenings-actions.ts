@@ -130,15 +130,25 @@ export async function setMonthlySlot(input: UpsertInput) {
 
 /** Admin-only: regenerate the current month's three rows (deletes existing first). */
 export async function adminRegenerateCurrentMonth(adminFid: number): Promise<{ ok: boolean; error?: string }> {
-  const ok = await verifyAdmin(adminFid);
-  if (!ok) {
-    return { ok: false, error: "Unauthorized" };
+  try {
+    const ok = await verifyAdmin(adminFid);
+    if (!ok) {
+      return { ok: false, error: "Unauthorized" };
+    }
+    const month = getCurrentMonthStr();
+    await db.delete(monthlyHappenings).where(eq(monthlyHappenings.month, month));
+    // Dynamic import keeps AI deps out of every server bundle.
+    const { generateMonthlyHappenings } = await import("@/lib/monthly-happenings-generator");
+    const result = await generateMonthlyHappenings({ month, force: true });
+    if (!result.ok) {
+      return { ok: false, error: result.error };
+    }
+    return { ok: true };
+  } catch (e) {
+    console.error("[monthly-happenings] adminRegenerateCurrentMonth failed:", e);
+    const msg = e instanceof Error ? e.message : "Unexpected error";
+    return { ok: false, error: msg };
   }
-  const month = getCurrentMonthStr();
-  await db.delete(monthlyHappenings).where(eq(monthlyHappenings.month, month));
-  // Dynamic import keeps AI deps out of every server bundle.
-  const { generateMonthlyHappenings } = await import("@/lib/monthly-happenings-generator");
-  return generateMonthlyHappenings({ month, force: true });
 }
 
 /** Admin-only: list monthly happenings for a given month (defaults to current). */
