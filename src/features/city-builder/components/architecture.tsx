@@ -3,7 +3,7 @@ const STACK = [
   { label: "Protocol", value: "Farcaster Mini-App SDK" },
   { label: "Database", value: "PostgreSQL via Drizzle ORM" },
   { label: "Hosting", value: "Vercel (or any Node host)" },
-  { label: "UI", value: "Sketch component library + Tailwind" },
+  { label: "UI", value: "Tailwind 4 + custom utilities" },
   { label: "AI", value: "OpenAI for daily dispatch generation" },
   { label: "Transit", value: "Pluggable adapters (MBTA, GTFS, custom, or none)" },
   { label: "State", value: "Jotai + React Query" },

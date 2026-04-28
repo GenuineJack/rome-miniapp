@@ -74,7 +74,9 @@ export function SubmitHappeningForm({ onSuccess }: Props) {
         neighborhood: form.neighborhood,
         dateLabel: form.dateLabel.trim(),
         startDate: form.startDate || undefined,
-        endDate: form.endDate || undefined,
+        // Default endDate to startDate when missing — single-day events are the
+        // common case; this keeps them visible on the date they happen.
+        endDate: form.endDate || form.startDate || undefined,
         emoji: form.emoji,
         url: form.url.trim() || undefined,
         submittedByFid: user.fid,

@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { NEIGHBORHOODS, REGION_IDS, NeighborhoodInfo, Spot } from "@/features/boston/types";
+
+// (REGION_IDS used both at module load and inside NeighborhoodDetail)
 import { getSpotCountByNeighborhood, getSpotsByNeighborhood } from "@/db/actions/boston-actions";
 
 const LeafletMapInner = dynamic(
@@ -27,11 +29,17 @@ function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots, onSe
 
   useEffect(() => {
     setSpotsLoading(true);
-    getSpotsByNeighborhood(neighborhood.name, 5).then((data) => {
+    // Fetch all spots so the map shows every spot with coordinates.
+    getSpotsByNeighborhood(neighborhood.name, 200).then((data) => {
       setInlineSpots(data);
       setSpotsLoading(false);
     });
   }, [neighborhood.name]);
+
+  const spotsWithCoords = inlineSpots.filter(
+    (s) => s.latitude !== null && s.longitude !== null
+  );
+  const isRegion = REGION_IDS.has(neighborhood.id);
 
   return (
     <div className="flex flex-col h-full overflow-y-auto">
@@ -58,6 +66,9 @@ function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots, onSe
             className="text-xs font-bold uppercase tracking-widest t-sans-blue"
           >
             {spotCount} {spotCount === 1 ? "spot" : "spots"} in the guide
+            {!spotsLoading && spotsWithCoords.length !== spotCount && spotCount > 0 && (
+              <span className="opacity-70"> · {spotsWithCoords.length} on map</span>
+            )}
           </span>
           {spotCount > 0 && (
             <button
@@ -79,23 +90,25 @@ function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots, onSe
         </p>
       </div>
 
-      {/* Neighborhood-scoped map */}
-      <div className="border-b border-[#e0e0e0]">
-        <LeafletMapInner
-          spots={inlineSpots}
-          onSpotClick={onSelectSpot}
-          height="200px"
-          center={neighborhood.center}
-          zoom={14}
-        />
-        {!spotsLoading && inlineSpots.length === 0 && (
-          <div className="relative flex items-center justify-center pointer-events-none -mt-[100px] h-0">
-            <span className="bg-navy/80 text-white text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-sm t-sans">
-              No spots here yet
-            </span>
-          </div>
-        )}
-      </div>
+      {/* Scoped map — only render when we have a center (regions may not) */}
+      {neighborhood.center && (
+        <div className="border-b border-[#e0e0e0]">
+          <LeafletMapInner
+            spots={spotsWithCoords}
+            onSpotClick={onSelectSpot}
+            height="200px"
+            center={neighborhood.center}
+            zoom={isRegion ? 11 : 14}
+          />
+          {!spotsLoading && spotsWithCoords.length === 0 && (
+            <div className="relative flex items-center justify-center pointer-events-none -mt-[100px] h-0">
+              <span className="bg-navy/80 text-white text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-sm t-sans">
+                No mapped spots yet
+              </span>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Inline spots */}
       <div className="p-4">
@@ -145,12 +158,12 @@ function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots, onSe
                 </button>
               ))}
             </div>
-            {spotCount > 5 && (
+            {isRegion && (
               <button
                 onClick={() => onViewSpots(neighborhood.id)}
                 className="mt-3 text-xs font-bold uppercase tracking-widest t-sans-blue btn-unstyled"
               >
-                View all in Explore →
+                Explore spots in {neighborhood.name} →
               </button>
             )}
           </>
@@ -310,14 +323,14 @@ export function NeighborhoodsTab({ onNavigateToExplore, onSelectSpot }: Neighbor
         <div className="flex-1 border-t border-[#e0e0e0]" />
       </div>
 
-      {/* Regions — single column */}
+      {/* Regions — single column. Click opens detail with writeup, not direct nav. */}
       <div className="flex flex-col gap-3 px-4 pb-6">
         {REGIONS.map((n) => (
           <RegionCard
             key={n.id}
             neighborhood={n}
             spotCount={getCount(n)}
-            onClick={() => onNavigateToExplore(n.id)}
+            onClick={() => setSelected(n)}
           />
         ))}
       </div>

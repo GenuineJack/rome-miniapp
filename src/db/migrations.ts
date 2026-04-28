@@ -188,6 +188,19 @@ const ALTER_MIGRATIONS: string[] = [
   )`,
   `CREATE INDEX IF NOT EXISTS dispatch_poll_responses_date_idx ON dispatch_poll_responses (dispatch_date)`,
   `CREATE UNIQUE INDEX IF NOT EXISTS dispatch_poll_responses_date_fid_idx ON dispatch_poll_responses (dispatch_date, fid) WHERE fid IS NOT NULL`,
+  `CREATE TABLE IF NOT EXISTS monthly_happenings (
+    id text PRIMARY KEY,
+    month text NOT NULL,
+    slot integer NOT NULL,
+    title text NOT NULL,
+    emoji text NOT NULL DEFAULT '📅',
+    summary text NOT NULL,
+    body text NOT NULL,
+    image_url text,
+    source_links text,
+    created_at timestamp DEFAULT now() NOT NULL
+  )`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS monthly_happenings_month_slot_idx ON monthly_happenings (month, slot)`,
   // Tag ~10 iconic Boston spots as tourist picks
   `UPDATE spots SET tourist_pick = true WHERE id IN (
     'd5e10c8d-ea81-40ab-870a-4169c40b5ee5',

@@ -3,10 +3,12 @@
 import { useState, useEffect } from "react";
 import { CommunityHappening, BostonGame } from "@/features/boston/types";
 import { getCommunityHappenings } from "@/db/actions/boston-actions";
+import { getMonthlyHappenings, type MonthlyHappening } from "@/db/actions/monthly-happenings-actions";
 import { WeatherStrip, WeatherCache, WeatherData, fetchWeather, isWeatherCacheFresh, fetchMbtaAlert, MbtaAlert } from "@/features/boston/components/weather-strip";
 import { SportsRow, SportsCache, fetchAllGames, isSportsCacheFresh, getLocalDateStr } from "@/features/boston/components/sports-row";
 import { HappeningsSection } from "@/features/boston/components/happenings-section";
 import { TeamDetailSheet } from "@/features/boston/components/team-detail-sheet";
+import { MonthlyHappeningPage } from "@/features/boston/components/monthly-happening-page";
 import { NewsSection } from "@/features/boston/components/news-section";
 import { getTimeContext } from "@/features/boston/utils/time-context";
 import type { NewsItem } from "@/app/api/news/route";
@@ -53,6 +55,8 @@ export function TodayTab({
   onNewsCacheUpdate,
 }: Props) {
   const [communityHappenings, setCommunityHappenings] = useState<CommunityHappening[]>([]);
+  const [monthlyHappenings, setMonthlyHappenings] = useState<MonthlyHappening[]>([]);
+  const [openedMonthly, setOpenedMonthly] = useState<MonthlyHappening | null>(null);
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
   const [weatherLoading, setWeatherLoading] = useState(!isWeatherCacheFresh(weatherCache));
   const [weatherError, setWeatherError] = useState(false);
@@ -65,6 +69,7 @@ export function TodayTab({
 
   useEffect(() => {
     getCommunityHappenings(20).then((data) => setCommunityHappenings(data as CommunityHappening[]));
+    getMonthlyHappenings().then(setMonthlyHappenings).catch(() => {});
   }, []);
 
   // Fetch the daily AI intro from the dispatch
@@ -109,7 +114,7 @@ export function TodayTab({
 
   const sportsSection = <SportsRow games={gamesData} loading={sportsLoading} fetchFailed={sportsFailed} onTeamClick={setSelectedTeam} />;
   const newsSection = <NewsSection cachedNews={newsCache} onNewsLoaded={onNewsCacheUpdate} />;
-  const happeningsSection = <HappeningsSection onNavigateToNeighborhood={onNavigateToNeighborhood} onOpenWorldCup={onOpenWorldCup} communityHappenings={communityHappenings} />;
+  const happeningsSection = <HappeningsSection onNavigateToNeighborhood={onNavigateToNeighborhood} onOpenWorldCup={onOpenWorldCup} communityHappenings={communityHappenings} monthlyHappenings={monthlyHappenings} onOpenMonthlyHappening={setOpenedMonthly} />;
 
   return (
     <div className="flex flex-col h-full overflow-y-auto">
@@ -134,6 +139,14 @@ export function TodayTab({
         games={gamesData}
         onClose={() => setSelectedTeam(null)}
       />
+
+      {/* Monthly happening detail page */}
+      {openedMonthly && (
+        <MonthlyHappeningPage
+          happening={openedMonthly}
+          onBack={() => setOpenedMonthly(null)}
+        />
+      )}
     </div>
   );
 }

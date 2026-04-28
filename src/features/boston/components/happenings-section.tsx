@@ -3,7 +3,9 @@
 import { useMemo, useState, useEffect } from "react";
 import { Happening, CommunityHappening } from "@/features/boston/types";
 import type { EventItem } from "@/app/api/events/route";
+import type { MonthlyHappening } from "@/db/actions/monthly-happenings-actions";
 import { ExternalLink } from "@/neynar-farcaster-sdk/mini";
+import { ExternalLink as ExternalLinkIcon } from "lucide-react";
 
 // ─── Happening definitions ────────────────────────────────────────────────────
 // Each entry has date window logic and a dynamic timing label function.
@@ -434,7 +436,37 @@ type Props = {
   onNavigateToNeighborhood?: (neighborhoodId: string) => void;
   onOpenWorldCup?: () => void;
   communityHappenings?: CommunityHappening[];
+  monthlyHappenings?: MonthlyHappening[];
+  onOpenMonthlyHappening?: (h: MonthlyHappening) => void;
 };
+
+function MonthlyCard({
+  happening,
+  onOpen,
+}: {
+  happening: MonthlyHappening;
+  onOpen: (h: MonthlyHappening) => void;
+}) {
+  return (
+    <button
+      onClick={() => onOpen(happening)}
+      className="text-left w-full rounded-sm happening-card bg-gradient-to-br from-boston-gray-50 to-white border border-boston-gray-100 transition-colors hover:bg-boston-gray-50 cursor-pointer"
+    >
+      <p className="uppercase mb-2 happening-timing t-sans-blue">
+        {happening.emoji} This month
+      </p>
+      <h3 className="font-bold leading-tight mb-2 t-sans-navy happening-title">
+        {happening.title}
+      </h3>
+      <p className="italic leading-relaxed mb-3 t-serif-body happening-desc">
+        {happening.summary}
+      </p>
+      <span className="transition-opacity duration-150 hover:opacity-70 t-sans-blue happening-link">
+        Read more →
+      </span>
+    </button>
+  );
+}
 
 function CuratedCard({
   happening,
@@ -503,11 +535,7 @@ function CommunityCard({ happening }: { happening: CommunityHappening }) {
           href={happening.url}
           className="inline-flex items-center gap-1 mb-3 transition-opacity duration-150 hover:opacity-70 t-sans-blue happening-ext-link"
         >
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-            <polyline points="15 3 21 3 21 9"/>
-            <line x1="10" y1="14" x2="21" y2="3"/>
-          </svg>
+          <ExternalLinkIcon size={11} strokeWidth={2.5} aria-hidden="true" />
           More info →
         </ExternalLink>
       )}
@@ -574,7 +602,7 @@ function EventCard({ event }: { event: EventItem }) {
   );
 }
 
-export function HappeningsSection({ onNavigateToNeighborhood, onOpenWorldCup, communityHappenings = [] }: Props) {
+export function HappeningsSection({ onNavigateToNeighborhood, onOpenWorldCup, communityHappenings = [], monthlyHappenings = [], onOpenMonthlyHappening }: Props) {
   // Stable date — doesn't need to update mid-session, and avoids recalculating
   // all the happening date windows on every parent re-render.
   const today = useMemo(() => new Date(), []);
@@ -612,19 +640,22 @@ export function HappeningsSection({ onNavigateToNeighborhood, onOpenWorldCup, co
 
   const filteredEvents = sourceFilter === "All"
     ? events
-    : events.filter((e) => e.category === sourceFilter);
+    : sourceFilter === "community"
+      ? [] // community filter shows only community submissions, not RSS events
+      : events.filter((e) => e.category === sourceFilter);
 
-  if (curated.length === 0 && communityHappenings.length === 0 && events.length === 0) return null;
+  // Community submissions are shown when filter is "All" or "community"
+  const showCommunity = sourceFilter === "All" || sourceFilter === "community";
+  // Curated editorial cards show only on "All"
+  const showCurated = sourceFilter === "All";
+
+  if (curated.length === 0 && communityHappenings.length === 0 && events.length === 0 && monthlyHappenings.length === 0) return null;
 
   return (
     <div className="px-4 mt-6">
-      <div
-        className="flex items-end justify-between pb-2 section-header-divider"
-      >
-        <span className="t-sans-navy section-heading">
-          Happening in Boston
-        </span>
-        <span className="t-sans-gray section-subheading">
+      <div className="today-section-header">
+        <h2 className="today-section-title">Happening in Boston</h2>
+        <span className="today-section-eyebrow">
           {communityHappenings.length > 0 ? `${communityHappenings.length} from community` : "Curated"}
         </span>
       </div>
@@ -649,12 +680,16 @@ export function HappeningsSection({ onNavigateToNeighborhood, onOpenWorldCup, co
       )}
 
       <div className="flex flex-col gap-3">
-        {/* Community submissions first — most timely */}
-        {communityHappenings.map((h) => (
+        {/* AI-generated monthly happenings — top of the editorial stack */}
+        {showCurated && onOpenMonthlyHappening && monthlyHappenings.map((h) => (
+          <MonthlyCard key={h.id} happening={h} onOpen={onOpenMonthlyHappening} />
+        ))}
+        {/* Community submissions — most timely */}
+        {showCommunity && communityHappenings.map((h) => (
           <CommunityCard key={h.id} happening={h} />
         ))}
         {/* Curated editorial cards */}
-        {curated.map((h) => (
+        {showCurated && curated.map((h) => (
           <CuratedCard key={h.id} happening={h} onNavigateToNeighborhood={onNavigateToNeighborhood} onOpenWorldCup={onOpenWorldCup} />
         ))}
 

@@ -3,6 +3,10 @@
     {
       "path": "/api/dispatch/generate",
       "schedule": "0 10 * * *"
+    },
+    {
+      "path": "/api/dispatch/generate-happenings",
+      "schedule": "0 13 1 * *"
     }
   ]
 }

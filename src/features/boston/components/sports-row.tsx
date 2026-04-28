@@ -2,7 +2,6 @@
 
 import { BostonGame } from "@/features/boston/types";
 import { NON_ESPN_TEAMS } from "./teams-config";
-import { ExternalLink } from "@/neynar-farcaster-sdk/mini";
 
 // ─── ESPN public API ──────────────────────────────────────────────────────────
 // No API key required. Returns today's scoreboard for each sport/league.
@@ -178,7 +177,10 @@ export async function fetchAllGames(): Promise<BostonGame[]> {
     byLeague.get(key)!.push(team);
   }
 
-  // Only today + tomorrow — 2 dates × N active leagues
+  // Today only — also fetch tomorrow to catch late-night games (e.g. NBA
+  // playoff games scheduled past midnight ET) and surface upcoming games
+  // when today is dark. We filter to "today" downstream in the dispatch and
+  // keep upcoming visible in the Today tab card.
   const dates = [0, 1].map((offset) => {
     const d = new Date(now);
     d.setDate(d.getDate() + offset);
@@ -306,8 +308,13 @@ type SportsRowProps = {
 };
 
 export function SportsRow({ games, loading, fetchFailed, onTeamClick }: SportsRowProps) {
+  // Today's local date string for filtering — UAT feedback: Today tab should
+  // surface games happening *today*, not the next 48h.
+  const todayStr = getLocalDateStr(new Date());
+  const todayGames = games.filter((g) => g.date === todayStr);
+
   // Build a set of teams that have games in the data
-  const teamsWithGames = new Set(games.map((g) => g.team));
+  const teamsWithGames = new Set(todayGames.map((g) => g.team));
 
   // All ESPN teams should always be visible
   const allEspnTeams: { team: string; emoji: string }[] = [
@@ -321,19 +328,9 @@ export function SportsRow({ games, loading, fetchFailed, onTeamClick }: SportsRo
   return (
     <div className="px-4 mt-6">
       {/* Section header */}
-      <div
-        className="flex items-end justify-between pb-2 section-header-divider"
-      >
-        <span
-          className="t-sans-navy section-heading"
-        >
-          Boston Sports
-        </span>
-        <span
-          className="t-sans-gray section-subheading"
-        >
-          Next 48 hrs
-        </span>
+      <div className="today-section-header">
+        <h2 className="today-section-title">Boston Sports</h2>
+        <span className="today-section-eyebrow">Today</span>
       </div>
 
       {loading ? (
@@ -342,7 +339,7 @@ export function SportsRow({ games, loading, fetchFailed, onTeamClick }: SportsRo
         <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar">
           {/* ESPN teams — always show all, with game data when available */}
           {allEspnTeams.map(({ team, emoji }) => {
-            const teamGames = games.filter((g) => g.team === team);
+            const teamGames = todayGames.filter((g) => g.team === team);
             if (teamGames.length > 0) {
               return teamGames.map((game) => (
                 <GameCard key={game.id} game={game} onClick={() => onTeamClick?.(game.team)} />
@@ -370,14 +367,14 @@ export function SportsRow({ games, loading, fetchFailed, onTeamClick }: SportsRo
             );
           })}
 
-          {/* Non-ESPN teams — always show */}
+          {/* Non-ESPN teams — always show, click opens TeamDetailSheet */}
           {NON_ESPN_TEAMS.map((team) => {
             const inSeason = team.activeMonths.includes(new Date().getMonth());
             return (
-              <ExternalLink
+              <button
                 key={team.name}
-                href={team.scheduleUrl}
-                className="shrink-0 flex flex-col justify-between p-3 bg-white game-card text-left cursor-pointer hover:bg-boston-gray-50 transition-colors"
+                onClick={() => onTeamClick?.(team.name)}
+                className="shrink-0 flex flex-col justify-between p-3 bg-white game-card text-left cursor-pointer hover:bg-boston-gray-50 transition-colors border-none"
               >
                 <div>
                   <p className="font-bold uppercase leading-tight t-sans-navy game-team">
@@ -388,9 +385,9 @@ export function SportsRow({ games, loading, fetchFailed, onTeamClick }: SportsRo
                   </p>
                 </div>
                 <p className="uppercase leading-tight t-sans text-boston-gray-400 game-status">
-                  {inSeason ? "Schedule →" : "Off-season"}
+                  {inSeason ? "View team →" : "Off-season"}
                 </p>
-              </ExternalLink>
+              </button>
             );
           })}
         </div>

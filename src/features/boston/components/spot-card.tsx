@@ -2,6 +2,7 @@
 
 import { Spot, CATEGORY_ICONS, Category } from "@/features/boston/types";
 import { ExternalLink, openExternalUrl } from "@/neynar-farcaster-sdk/mini";
+import { Globe, MapPin, Share2 } from "lucide-react";
 
 type SpotCardProps = {
   spot: Spot;
@@ -87,11 +88,7 @@ export function SpotCard({ spot, onClick, isNew }: SpotCardProps) {
               title="Website"
               aria-label={`Website for ${spot.name}`}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="2" y1="12" x2="22" y2="12"/>
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-              </svg>
+              <Globe size={14} strokeWidth={2.5} aria-hidden="true" />
             </ExternalLink>
           )}
           <button
@@ -100,10 +97,7 @@ export function SpotCard({ spot, onClick, isNew }: SpotCardProps) {
             title="Get directions"
             aria-label={`Directions to ${spot.name}`}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-              <circle cx="12" cy="10" r="3"/>
-            </svg>
+            <MapPin size={14} strokeWidth={2.5} aria-hidden="true" />
           </button>
           <button
             onClick={(e) => handleShare(spot, e)}
@@ -111,13 +105,7 @@ export function SpotCard({ spot, onClick, isNew }: SpotCardProps) {
             title="Share"
             aria-label={`Share ${spot.name}`}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="18" cy="5" r="3"/>
-              <circle cx="6" cy="12" r="3"/>
-              <circle cx="18" cy="19" r="3"/>
-              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-            </svg>
+            <Share2 size={14} strokeWidth={2.5} aria-hidden="true" />
           </button>
         </div>
       </div>

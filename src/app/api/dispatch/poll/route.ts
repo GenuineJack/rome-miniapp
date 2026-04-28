@@ -34,9 +34,18 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const result = await recordPollVote(date, option, fid);
-  if (!result.ok) {
-    return NextResponse.json({ error: result.error }, { status: result.status });
+  try {
+    const result = await recordPollVote(date, option, fid);
+    if (!result.ok) {
+      return NextResponse.json({ error: result.error }, { status: result.status });
+    }
+    return NextResponse.json(result.results);
+  } catch (err) {
+    console.error("[poll] recordPollVote threw:", err);
+    const message = err instanceof Error ? err.message : "Unknown error";
+    return NextResponse.json(
+      { error: `Vote failed: ${message}` },
+      { status: 500 },
+    );
   }
-  return NextResponse.json(result.results);
 }

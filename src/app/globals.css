@@ -51,6 +51,15 @@
   --background: #091f2f;
   --foreground: #ffffff;
 
+  /* Semantic surface + text tokens (P5) */
+  --surface: #ffffff;
+  --surface-alt: #f3f3f3;
+  --surface-paper: #faf8f3;
+  --text-primary: #091f2f;
+  --text-muted: #58585b;
+  --accent-token: #1871bd;
+  --accent-hover: #fb4d42;
+  --border-subtle: #e0e0e0;
 }
 
 .dark {
@@ -73,6 +82,15 @@
   --accent: #288be4;
   --background: #0d2a3f;
   --foreground: #f0f0f0;
+
+  --surface: #1e1e1e;
+  --surface-alt: #262626;
+  --surface-paper: #1a1a1a;
+  --text-primary: #f0f0f0;
+  --text-muted: #a0a0a0;
+  --accent-token: #288be4;
+  --accent-hover: #fc6f66;
+  --border-subtle: #333333;
 }
 
 /* Hide scrollbar while keeping scroll functionality */
@@ -960,6 +978,36 @@
   font-size: 11px;
 }
 
+/* ── Canonical Today-tab section title (newsletter style) ──
+   Use for top-of-section titles on the Today tab (Sports, Happenings, News, etc.)
+   so headings render consistently. Pair with .today-section-header for layout. */
+.today-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 5px solid #091f2f;
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+}
+.today-section-title {
+  font-family: var(--font-serif), Georgia, "Times New Roman", serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #091f2f;
+  margin: 0;
+}
+.today-section-eyebrow {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
 /* ── Sports skeleton ── */
 .sports-skeleton-card {
   width: 160px;
@@ -1041,11 +1089,6 @@
   color: #58585b;
 }
 
-/* ── Sketch layout SVG filter ── */
-.sketch-filter {
-  filter: url(#sketchy);
-}
-
 /* ── MBTA Marquee animation ── */
 @keyframes marquee {
   0% { transform: translateX(0%); }
@@ -1054,3 +1097,136 @@
 .animate-marquee {
   animation: marquee 20s linear infinite;
 }
+
+/* ── Typography utilities (P3) ── */
+.h-display {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: clamp(1.75rem, 4.5vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+.h-section {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 1.125rem;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+.h-eyebrow {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.h-card {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.3;
+  color: var(--text-primary);
+}
+@media (max-width: 480px) {
+  body { font-size: 15px; }
+}
+
+/* ── Reduced motion (P5) ── */
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-pulse,
+  .animate-spin {
+    animation: none !important;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* ── Empty state (P5) ── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem 1.25rem;
+  gap: 0.5rem;
+  color: var(--text-muted);
+}
+.empty-state-emoji {
+  font-size: 2rem;
+  line-height: 1;
+  opacity: 0.7;
+}
+.empty-state-title {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+.empty-state-body {
+  font-size: 0.875rem;
+  max-width: 28ch;
+}
+.empty-state-action {
+  margin-top: 0.5rem;
+}
+
+/* ── Admin tabs ── */
+.admin-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border-subtle);
+  overflow-x: auto;
+}
+.admin-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 9999px;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--surface-alt);
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.admin-tab-btn:hover {
+  color: var(--text-primary);
+}
+.admin-tab-btn[data-selected="true"] {
+  background: var(--text-primary);
+  color: var(--surface);
+  border-color: var(--text-primary);
+}
+.admin-tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.375rem;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.08);
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+.admin-tab-btn[data-selected="true"] .admin-tab-count {
+  background: rgba(255, 255, 255, 0.2);
+}
+

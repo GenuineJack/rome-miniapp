@@ -92,7 +92,31 @@ function getTodayDateStr(): string {
 }
 
 // ─── Sections ────────────────────────────────────────────────────────────────
-
+function DispatchHero({ date }: { date: string }) {
+  return (
+    <div className="relative w-full overflow-hidden bg-navy aspect-[1200/630]">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/dispatch-cover.jpg"
+        alt=""
+        loading="eager"
+        className="absolute inset-0 w-full h-full object-cover opacity-80"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 px-4 pb-4">
+        <p className="text-[11px] font-bold uppercase tracking-widest text-white/70 t-sans mb-1">
+          {date}
+        </p>
+        <h1 className="text-2xl font-black t-serif text-white leading-tight">
+          The Dispatch
+        </h1>
+        <p className="text-xs italic t-serif text-white/80 mt-0.5">
+          Boston, today.
+        </p>
+      </div>
+    </div>
+  );
+}
 function HeaderSection({ date, weather }: { date: string; weather: WeatherData | null }) {
   const [bostonTime, setBostonTime] = useState(() =>
     new Date().toLocaleTimeString("en-US", {
@@ -229,20 +253,26 @@ function TodayInBostonSection({
               📅 Happening Today
             </h4>
             <div className="flex flex-col gap-2">
-              {data.events.map((e, i) => (
-                <div key={i}>
-                  <p className="text-xs font-bold t-sans-navy">{e.title}</p>
-                  <p className="text-[13px] italic t-serif-body">{e.detail}</p>
-                  {e.url && (
+              {data.events.map((e, i) => {
+                // Always provide a link target. If the generator didn't supply one,
+                // fall back to a Google search for the event title — gives readers
+                // *something* to click rather than a dead-end card.
+                const href =
+                  e.url && e.url.length > 0
+                    ? e.url
+                    : `https://www.google.com/search?q=${encodeURIComponent(`Boston ${e.title}`)}`;
+                return (
+                  <div key={i}>
                     <ExternalLink
-                      href={e.url}
-                      className="text-xs font-bold t-sans-blue hover:underline"
+                      href={href}
+                      className="text-xs font-bold t-sans-navy hover:underline"
                     >
-                      Details →
+                      {e.title} →
                     </ExternalLink>
-                  )}
-                </div>
-              ))}
+                    <p className="text-[13px] italic t-serif-body">{e.detail}</p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
@@ -310,7 +340,7 @@ function LocalBusinessNewsSection({
   if (!items || items.length === 0) return null;
   return (
     <div className="px-4 py-4 border-b border-[#e0e0e0]">
-      <SectionHeader label="Business" />
+      <SectionHeader label="Business in Boston" />
       <div className="flex flex-col gap-3">
         {items.map((item, i) => (
           <div key={i}>
@@ -379,15 +409,22 @@ function DailyGamesSection({
           const r = await fetch(`/api/dispatch/poll?date=${todayDate}`);
           if (r.ok) setTodayResults(await r.json());
         } else {
-          setVoteError("Vote failed");
+          let msg = "Vote failed";
+          try {
+            const errData = await res.json();
+            if (errData?.error) msg = errData.error;
+          } catch {
+            /* noop */
+          }
+          setVoteError(msg);
         }
         return;
       }
       const data: PollResults = await res.json();
       setTodayResults(data);
       setVoted(true);
-    } catch {
-      setVoteError("Vote failed");
+    } catch (e) {
+      setVoteError(e instanceof Error ? e.message : "Vote failed");
     } finally {
       setVoting(false);
     }
@@ -492,26 +529,62 @@ function PlaceOfTheDaySection({
   spots?: Spot[];
   onSelectSpot?: (spot: Spot) => void;
 }) {
-  const handleTap = useCallback(() => {
-    if (data.spotId && spots && onSelectSpot) {
-      const match = spots.find((s) => s.id === data.spotId);
-      if (match) onSelectSpot(match);
+  // Resolve the matching spot by id, falling back to name match so the
+  // dispatch can still link out even if the generator returned a name only.
+  const matchedSpot = (() => {
+    if (!spots) return null;
+    if (data.spotId) {
+      const byId = spots.find((s) => s.id === data.spotId);
+      if (byId) return byId;
     }
-  }, [data.spotId, spots, onSelectSpot]);
+    if (data.name) {
+      return (
+        spots.find(
+          (s) => s.name.toLowerCase() === data.name.toLowerCase(),
+        ) ?? null
+      );
+    }
+    return null;
+  })();
+
+  const handleTap = useCallback(() => {
+    if (matchedSpot && onSelectSpot) onSelectSpot(matchedSpot);
+  }, [matchedSpot, onSelectSpot]);
+
+  const isClickable = !!matchedSpot && !!onSelectSpot;
 
   return (
     <div
       className={`px-4 py-4 border-b border-[#e0e0e0] ${
-        data.spotId ? "cursor-pointer hover:bg-boston-gray-50" : ""
+        isClickable ? "cursor-pointer hover:bg-boston-gray-50" : ""
       }`}
-      onClick={handleTap}
+      onClick={isClickable ? handleTap : undefined}
+      {...(isClickable ? { role: "button" as const, tabIndex: 0 } : {})}
+      onKeyDown={
+        isClickable
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") handleTap();
+            }
+          : undefined
+      }
     >
       <SectionHeader label="Place of the Day" />
-      <p className="text-sm font-bold t-sans-navy">{data.name}</p>
+      <p className="text-sm font-bold t-sans-navy">
+        {data.name}
+        {isClickable && <span className="opacity-60"> →</span>}
+      </p>
       <p className="text-xs uppercase tracking-widest t-sans-gray mb-1">
         {data.neighborhood}
       </p>
       <p className="text-[13px] italic t-serif-body">{data.reason}</p>
+      {matchedSpot?.submittedByDisplayName && (
+        <p className="text-[11px] uppercase tracking-widest t-sans-gray mt-2">
+          Submitted by {matchedSpot.submittedByDisplayName}
+          {matchedSpot.submittedByUsername
+            ? ` · @${matchedSpot.submittedByUsername}`
+            : ""}
+        </p>
+      )}
     </div>
   );
 }
@@ -532,21 +605,28 @@ function NumberOfTheDaySection({
   );
 }
 
-function SignOffSection({ signOff }: { signOff: string }) {
-  const todayPath = `/dispatch/${getTodayDateStr()}`;
+function SignOffSection({ signOff, dispatchDate }: { signOff: string; dispatchDate?: string }) {
+  const path = `/dispatch/${dispatchDate || getTodayDateStr()}`;
   const shareUrl =
-    typeof window !== "undefined" ? `${window.location.origin}${todayPath}` : todayPath;
+    typeof window !== "undefined" ? `${window.location.origin}${path}` : path;
 
   return (
-    <div className="px-4 pt-5 pb-4 border-b border-[#e0e0e0]">
-      <p className="text-[14px] italic leading-relaxed t-serif-body mb-3">
+    <div className="px-4 pt-6 pb-5 border-b border-[#e0e0e0]">
+      <div className="flex items-center gap-3 mb-4">
+        <span className="h-px flex-1 bg-boston-gray-200" aria-hidden />
+        <span className="text-[11px] font-bold uppercase tracking-widest t-sans-gray">
+          — Until tomorrow
+        </span>
+        <span className="h-px flex-1 bg-boston-gray-200" aria-hidden />
+      </div>
+      <p className="text-[14px] italic leading-relaxed t-serif-body mb-4">
         {signOff}
       </p>
       <ExternalLink
         href={shareUrl}
-        className="text-[13px] italic t-serif-body text-boston-gray-400 hover:underline"
+        className="inline-flex items-center gap-1.5 text-[12px] font-bold uppercase tracking-widest t-sans-blue hover:underline"
       >
-        <em>Know someone who should be reading this? →</em>
+        Share today’s Dispatch →
       </ExternalLink>
     </div>
   );
@@ -582,15 +662,21 @@ type WhatsNewTabProps = {
   spots?: Spot[];
   loading?: boolean;
   onSelectSpot?: (spot: Spot) => void;
+  /**
+   * Optional pre-loaded dispatch (used by the public /dispatch/[date] route
+   * which fetches server-side). When provided, we skip the client fetch.
+   */
+  initialDispatch?: DispatchContent;
 };
 
-export function WhatsNewTab({ spots, onSelectSpot }: WhatsNewTabProps) {
-  const [dispatch, setDispatch] = useState<DispatchContent | null>(null);
-  const [dispatchLoading, setDispatchLoading] = useState(true);
+export function WhatsNewTab({ spots, onSelectSpot, initialDispatch }: WhatsNewTabProps) {
+  const [dispatch, setDispatch] = useState<DispatchContent | null>(initialDispatch ?? null);
+  const [dispatchLoading, setDispatchLoading] = useState(!initialDispatch);
   const [dispatchError, setDispatchError] = useState(false);
   const [weather, setWeather] = useState<WeatherData | null>(null);
 
   useEffect(() => {
+    if (initialDispatch) return;
     fetch("/api/dispatch/today")
       .then((res) => {
         if (!res.ok) throw new Error("No dispatch");
@@ -605,7 +691,7 @@ export function WhatsNewTab({ spots, onSelectSpot }: WhatsNewTabProps) {
         setDispatchError(true);
         setDispatchLoading(false);
       });
-  }, []);
+  }, [initialDispatch]);
 
   useEffect(() => {
     fetchWeather()
@@ -667,10 +753,13 @@ export function WhatsNewTab({ spots, onSelectSpot }: WhatsNewTabProps) {
     );
   }
 
-  const todayDate = getTodayDateStr();
+  const todayDate = dispatch.date || getTodayDateStr();
 
   return (
     <div className="flex flex-col h-full overflow-y-auto">
+      {/* Section 0: Cover Hero */}
+      <DispatchHero date={dispatch.date} />
+
       {/* Section 1: Header */}
       <HeaderSection date={dispatch.date} weather={weather} />
 
@@ -708,7 +797,7 @@ export function WhatsNewTab({ spots, onSelectSpot }: WhatsNewTabProps) {
         <NumberOfTheDaySection data={dispatch.numberofTheDay} />
 
         {/* Section 10: Sign-Off */}
-        <SignOffSection signOff={dispatch.signOff} />
+        <SignOffSection signOff={dispatch.signOff} dispatchDate={dispatch.date} />
 
         {/* Section 11: Trivia Answer */}
         <TriviaAnswerSection data={dispatch.dailyTrivia} />

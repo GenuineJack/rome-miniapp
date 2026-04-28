@@ -55,10 +55,13 @@ export function NewsSection({ cachedNews, onNewsLoaded }: NewsSectionProps) {
   }
 
   return (
-    <section className="news-section">
-      <h2 className="t-serif text-[#091f2f] news-section-heading">
-        Boston News
-      </h2>
+    <section className="news-section mt-6">
+      <div className="px-4">
+        <div className="today-section-header">
+          <h2 className="today-section-title">Boston News</h2>
+          <span className="today-section-eyebrow">Latest</span>
+        </div>
+      </div>
       <div>
         {items.slice(0, 8).map((item, i) => (
           <ExternalLink key={i} href={item.link}

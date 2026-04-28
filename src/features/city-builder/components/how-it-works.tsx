@@ -2,7 +2,7 @@ const STEPS = [
   {
     num: "01",
     title: "Fork the Template",
-    desc: "One-click fork on GitHub. You get the entire codebase — Next.js app, database schema, sketch UI library, API routes, and deployment config.",
+    desc: "One-click fork on GitHub. You get the entire codebase — Next.js app, database schema, UI components, API routes, and deployment config.",
     icon: "🍴",
   },
   {

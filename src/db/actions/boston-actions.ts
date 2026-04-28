@@ -429,7 +429,7 @@ export async function getSpotsByBuilder(fid: number, limit: number = 5): Promise
   }
 }
 
-export async function getSpotsByNeighborhood(neighborhoodName: string, limit: number = 5): Promise<Spot[]> {
+export async function getSpotsByNeighborhood(neighborhoodName: string, limit: number = 100): Promise<Spot[]> {
   try {
     return (await db
       .select()
@@ -513,6 +513,33 @@ export async function rejectSpot(id: string, callerFid?: number) {
   } catch (error) {
     console.error("Failed to reject spot:", error);
     return { success: false };
+  }
+}
+
+// ─── Admin: Community happenings moderation ──────────────────────────────────
+
+export async function adminListAllCommunityHappenings(adminFid: number, limit: number = 50) {
+  if (!(await verifyAdmin(adminFid))) return [];
+  try {
+    return await db
+      .select()
+      .from(communityHappenings)
+      .orderBy(desc(communityHappenings.createdAt))
+      .limit(limit);
+  } catch (error) {
+    console.error("Failed to list community happenings:", error);
+    return [];
+  }
+}
+
+export async function adminDeleteCommunityHappening(adminFid: number, id: string) {
+  if (!(await verifyAdmin(adminFid))) return { success: false, error: "Not authorized" };
+  try {
+    await db.delete(communityHappenings).where(eq(communityHappenings.id, id));
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete community happening:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 }
 

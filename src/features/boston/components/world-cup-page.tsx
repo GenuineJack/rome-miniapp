@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { Spot } from "@/features/boston/types";
+import { ChevronLeft } from "lucide-react";
 
 const LeafletMapInner = dynamic(
   () => import("@/features/boston/components/leaflet-map").then((m) => ({ default: m.LeafletMapInner })),
@@ -69,7 +70,8 @@ export function WorldCupPage({ onBack, spots = [], onSelectSpot }: WorldCupPageP
           onClick={onBack}
           className="flex items-center gap-1.5 mb-4 text-xs font-bold uppercase tracking-widest text-white opacity-60 hover:opacity-100 transition-opacity t-sans"
         >
-          ← Back
+          <ChevronLeft size={14} strokeWidth={2.5} aria-hidden="true" />
+          Back
         </button>
         <div className="flex items-center gap-3 mb-3">
           <span className="text-3xl">⚽</span>

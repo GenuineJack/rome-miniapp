@@ -86,13 +86,47 @@ export function SpotDetailSheet({ spot, onClose, onViewBuilder }: SpotDetailShee
     }
   }
 
+  const [shareToast, setShareToast] = useState<string | null>(null);
+
   async function handleShare() {
     if (!spot) return;
-    await share({
-      text: `${spot.name} — ${spot.description}\n\nAdded to /boston by @${spot.submittedByUsername}`,
+    const shareText = `${spot.name} — ${spot.description}\n\nAdded to /boston by @${spot.submittedByUsername}`;
+    const shareUrl =
+      typeof window !== "undefined"
+        ? `${window.location.origin}/?spotId=${spot.id}`
+        : `/?spotId=${spot.id}`;
+
+    // Try Farcaster compose first (no-op outside Farcaster).
+    const result = await share({
+      text: shareText,
       path: `/?spotId=${spot.id}`,
       channelKey: "boston",
     });
+
+    // If Farcaster compose didn't happen (web context), fall back.
+    if (!result || !("castHash" in result) || !result.castHash) {
+      // Native Web Share API on supported devices.
+      const nav = typeof navigator !== "undefined" ? navigator : null;
+      if (nav && typeof nav.share === "function") {
+        try {
+          await nav.share({ title: spot.name, text: shareText, url: shareUrl });
+          return;
+        } catch {
+          // user cancelled or share failed — fall through to clipboard
+        }
+      }
+      // Clipboard fallback.
+      try {
+        if (nav?.clipboard?.writeText) {
+          await nav.clipboard.writeText(shareUrl);
+          setShareToast("Link copied to clipboard");
+          setTimeout(() => setShareToast(null), 2500);
+        }
+      } catch {
+        setShareToast("Couldn't copy — long-press the URL to share");
+        setTimeout(() => setShareToast(null), 2500);
+      }
+    }
   }
 
   if (!spot) return null;
@@ -271,6 +305,14 @@ export function SpotDetailSheet({ spot, onClose, onViewBuilder }: SpotDetailShee
           </button>
         </div>
       </div>
+      {shareToast && (
+        <div
+          role="status"
+          className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[60] px-4 py-2 rounded-sm bg-navy text-white text-xs font-bold uppercase tracking-widest shadow-lg"
+        >
+          {shareToast}
+        </div>
+      )}
     </>
   );
 }

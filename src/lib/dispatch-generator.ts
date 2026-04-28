@@ -102,6 +102,8 @@ VOICE RULES:
 - The greeting sets the tone for the day. Make it specific to today.
   Never generic ("It's a great day in Boston!").
   Reference something actually happening.
+  Greeting MUST be 2-3 sentences and MUST end with the literal phrase
+  "…and here's today's Dispatch:" (em-dash optional, ellipsis required).
 - The sign-off closes the tonal loop opened by the greeting.
   If the greeting is dry, the sign-off is drier.
   Never "See you tomorrow!" or "Stay warm out there."
