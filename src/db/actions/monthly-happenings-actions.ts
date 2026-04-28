@@ -30,7 +30,7 @@ function parseSourceLinks(raw: string | null): { label: string; url: string }[] 
   }
 }
 
-export function getCurrentMonthStr(): string {
+function getCurrentMonthStr(): string {
   const now = new Date();
   const fmt = new Intl.DateTimeFormat("en-CA", {
     timeZone: "America/New_York",
