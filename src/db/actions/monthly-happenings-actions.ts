@@ -136,6 +136,12 @@ export async function adminRegenerateCurrentMonth(adminFid: number): Promise<{ o
       return { ok: false, error: "Unauthorized" };
     }
     const month = getCurrentMonthStr();
+    try {
+      const { runMigrations } = await import("@/db/migrations");
+      await runMigrations();
+    } catch (migErr) {
+      console.warn("[monthly-happenings] migration pre-flight failed:", migErr);
+    }
     await db.delete(monthlyHappenings).where(eq(monthlyHappenings.month, month));
     // Dynamic import keeps AI deps out of every server bundle.
     const { generateMonthlyHappenings } = await import("@/lib/monthly-happenings-generator");

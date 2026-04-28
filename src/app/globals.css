@@ -1230,32 +1230,99 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* ── Admin page contrast + button polish ── */
+/* ── Admin page — Modern Professional theme ── */
 .admin-page {
-  /* Page-scoped contrast bump: the global .t-sans-gray / .t-serif-gray
-     color (#828282) fails WCAG AA against the gray-50 surface. Within the
-     admin tool, force the muted text token instead. */
-  color: var(--text-primary);
+  --admin-bg: #F4F7FC;
+  --admin-panel: #FFFFFF;
+  --admin-primary: #4C84FF;
+  --admin-primary-hover: #3a6fe6;
+  --admin-text: #343A40;
+  --admin-muted: #6B7280;
+  --admin-border: #D1D9E6;
+  --admin-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+
+  background: var(--admin-bg) !important;
+  color: var(--admin-text);
+}
+
+/* Typography remapping — sans throughout, no washed-out grays */
+.admin-page .t-sans-navy,
+.admin-page .t-sans-gray,
+.admin-page .t-serif-body,
+.admin-page .t-serif-gray {
+  font-family: var(--font-sans);
+}
+.admin-page .t-sans-navy {
+  color: var(--admin-text);
 }
 .admin-page .t-sans-gray,
-.admin-page .t-serif-gray {
-  color: var(--text-muted);
+.admin-page .t-serif-gray,
+.admin-page .t-serif-body {
+  color: var(--admin-muted);
+}
+.admin-page .h-display {
+  font-family: var(--font-sans);
+  color: var(--admin-text);
+}
+.admin-page .h-section {
+  color: var(--admin-text);
+}
+.admin-page .h-card {
+  font-family: var(--font-sans);
+  color: var(--admin-text);
 }
 .admin-page .h-eyebrow {
-  color: #3f4044;
+  color: var(--admin-muted);
+}
+
+/* Cards */
+.admin-page .card-builder,
+.admin-page .community-card,
+.admin-page .happening-card {
+  background: var(--admin-panel);
+  border: 1px solid var(--admin-border);
+  box-shadow: var(--admin-shadow);
+}
+
+/* Inputs */
+.admin-page .form-input,
+.admin-page .form-select,
+.admin-page .submit-input {
+  background: var(--admin-panel);
+  border-color: var(--admin-border);
+}
+.admin-page .form-input:focus,
+.admin-page .form-select:focus,
+.admin-page .submit-input:focus {
+  border-color: var(--admin-primary);
+  box-shadow: 0 0 0 3px rgba(76, 132, 255, 0.2);
 }
 .admin-page input::placeholder,
 .admin-page textarea::placeholder {
-  color: #6a6a6e;
+  color: var(--admin-muted);
   opacity: 1;
 }
+
+/* Tab bar — blue active state */
+.admin-page .admin-tab-btn[data-selected="true"] {
+  background: var(--admin-primary);
+  border-color: var(--admin-primary);
+  color: #fff;
+}
 .admin-page .admin-tab-count {
-  background: rgba(9, 31, 47, 0.12);
-  color: var(--text-primary);
+  background: rgba(52, 58, 64, 0.1);
+  color: var(--admin-text);
+}
+.admin-page .admin-tab-btn[data-selected="true"] .admin-tab-count {
+  background: rgba(255, 255, 255, 0.25);
 }
 
-/* Inline action button — used for Regenerate / Edit / Sign Out.
-   Reads as a real control instead of fading link text. */
+/* Legacy boston token overrides (scoped, no markup churn) */
+.admin-page .bg-boston-blue { background: var(--admin-primary) !important; }
+.admin-page .bg-navy { background: var(--admin-text) !important; }
+.admin-page .text-boston-blue { color: var(--admin-primary) !important; }
+
+/* Inline action button — used for Regenerate / Edit / Sign Out */
 .admin-action-btn {
   display: inline-flex;
   align-items: center;
@@ -1275,17 +1342,17 @@
   white-space: nowrap;
 }
 .admin-action-btn:hover {
-  border-color: #1871bd;
-  color: #1871bd;
+  border-color: #4C84FF;
+  color: #4C84FF;
 }
 .admin-action-btn[data-variant="primary"] {
   color: #fff;
-  background: #1871bd;
-  border-color: #1871bd;
+  background: #4C84FF;
+  border-color: #4C84FF;
 }
 .admin-action-btn[data-variant="primary"]:hover {
-  background: #0f5a99;
-  border-color: #0f5a99;
+  background: #3a6fe6;
+  border-color: #3a6fe6;
   color: #fff;
 }
 .admin-action-btn[data-variant="ghost"] {

@@ -75,9 +75,12 @@ const FALLBACK_BLOCKS = [
 
 function SectionHeader({ label }: { label: string }) {
   return (
-    <h3 className="text-xs font-bold uppercase tracking-widest t-sans-navy mb-2">
-      {label}
-    </h3>
+    <div className="mb-3">
+      <span className="inline-block w-8 h-[3px] bg-boston-blue mb-2" />
+      <h3 className="text-xs font-bold uppercase tracking-widest t-sans-navy">
+        {label}
+      </h3>
+    </div>
   );
 }
 
@@ -97,7 +100,7 @@ function DispatchHero({ date }: { date: string }) {
     <div className="relative w-full overflow-hidden bg-navy aspect-[1200/630]">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/dispatch-cover.jpeg"
+        src="/dispatch-cover.jpeg?v=2"
         alt=""
         loading="eager"
         className="absolute inset-0 w-full h-full object-cover opacity-80"
@@ -167,7 +170,7 @@ function HeaderSection({ date, weather }: { date: string; weather: WeatherData |
 
 function GreetingSection({ greeting }: { greeting: string }) {
   return (
-    <div className="px-4 py-5 border-b border-[#e0e0e0]">
+    <div className="px-5 py-8 border-b-4 border-[#e0e0e0]">
       <p className="text-[15px] leading-[1.7] t-serif-body">{greeting}</p>
     </div>
   );
@@ -175,7 +178,7 @@ function GreetingSection({ greeting }: { greeting: string }) {
 
 function OneBigThingSection({ data }: { data: DispatchContent["oneBigThing"] }) {
   return (
-    <div className="px-4 py-4 border-b border-[#e0e0e0]">
+    <div className="px-5 py-8 border-b-4 border-[#e0e0e0]">
       <SectionHeader label="The One Big Thing" />
       <h4 className="text-lg font-black t-sans-navy leading-tight mb-2">
         {data.headline}
@@ -215,7 +218,7 @@ function TodayInBostonSection({
   if (!hasSports && !hasEvents && !hasHeadsUp) return null;
 
   return (
-    <div className="px-4 py-4 border-b border-[#e0e0e0]">
+    <div className="px-5 py-8 border-b-4 border-[#e0e0e0]">
       <SectionHeader label="Today in Boston" />
       <div className="flex flex-col gap-4">
         {hasSports && (
@@ -301,7 +304,7 @@ function MarketsSection({ data }: { data: NonNullable<DispatchContent["markets"]
   );
 
   return (
-    <div className="px-4 py-4 border-b border-[#e0e0e0]">
+    <div className="px-5 py-8 border-b-4 border-[#e0e0e0]">
       <SectionHeader label="Markets" />
       <div className="grid grid-cols-3 gap-3 mb-3">
         {cell("Nasdaq", data.nasdaq)}
@@ -339,7 +342,7 @@ function LocalBusinessNewsSection({
 }) {
   if (!items || items.length === 0) return null;
   return (
-    <div className="px-4 py-4 border-b border-[#e0e0e0]">
+    <div className="px-5 py-8 border-b-4 border-[#e0e0e0]">
       <SectionHeader label="Business in Boston" />
       <div className="flex flex-col gap-3">
         {items.map((item, i) => (
@@ -431,7 +434,7 @@ function DailyGamesSection({
   }
 
   return (
-    <div className="px-4 py-4 border-b border-[#e0e0e0]">
+    <div className="px-5 py-8 border-b-4 border-[#e0e0e0]">
       <SectionHeader label="Daily Games" />
 
       {/* Daily Poll */}
@@ -555,7 +558,7 @@ function PlaceOfTheDaySection({
 
   return (
     <div
-      className={`px-4 py-4 border-b border-[#e0e0e0] ${
+      className={`px-5 py-8 border-b-4 border-[#e0e0e0] ${
         isClickable ? "cursor-pointer hover:bg-boston-gray-50" : ""
       }`}
       onClick={isClickable ? handleTap : undefined}
@@ -595,7 +598,7 @@ function NumberOfTheDaySection({
   data: DispatchContent["numberofTheDay"];
 }) {
   return (
-    <div className="px-4 py-4 border-b border-[#e0e0e0]">
+    <div className="px-5 py-8 border-b-4 border-[#e0e0e0]">
       <SectionHeader label="Number of the Day" />
       <p className="text-4xl font-black t-sans-navy leading-tight mb-1">
         {data.number}
@@ -611,7 +614,7 @@ function SignOffSection({ signOff, dispatchDate }: { signOff: string; dispatchDa
     typeof window !== "undefined" ? `${window.location.origin}${path}` : path;
 
   return (
-    <div className="px-4 pt-6 pb-5 border-b border-[#e0e0e0]">
+    <div className="px-5 py-8 border-b-4 border-[#e0e0e0]">
       <div className="flex items-center gap-3 mb-4">
         <span className="h-px flex-1 bg-boston-gray-200" aria-hidden />
         <span className="text-[11px] font-bold uppercase tracking-widest t-sans-gray">
@@ -638,7 +641,7 @@ function TriviaAnswerSection({
   data: DispatchContent["dailyTrivia"];
 }) {
   return (
-    <div className="px-4 py-4 border-b border-[#e0e0e0]">
+    <div className="px-5 py-8 border-b-4 border-[#e0e0e0]">
       <SectionHeader label="Trivia Answer" />
       <p className="text-[14px] font-bold t-sans-navy mb-1">{data.answer}</p>
       <p className="text-[13px] italic t-serif-body">{data.funFact}</p>
