@@ -694,3 +694,152 @@ export async function toggleTouristPick(spotId: string, touristPick: boolean, ad
   await db.update(spots).set({ touristPick }).where(eq(spots.id, spotId));
   return { success: true };
 }
+
+// ─── Admin: Spot CRUD ─────────────────────────────────────────────────────────
+
+export async function adminUpdateSpot(
+  adminFid: number,
+  spotId: string,
+  data: {
+    name?: string;
+    category?: string;
+    subcategory?: string | null;
+    neighborhood?: string;
+    description?: string;
+    address?: string | null;
+    link?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
+    featured?: boolean;
+  }
+) {
+  if (!(await verifyAdmin(adminFid))) return { success: false, error: "Not authorized" };
+  try {
+    await db.update(spots).set(data).where(eq(spots.id, spotId));
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update spot:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+
+export async function adminDeleteSpot(adminFid: number, spotId: string) {
+  if (!(await verifyAdmin(adminFid))) return { success: false, error: "Not authorized" };
+  try {
+    await db.delete(spots).where(eq(spots.id, spotId));
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete spot:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+
+// ─── Admin: Community happening CRUD ─────────────────────────────────────────
+
+export async function adminUpdateCommunityHappening(
+  adminFid: number,
+  id: string,
+  data: {
+    title?: string;
+    description?: string;
+    neighborhood?: string;
+    dateLabel?: string;
+    startDate?: string | null;
+    endDate?: string | null;
+    emoji?: string;
+    url?: string | null;
+  }
+) {
+  if (!(await verifyAdmin(adminFid))) return { success: false, error: "Not authorized" };
+  try {
+    await db.update(communityHappenings).set(data).where(eq(communityHappenings.id, id));
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update community happening:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+
+// ─── Admin: Builder management ────────────────────────────────────────────────
+
+export async function adminGetAllBuilders(adminFid: number) {
+  if (!(await verifyAdmin(adminFid))) return [];
+  try {
+    const rows = await db
+      .select()
+      .from(builders)
+      .orderBy(desc(builders.featured), desc(builders.createdAt));
+    return rows.map((r) => parseBuilderRow(r as unknown as Record<string, unknown>));
+  } catch (error) {
+    console.error("Failed to get all builders:", error);
+    return [];
+  }
+}
+
+export async function adminToggleBuilderFeatured(adminFid: number, builderId: string, featured: boolean) {
+  if (!(await verifyAdmin(adminFid))) return { success: false, error: "Not authorized" };
+  try {
+    await db.update(builders).set({ featured }).where(eq(builders.id, builderId));
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to toggle builder featured:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+
+export async function adminToggleBuilderVerified(adminFid: number, builderId: string, verified: boolean) {
+  if (!(await verifyAdmin(adminFid))) return { success: false, error: "Not authorized" };
+  try {
+    await db.update(builders).set({ verified }).where(eq(builders.id, builderId));
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to toggle builder verified:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+
+export async function adminDeleteBuilder(adminFid: number, builderId: string) {
+  if (!(await verifyAdmin(adminFid))) return { success: false, error: "Not authorized" };
+  try {
+    await db.delete(builders).where(eq(builders.id, builderId));
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete builder:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+
+export async function adminUpdateBuilderProfile(
+  adminFid: number,
+  builderId: string,
+  data: {
+    bio?: string | null;
+    projectName?: string | null;
+    projectLinks?: string[];
+    categories?: string[];
+    talkAbout?: string | null;
+    neighborhood?: string | null;
+    category?: string | null;
+  }
+) {
+  if (!(await verifyAdmin(adminFid))) return { success: false, error: "Not authorized" };
+  try {
+    await db
+      .update(builders)
+      .set({
+        bio: data.bio ?? null,
+        projectName: data.projectName ?? null,
+        projectUrl: data.projectLinks?.[0] ?? null,
+        projectLinks: data.projectLinks?.length ? JSON.stringify(data.projectLinks) : null,
+        categories: data.categories?.length ? JSON.stringify(data.categories) : null,
+        talkAbout: data.talkAbout ?? null,
+        neighborhood: data.neighborhood ?? null,
+        category: data.category ?? null,
+      })
+      .where(eq(builders.id, builderId));
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update builder profile:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}

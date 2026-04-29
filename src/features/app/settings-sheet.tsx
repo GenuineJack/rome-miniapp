@@ -68,7 +68,7 @@ export function SettingsSheet({ onClose }: Props) {
             <div>
               <p className="text-sm font-bold t-sans-navy">Dark Mode</p>
               <p className="text-xs italic t-serif-gray mt-0.5">
-                Coming soon — toggle wired, visuals in progress
+                Switch between light and dark theme
               </p>
             </div>
             <button

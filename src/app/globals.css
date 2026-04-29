@@ -93,6 +93,23 @@
   --border-subtle: #333333;
 }
 
+/* Dark mode — global surface overrides */
+.dark body {
+  background-color: var(--surface);
+  color: var(--text-primary);
+}
+.dark .bg-white {
+  background-color: var(--surface) !important;
+  color: var(--text-primary);
+}
+.dark .bg-boston-gray-50 {
+  background-color: var(--surface-alt) !important;
+}
+.dark .border-\[#e0e0e0\],
+.dark .border-boston-gray-100 {
+  border-color: var(--border-subtle) !important;
+}
+
 /* Hide scrollbar while keeping scroll functionality */
 .no-scrollbar {
   -ms-overflow-style: none;
@@ -122,15 +139,16 @@
    ============================================ */
 
 /* Typography combos — font-family + color */
+/* Colors use CSS variables so .dark token overrides apply automatically */
 .t-sans          { font-family: var(--font-sans); }
 .t-serif         { font-family: var(--font-serif); }
-.t-sans-navy     { font-family: var(--font-sans); color: #091f2f; }
-.t-sans-gray     { font-family: var(--font-sans); color: #828282; }
-.t-sans-blue     { font-family: var(--font-sans); color: #1871bd; }
-.t-sans-red      { font-family: var(--font-sans); color: #d22d23; }
+.t-sans-navy     { font-family: var(--font-sans); color: var(--text-primary); }
+.t-sans-gray     { font-family: var(--font-sans); color: var(--text-secondary); }
+.t-sans-blue     { font-family: var(--font-sans); color: var(--accent-token); }
+.t-sans-red      { font-family: var(--font-sans); color: var(--alert-red); }
 .t-sans-white    { font-family: var(--font-sans); color: #fff; }
-.t-serif-gray    { font-family: var(--font-serif); color: #828282; }
-.t-serif-body    { font-family: var(--font-serif); color: #58585b; }
+.t-serif-gray    { font-family: var(--font-serif); color: var(--text-secondary); }
+.t-serif-body    { font-family: var(--font-serif); color: var(--body-text); }
 .t-serif-white   { font-family: var(--font-serif); color: #fff; }
 
 /* Background combos */
@@ -143,7 +161,7 @@
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: #091f2f;
+  color: var(--text-primary);
   margin-bottom: 6px;
   display: block;
 }

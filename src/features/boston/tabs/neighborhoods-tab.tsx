@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import dynamic from "next/dynamic";
 import { NEIGHBORHOODS, REGION_IDS, NeighborhoodInfo, Spot } from "@/features/boston/types";
 
@@ -44,10 +45,24 @@ function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots, onSe
   return (
     <div className="flex flex-col h-full overflow-y-auto">
       {/* Header */}
-      <div className="px-4 pt-4 pb-5 bg-navy">
+      <div className="relative bg-navy">
+        {neighborhood.heroImageUrl && (
+          <div className="relative w-full h-32 overflow-hidden">
+            <Image
+              src={neighborhood.heroImageUrl}
+              alt={neighborhood.name}
+              fill
+              className="object-cover"
+              sizes="100vw"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-navy/40 to-navy" />
+          </div>
+        )}
+        <div className="px-4 pt-3 pb-5">
         <button
           onClick={onBack}
-          className="flex items-center gap-1.5 mb-4 text-xs font-bold uppercase tracking-widest text-white opacity-60 hover:opacity-100 transition-opacity t-sans"
+          className="flex items-center gap-1.5 mb-3 text-xs font-bold uppercase tracking-widest text-white opacity-60 hover:opacity-100 transition-opacity t-sans"
         >
           ← Back
         </button>
@@ -78,6 +93,7 @@ function NeighborhoodDetail({ neighborhood, spotCount, onBack, onViewSpots, onSe
               View Spots
             </button>
           )}
+        </div>
         </div>
       </div>
 
@@ -183,25 +199,34 @@ function NeighborhoodCard({ neighborhood, spotCount, onClick }: NeighborhoodCard
   return (
     <button
       onClick={onClick}
-      className="w-full text-left p-4 rounded-sm transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1871bd] group hover:bg-[#091f2f] bg-boston-gray-50 min-h-[110px]"
+      className="w-full text-left rounded-sm overflow-hidden transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1871bd] group"
     >
-      <h3
-        className="text-sm font-black uppercase tracking-tight leading-none mb-1.5 text-[#091f2f] group-hover:text-white transition-colors duration-200 t-sans"
-      >
-        {neighborhood.name}
-      </h3>
-      <p
-        className="text-xs italic leading-snug mb-2 line-clamp-3 text-[#58585b] group-hover:text-white/80 transition-colors duration-200 t-serif"
-      >
-        {neighborhood.tagline}
-      </p>
-      <div className="flex items-center justify-between">
-        <span
-          className="text-xs font-bold uppercase tracking-widest text-[#1871bd] group-hover:text-white/70 transition-colors duration-200 t-sans"
-        >
+      {/* Hero image */}
+      <div className="relative w-full h-24 bg-navy overflow-hidden">
+        {neighborhood.heroImageUrl && (
+          <Image
+            src={neighborhood.heroImageUrl}
+            alt={neighborhood.name}
+            fill
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            sizes="(max-width: 640px) 50vw, 200px"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#091f2f] via-[#091f2f]/30 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 p-2">
+          <h3 className="text-sm font-black uppercase tracking-tight leading-none text-white t-sans drop-shadow">
+            {neighborhood.name}
+          </h3>
+        </div>
+      </div>
+      {/* Info strip */}
+      <div className="p-2.5 bg-boston-gray-50 group-hover:bg-[#091f2f] transition-colors duration-200">
+        <p className="text-xs italic leading-snug line-clamp-2 text-[#58585b] group-hover:text-white/70 transition-colors duration-200 t-serif mb-1.5">
+          {neighborhood.tagline}
+        </p>
+        <span className="text-xs font-bold uppercase tracking-widest text-[#1871bd] group-hover:text-white/70 transition-colors duration-200 t-sans">
           📍 {spotCount} {spotCount === 1 ? "spot" : "spots"}
         </span>
-        <span className="text-xs text-[#828282] group-hover:text-white/50 transition-colors duration-200">→</span>
       </div>
     </button>
   );
