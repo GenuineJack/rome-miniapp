@@ -21,19 +21,23 @@ function getRomeHour(now = new Date()) {
 }
 
 export async function GET() {
-  const date = getRomeDate();
-  const cached = await getCachedRomeDispatch(date);
+  try {
+    const date = getRomeDate();
+    const cached = await getCachedRomeDispatch(date);
 
-  if (cached) {
+    if (cached) {
+      const pollResults = await getRomeDispatchPoll(date);
+      return NextResponse.json({ dispatch: cached, pollResults, date });
+    }
+
+    if (getRomeHour() < 7) {
+      return NextResponse.json({ dispatch: null, pollResults: {}, date });
+    }
+
+    const dispatch = await generateRomeDispatch(date);
     const pollResults = await getRomeDispatchPoll(date);
-    return NextResponse.json({ dispatch: cached, pollResults, date });
+    return NextResponse.json({ dispatch, pollResults, date });
+  } catch {
+    return NextResponse.json({ dispatch: null, pollResults: {}, error: "Dispatch unavailable" });
   }
-
-  if (getRomeHour() < 7) {
-    return NextResponse.json({ dispatch: null, pollResults: {}, date });
-  }
-
-  const dispatch = await generateRomeDispatch(date);
-  const pollResults = await getRomeDispatchPoll(date);
-  return NextResponse.json({ dispatch, pollResults, date });
 }

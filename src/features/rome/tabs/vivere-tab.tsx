@@ -151,7 +151,7 @@ export function VivereTab() {
     setFiatLoading(true);
     setFiatError(null);
 
-    fetch(`https://api.frankfurter.app/latest?base=${baseCurrency}`)
+    fetch(`/api/fiat-rates?base=${baseCurrency}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`Fiat rates request failed (${response.status})`);

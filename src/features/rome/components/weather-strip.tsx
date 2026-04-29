@@ -4,10 +4,13 @@ import { useState, useEffect } from "react";
 
 export type WeatherData = {
   tempF: number;
+  tempC: number;
   condition: string;
   emoji: string;
   highF: number;
+  highC: number;
   lowF: number;
+  lowC: number;
   updatedAt: string;
 };
 
@@ -58,12 +61,19 @@ export async function fetchWeather(): Promise<WeatherData> {
 
   const { condition, emoji } = getWeatherCondition(current.weather_code);
 
+  const tempF = Math.round(current.temperature_2m);
+  const highF = Math.round(daily.temperature_2m_max[0]);
+  const lowF = Math.round(daily.temperature_2m_min[0]);
+
   return {
-    tempF: Math.round(current.temperature_2m),
+    tempF,
+    tempC: Math.round((tempF - 32) * 5 / 9),
     condition,
     emoji,
-    highF: Math.round(daily.temperature_2m_max[0]),
-    lowF: Math.round(daily.temperature_2m_min[0]),
+    highF,
+    highC: Math.round((highF - 32) * 5 / 9),
+    lowF,
+    lowC: Math.round((lowF - 32) * 5 / 9),
     updatedAt: formatTime(new Date()),
   };
 }
@@ -126,7 +136,7 @@ export function WeatherStrip({ weather, loading, error, todayLabel, mbtaAlert, c
       {/* Context strip — one-line weather + countdown */}
       {!loading && weather && countdown && (
         <div className="text-xs text-white/70 mb-2 t-sans flex items-center gap-1.5 flex-wrap">
-          <span>{weather.emoji} {weather.tempF}°F</span>
+          <span>{weather.emoji} {weather.tempC}°C / {weather.tempF}°F</span>
           {countdown && (
             <>
               <span className="opacity-40">·</span>
@@ -200,7 +210,7 @@ export function WeatherStrip({ weather, loading, error, todayLabel, mbtaAlert, c
                 <span
                   className="t-sans-white weather-temp"
                 >
-                  {weather.tempF}°F
+                  {weather.tempC}°C / {weather.tempF}°F
                 </span>
               </div>
               <p
@@ -211,7 +221,7 @@ export function WeatherStrip({ weather, loading, error, todayLabel, mbtaAlert, c
               <p
                 className="t-sans weather-hilo"
               >
-                H:{weather.highF}° L:{weather.lowF}°
+                H:{weather.highC}°C/{weather.highF}°F · L:{weather.lowC}°C/{weather.lowF}°F
               </p>
             </div>
           </div>

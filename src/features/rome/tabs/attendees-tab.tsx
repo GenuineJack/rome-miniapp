@@ -28,7 +28,7 @@ export function AttendeesTab() {
   const [loading, setLoading] = useState(true);
   const [syncingTickets, setSyncingTickets] = useState(false);
   const [syncError, setSyncError] = useState<string | null>(null);
-  const [syncSummary, setSyncSummary] = useState("Syncing verified ticket holders...");
+  const [syncSummary, setSyncSummary] = useState("Press 'Sync tickets' to refresh verified holders.");
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -74,10 +74,6 @@ export function AttendeesTab() {
   useEffect(() => {
     refresh();
   }, [refresh]);
-
-  useEffect(() => {
-    syncTicketHolders();
-  }, [syncTicketHolders]);
 
   const countLabel = useMemo(() => `${attendees.length} attending`, [attendees.length]);
 
