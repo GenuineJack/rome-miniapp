@@ -233,8 +233,8 @@ function TodayInBostonSection({
               {data.sports!.map((s, i) => (
                 <div key={i} className="p-2 rounded-sm bg-boston-gray-50">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold t-sans-navy">{s.team}</span>
-                    <span className="text-xs font-bold uppercase tracking-widest t-sans-gray">
+                    <span className="text-[13px] font-bold t-sans-navy">{s.team}</span>
+                    <span className="text-[11px] font-bold uppercase tracking-widest t-sans-gray">
                       {s.result}
                     </span>
                   </div>
@@ -271,7 +271,7 @@ function TodayInBostonSection({
                   <div key={i}>
                     <ExternalLink
                       href={href}
-                      className="text-xs font-bold t-sans-navy hover:underline"
+                      className="text-[13px] font-bold t-sans-navy hover:underline"
                     >
                       {e.title} →
                     </ExternalLink>
@@ -347,9 +347,9 @@ function LocalBusinessNewsSection({
   return (
     <div className="px-5 py-8 border-b-4 border-[#e0e0e0]">
       <SectionHeader label="Business in Boston" />
-      <div className="flex flex-col divide-y divide-boston-gray-100">
+      <div className="flex flex-col divide-y divide-boston-gray-200">
         {items.map((item, i) => (
-          <div key={i} className={`${i > 0 ? "pt-3" : ""} ${i < items.length - 1 ? "pb-3" : ""}`}>
+          <div key={i} className={`${i > 0 ? "pt-5" : ""} ${i < items.length - 1 ? "pb-5" : ""}`}>
             <p className="text-[13px] font-bold t-sans-navy mb-0.5">
               {item.headline}
             </p>
@@ -584,7 +584,6 @@ function PlaceOfTheDaySection({
       <SectionHeader label="Place of the Day" />
       <p className="text-sm font-bold t-sans-navy">
         {data.name}
-        {isClickable && <span className="opacity-60"> →</span>}
       </p>
       <p className="text-xs uppercase tracking-widest t-sans-gray mb-1">
         {data.neighborhood}
@@ -598,6 +597,15 @@ function PlaceOfTheDaySection({
             : ""}
         </p>
       )}
+      {isClickable && (
+        <button
+          type="button"
+          onClick={handleTap}
+          className="mt-3 text-xs font-bold uppercase tracking-widest t-sans-blue hover:underline"
+        >
+          View in Explore →
+        </button>
+      )}
     </div>
   );
 }
@@ -608,14 +616,16 @@ function NumberOfTheDaySection({
   data: DispatchContent["numberofTheDay"];
 }) {
   return (
-    <div className="px-5 py-8 border-b-4 border-[#e0e0e0]">
-      <SectionHeader label="Number of the Day" />
-      <div className="bg-boston-red/[0.06] border-y border-boston-red/20 -mx-5 px-5 py-4 mb-3">
-        <p className="text-[96px] font-black t-sans-navy leading-none tracking-tighter">
-          {data.number}
-        </p>
+    <div className="bg-boston-red/[0.06] border-b-4 border-[#e0e0e0]">
+      <div className="px-5 pt-8 pb-2">
+        <SectionHeader label="Number of the Day" />
       </div>
-      <p className="text-[13px] italic t-serif-body">{data.context}</p>
+      <p className="text-[150px] font-black t-sans-navy leading-none tracking-tighter text-center px-5 pb-6">
+        {data.number}
+      </p>
+      <div className="px-5 pb-8 text-center">
+        <p className="text-[13px] italic t-serif-body">{data.context}</p>
+      </div>
     </div>
   );
 }
@@ -626,23 +636,25 @@ function SignOffSection({ signOff, dispatchDate }: { signOff: string; dispatchDa
     typeof window !== "undefined" ? `${window.location.origin}${path}` : path;
 
   return (
-    <div className="px-5 py-5 border-b-4 border-[#e0e0e0]">
-      <div className="flex items-center gap-3 mb-4">
-        <span className="h-px flex-1 bg-boston-gray-200" aria-hidden />
-        <span className="text-[11px] font-bold uppercase tracking-widest t-sans-gray">
-          — Until tomorrow
-        </span>
-        <span className="h-px flex-1 bg-boston-gray-200" aria-hidden />
+    <div className="bg-navy/[0.04] border-b-4 border-[#e0e0e0]">
+      <div className="px-5 py-6">
+        <div className="flex items-center gap-3 mb-5">
+          <span className="h-px flex-1 bg-boston-gray-200" aria-hidden />
+          <span className="text-[11px] font-bold uppercase tracking-widest t-sans-gray">
+            — Until tomorrow
+          </span>
+          <span className="h-px flex-1 bg-boston-gray-200" aria-hidden />
+        </div>
+        <p className="text-[14px] italic leading-relaxed t-serif-body mb-4">
+          {signOff}
+        </p>
+        <ExternalLink
+          href={shareUrl}
+          className="inline-flex items-center gap-1.5 text-[12px] font-bold uppercase tracking-widest t-sans-blue hover:underline"
+        >
+          Share today’s Dispatch →
+        </ExternalLink>
       </div>
-      <p className="text-[14px] italic leading-relaxed t-serif-body mb-4">
-        {signOff}
-      </p>
-      <ExternalLink
-        href={shareUrl}
-        className="inline-flex items-center gap-1.5 text-[12px] font-bold uppercase tracking-widest t-sans-blue hover:underline"
-      >
-        Share today’s Dispatch →
-      </ExternalLink>
     </div>
   );
 }
