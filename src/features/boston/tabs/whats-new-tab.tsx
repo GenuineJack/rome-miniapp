@@ -75,9 +75,8 @@ const FALLBACK_BLOCKS = [
 
 function SectionHeader({ label }: { label: string }) {
   return (
-    <div className="mb-3">
-      <span className="inline-block w-8 h-[3px] bg-boston-blue mb-2" />
-      <h3 className="text-xs font-bold uppercase tracking-widest t-sans-navy">
+    <div className="mb-4 border-l-4 border-boston-red pl-3">
+      <h3 className="text-[13px] font-black uppercase tracking-widest t-sans-navy">
         {label}
       </h3>
     </div>
@@ -149,11 +148,15 @@ function HeaderSection({ date, weather }: { date: string; weather: WeatherData |
     : null;
 
   return (
-    <div className="px-4 pt-4 pb-3 bg-navy border-b border-white/10">
-      <h2 className="text-lg font-black uppercase tracking-tight text-white t-sans">
-        The Dispatch · Boston
+    <div className="px-4 py-6 bg-navy border-b-[3px] border-boston-red text-center">
+      <h2 className="text-3xl font-bold italic t-serif text-white leading-tight">
+        The Dispatch
       </h2>
-      <p className="text-xs text-white/60 mt-1 t-sans flex flex-wrap gap-x-1.5">
+      <div className="h-[2px] w-12 bg-boston-red mx-auto my-2" />
+      <p className="text-[11px] font-black uppercase tracking-[0.3em] text-white/70 t-sans">
+        Boston
+      </p>
+      <p className="text-[11px] text-white/50 mt-3 t-sans flex flex-wrap justify-center gap-x-1.5">
         <span>{date}</span>
         <span className="opacity-40">·</span>
         <span>{bostonTime} ET</span>
@@ -170,7 +173,7 @@ function HeaderSection({ date, weather }: { date: string; weather: WeatherData |
 
 function GreetingSection({ greeting }: { greeting: string }) {
   return (
-    <div className="px-5 py-8 border-b-4 border-[#e0e0e0]">
+    <div className="px-5 py-6 border-b-4 border-[#e0e0e0]">
       <p className="text-[15px] leading-[1.7] t-serif-body">{greeting}</p>
     </div>
   );
@@ -226,7 +229,7 @@ function TodayInBostonSection({
             <h4 className="text-xs font-bold uppercase tracking-widest t-sans-navy mb-2">
               🏒 Sports
             </h4>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-3">
               {data.sports!.map((s, i) => (
                 <div key={i} className="p-2 rounded-sm bg-boston-gray-50">
                   <div className="flex items-center justify-between mb-1">
@@ -344,9 +347,9 @@ function LocalBusinessNewsSection({
   return (
     <div className="px-5 py-8 border-b-4 border-[#e0e0e0]">
       <SectionHeader label="Business in Boston" />
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col divide-y divide-boston-gray-100">
         {items.map((item, i) => (
-          <div key={i}>
+          <div key={i} className={`${i > 0 ? "pt-3" : ""} ${i < items.length - 1 ? "pb-3" : ""}`}>
             <p className="text-[13px] font-bold t-sans-navy mb-0.5">
               {item.headline}
             </p>
@@ -437,87 +440,94 @@ function DailyGamesSection({
     <div className="px-5 py-8 border-b-4 border-[#e0e0e0]">
       <SectionHeader label="Daily Games" />
 
-      {/* Daily Poll */}
-      <div className="mb-5">
-        {yesterdayResults && (
-          <div className="mb-3 p-3 rounded-sm bg-boston-gray-50">
-            <p className="text-[11px] font-bold uppercase tracking-widest t-sans-gray mb-2">
-              Yesterday&apos;s results
-            </p>
-            <div className="flex flex-col gap-1">
-              {yesterdayResults.results.map((r, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <span className="text-[12px] t-sans-navy flex-1 truncate">
-                    {r.option}
-                  </span>
-                  <div className="w-24 h-2 rounded-sm bg-boston-gray-100 overflow-hidden">
-                    <div
-                      className="h-full bg-boston-blue"
-                      style={{ width: `${r.percentage}%` }}
-                    />
-                  </div>
-                  <span className="text-[11px] t-sans-gray w-10 text-right">
-                    {r.percentage}%
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <p className="text-[14px] font-bold t-sans-navy mb-2">{poll.question}</p>
-        <div className="flex flex-col gap-1.5">
-          {poll.options.map((opt, i) => {
-            const result = todayResults?.results.find((r) => r.option === opt);
-            const pct = result?.percentage ?? 0;
-            return (
-              <button
-                key={i}
-                onClick={() => handleVote(opt)}
-                disabled={voted || voting}
-                className={`relative px-3 py-2 rounded-sm border text-left text-[13px] t-sans-navy overflow-hidden ${
-                  voted
-                    ? "border-boston-gray-200 bg-white cursor-default"
-                    : "border-boston-gray-200 bg-white hover:bg-boston-gray-50 cursor-pointer"
-                }`}
-              >
-                {voted && (
-                  <div
-                    className="absolute inset-y-0 left-0 bg-boston-blue/10"
-                    style={{ width: `${pct}%` }}
-                  />
-                )}
-                <span className="relative flex items-center justify-between gap-2">
-                  <span>{opt}</span>
-                  {voted && (
-                    <span className="text-[11px] font-bold t-sans-gray">
-                      {pct}%
+      <div className="bg-boston-gray-50 border border-boston-gray-200 rounded-md p-4 flex flex-col gap-5">
+        {/* Daily Poll */}
+        <div>
+          {yesterdayResults && (
+            <div className="mb-3 p-3 rounded-sm bg-white border border-boston-gray-100">
+              <p className="text-[11px] font-bold uppercase tracking-widest t-sans-gray mb-2">
+                Yesterday&apos;s results
+              </p>
+              <div className="flex flex-col gap-1">
+                {yesterdayResults.results.map((r, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <span className="text-[12px] t-sans-navy flex-1 truncate">
+                      {r.option}
                     </span>
-                  )}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-        {voteError && (
-          <p className="text-xs t-sans-red mt-2">{voteError}</p>
-        )}
-      </div>
+                    <div className="w-24 h-2 rounded-sm bg-boston-gray-100 overflow-hidden">
+                      {/* eslint-disable-next-line react/forbid-component-props */}
+                      <div
+                        className="h-full bg-boston-blue"
+                        style={{ width: `${r.percentage}%` }}
+                      />
+                    </div>
+                    <span className="text-[11px] t-sans-gray w-10 text-right">
+                      {r.percentage}%
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
-      {/* Daily Trivia (question only) */}
-      <div>
-        <p className="text-[11px] font-bold uppercase tracking-widest t-sans-gray mb-1">
-          Trivia
-        </p>
-        <p className="text-[14px] t-sans-navy mb-1">{trivia.question}</p>
-        {trivia.hint && (
-          <p className="text-[13px] italic t-serif-body mb-1">
-            Hint: {trivia.hint}
+          <p className="text-[14px] font-bold t-sans-navy mb-2">{poll.question}</p>
+          <div className="flex flex-col gap-1.5">
+            {poll.options.map((opt, i) => {
+              const result = todayResults?.results.find((r) => r.option === opt);
+              const pct = result?.percentage ?? 0;
+              return (
+                <button
+                  type="button"
+                  key={i}
+                  onClick={() => handleVote(opt)}
+                  disabled={voted || voting}
+                  className={`relative px-3 py-2 rounded-sm border text-left text-[13px] t-sans-navy overflow-hidden ${
+                    voted
+                      ? "border-boston-gray-200 bg-white cursor-default"
+                      : "border-boston-gray-200 bg-white hover:bg-boston-gray-50 cursor-pointer"
+                  }`}
+                >
+                  {voted && (
+                    // eslint-disable-next-line react/forbid-component-props
+                    <div
+                      className="absolute inset-y-0 left-0 bg-boston-blue/10"
+                      style={{ width: `${pct}%` }}
+                    />
+                  )}
+                  <span className="relative flex items-center justify-between gap-2">
+                    <span>{opt}</span>
+                    {voted && (
+                      <span className="text-[11px] font-bold t-sans-gray">
+                        {pct}%
+                      </span>
+                    )}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          {voteError && (
+            <p className="text-xs t-sans-red mt-2">{voteError}</p>
+          )}
+        </div>
+
+        <hr className="border-boston-gray-200" />
+
+        {/* Daily Trivia (question only) */}
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-widest t-sans-gray mb-1">
+            Trivia
           </p>
-        )}
-        <p className="text-[12px] uppercase tracking-widest t-sans-gray">
-          Answer below ↓
-        </p>
+          <p className="text-[14px] t-sans-navy mb-1">{trivia.question}</p>
+          {trivia.hint && (
+            <p className="text-[13px] italic t-serif-body mb-1">
+              Hint: {trivia.hint}
+            </p>
+          )}
+          <p className="text-[12px] uppercase tracking-widest t-sans-gray">
+            Answer below ↓
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -600,9 +610,11 @@ function NumberOfTheDaySection({
   return (
     <div className="px-5 py-8 border-b-4 border-[#e0e0e0]">
       <SectionHeader label="Number of the Day" />
-      <p className="text-4xl font-black t-sans-navy leading-tight mb-1">
-        {data.number}
-      </p>
+      <div className="bg-boston-red/[0.06] border-y border-boston-red/20 -mx-5 px-5 py-4 mb-3">
+        <p className="text-[96px] font-black t-sans-navy leading-none tracking-tighter">
+          {data.number}
+        </p>
+      </div>
       <p className="text-[13px] italic t-serif-body">{data.context}</p>
     </div>
   );
@@ -614,7 +626,7 @@ function SignOffSection({ signOff, dispatchDate }: { signOff: string; dispatchDa
     typeof window !== "undefined" ? `${window.location.origin}${path}` : path;
 
   return (
-    <div className="px-5 py-8 border-b-4 border-[#e0e0e0]">
+    <div className="px-5 py-5 border-b-4 border-[#e0e0e0]">
       <div className="flex items-center gap-3 mb-4">
         <span className="h-px flex-1 bg-boston-gray-200" aria-hidden />
         <span className="text-[11px] font-bold uppercase tracking-widest t-sans-gray">
