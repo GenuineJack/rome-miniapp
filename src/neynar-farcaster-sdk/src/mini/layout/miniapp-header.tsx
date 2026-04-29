@@ -25,7 +25,7 @@ export function MiniappHeader({
         )}
       >
         <Image
-          src="/app-splash.png"
+          src="/iconUrl.png"
           alt="App logo"
           width={32}
           height={32}
