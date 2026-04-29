@@ -62,7 +62,9 @@ export function TodayTab() {
           setWeather("Weather unavailable");
           return;
         }
-        const text = `${current.temperature_2m}°C · humidity ${current.relative_humidity_2m}% · wind ${current.wind_speed_10m} km/h`;
+        const tempC = Math.round(current.temperature_2m);
+        const tempF = Math.round(tempC * 9 / 5 + 32);
+        const text = `${tempC}°C / ${tempF}°F · humidity ${current.relative_humidity_2m}% · wind ${current.wind_speed_10m} km/h`;
         setWeather(text);
       })
       .catch(() => setWeather("Weather unavailable"));
