@@ -5,7 +5,7 @@ import { publicConfig } from "@/config/public-config";
 // Cache for 1 hour - query strings create separate cache entries
 export const revalidate = 3600;
 
-const { heroImageUrl, imageUrl } = publicConfig;
+const { imageUrl } = publicConfig;
 
 export async function GET(
   request: NextRequest,
@@ -16,7 +16,7 @@ export async function GET(
   if (type === "og") {
     const { searchParams } = new URL(request.url);
     const date = searchParams.get("date") ?? "";
-    const title = searchParams.get("title") ?? "The Dispatch · Boston";
+    const title = searchParams.get("title") ?? "The Dispatch · Rome";
 
     return new ImageResponse(
       (
@@ -28,13 +28,13 @@ export async function GET(
             flexDirection: "column",
             alignItems: "flex-start",
             justifyContent: "flex-end",
-            background: "#091f2f",
+            background: "#7a0e0e",
             padding: "60px",
             fontFamily: "Georgia, serif",
           }}
         >
           {/* Decorative rule */}
-          <div style={{ width: "48px", height: "4px", background: "#1871bd", marginBottom: "20px" }} />
+          <div style={{ width: "48px", height: "4px", background: "#c69214", marginBottom: "20px" }} />
 
           {date && (
             <div style={{ fontSize: "18px", color: "rgba(255,255,255,0.5)", fontFamily: "Arial, sans-serif", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: "12px" }}>
@@ -47,13 +47,13 @@ export async function GET(
           </div>
 
           <div style={{ fontSize: "22px", color: "rgba(255,255,255,0.6)", fontStyle: "italic" }}>
-            Boston, today.
+            Rome, today.
           </div>
 
           {/* Bottom brand */}
           <div style={{ position: "absolute", top: "52px", right: "60px", display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
             <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.35)", fontFamily: "Arial, sans-serif", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.2em" }}>
-              /boston
+              /rome
             </div>
           </div>
         </div>

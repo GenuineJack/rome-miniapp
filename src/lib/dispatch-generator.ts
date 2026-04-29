@@ -1,5 +1,5 @@
 import { getDispatchForDate, saveDispatch, deleteDispatchForDate } from "@/db/actions/dispatch-actions";
-import { getRecentSpots, getCommunityHappenings } from "@/db/actions/boston-actions";
+import { getRecentSpots, getCommunityHappenings } from "@/db/actions/rome-actions";
 import { fetchMarketData, isWeekend, type MarketSnapshot } from "@/lib/markets";
 
 // ─── Dispatch Content Type (for reference in the prompt) ─────────────────────

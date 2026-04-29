@@ -2,8 +2,8 @@ import { publicConfig } from "@/config/public-config";
 import { MiniApp } from "@/features/app/mini-app";
 import { getFarcasterPageMetadata } from "@/neynar-farcaster-sdk/src/nextjs/get-farcaster-page-metadata";
 import { db } from "@/neynar-db-sdk/db";
-import { spots as spotsTable } from "@/db/schema";
-import { eq, desc, and } from "drizzle-orm";
+import { romeSpots as spotsTable } from "@/db/schema";
+import { eq, desc } from "drizzle-orm";
 import { Metadata } from "next";
 
 export async function generateMetadata({
@@ -25,6 +25,12 @@ export async function generateMetadata({
 
 export default async function Home() {
   let initialSpots: (typeof spotsTable.$inferSelect)[] = [];
+
+  const canQuery = typeof (db as unknown as { select?: unknown }).select === "function";
+  if (!canQuery) {
+    return <MiniApp initialSpots={initialSpots} />;
+  }
+
   try {
     initialSpots = await db
       .select()

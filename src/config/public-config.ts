@@ -42,7 +42,7 @@ const publicConfigSchema = z.object({
     .min(1, "App subtitle is required")
     .max(30, "App subtitle must be less than 30 characters")
     .regex(
-      /^[a-zA-Z0-9\s.,!?'-]+$/,
+      /^[a-zA-Z0-9\s.,!?'&-]+$/,
       "Subtitle cannot contain special characters or emojis",
     ),
   description: z
@@ -50,7 +50,7 @@ const publicConfigSchema = z.object({
     .min(1, "App description is required")
     .max(170, "App description must be less than 170 characters")
     .regex(
-      /^[a-zA-Z0-9\s.,!?'-]+$/,
+      /^[a-zA-Z0-9\s.,!?'&-]+$/,
       "Description cannot contain special characters or emojis",
     ),
   shortDescription: z
@@ -58,7 +58,7 @@ const publicConfigSchema = z.object({
     .min(1, "App short description is required")
     .max(100, "App short description must be less than 100 characters")
     .regex(
-      /^[a-zA-Z0-9\s.,!?'-]+$/,
+      /^[a-zA-Z0-9\s.,!?'&-]+$/,
       "Short description cannot contain special characters or emojis",
     ),
   primaryCategory: z.enum([
@@ -110,13 +110,28 @@ type PublicConfig = z.infer<typeof publicConfigSchema>;
 
 // Ensure domain is domain and url is url
 // NEXT_PUBLIC_VERCEL_PRODUCTION_URL is exposed via next.config.ts from VERCEL_PROJECT_PRODUCTION_URL
-const canonicalDomain =
-  process.env.NEXT_PUBLIC_VERCEL_PRODUCTION_URL ??
-  process.env.NEXT_PUBLIC_LOCAL_URL ??
-  process.env.NEXT_PUBLIC_BASE_URL ??
-  "";
+function extractDomain(input?: string): string {
+  if (!input) return "";
+  const normalized = input.startsWith("http://") || input.startsWith("https://") ? input : `https://${input}`;
+  try {
+    return new URL(normalized).hostname;
+  } catch {
+    return "";
+  }
+}
 
-const homeUrl = `https://${canonicalDomain}`;
+const canonicalDomain =
+  process.env.NEXT_PUBLIC_VERCEL_PRODUCTION_URL ||
+  process.env.NEXT_PUBLIC_LOCAL_URL ||
+  extractDomain(process.env.NEXT_PUBLIC_URL) ||
+  extractDomain(process.env.NEXT_PUBLIC_BASE_URL) ||
+  "rome-miniapp.com";
+
+const homeUrl =
+  process.env.NEXT_PUBLIC_URL &&
+  (process.env.NEXT_PUBLIC_URL.startsWith("http://") || process.env.NEXT_PUBLIC_URL.startsWith("https://"))
+    ? process.env.NEXT_PUBLIC_URL
+    : `https://${canonicalDomain}`;
 
 /**
  * Resolves an image URL:
@@ -131,7 +146,7 @@ function resolveImageUrl(value: string): string {
 
 const rawPublicConfig: PublicConfig = {
   appEnv: (process.env.NODE_ENV as AppEnv) ?? "production",
-  fid: parseInt(process.env.NEXT_PUBLIC_USER_FID || "0", 10),
+  fid: parseInt(process.env.NEXT_PUBLIC_USER_FID || "218957", 10),
   name: appSettings.name,
   shortName: appSettings.shortName,
   homeUrl,

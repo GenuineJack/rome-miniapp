@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { migrateSpotsFid, migrateSpotsLinks } from "@/db/actions/boston-actions";
+import { migrateSpotsFid, migrateSpotsLinks } from "@/db/actions/rome-actions";
 import { privateConfig } from "@/config/private-config";
 
 // Simple secret guard — same pattern as seed-spots

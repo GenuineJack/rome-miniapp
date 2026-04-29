@@ -1,5 +1,5 @@
 {
-  "name": "@neynar/library.miniapp-template",
+  "name": "rome-miniapp",
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.30.3",

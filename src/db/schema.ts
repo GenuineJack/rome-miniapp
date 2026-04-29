@@ -47,6 +47,71 @@ export const spots = pgTable("spots", {
   touristPick: boolean("tourist_pick").default(false).notNull(),
 });
 
+// ─── ROME SPOTS ──────────────────────────────────────────────────────────────
+export const romeSpots = pgTable("rome_spots", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  category: text("category").notNull(),
+  subcategory: text("subcategory"),
+  neighborhood: text("neighborhood").notNull(),
+  description: text("description").notNull(),
+  address: text("address"),
+  link: text("link"),
+  latitude: real("latitude"),
+  longitude: real("longitude"),
+  submittedByFid: integer("submitted_by_fid").notNull(),
+  submittedByUsername: text("submitted_by_username").notNull(),
+  submittedByDisplayName: text("submitted_by_display_name").notNull(),
+  submittedByPfpUrl: text("submitted_by_pfp_url"),
+  featured: boolean("featured").default(false).notNull(),
+  status: text("status").default("approved").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// ─── ROME EVENTS ─────────────────────────────────────────────────────────────
+export const romeEvents = pgTable("rome_events", {
+  id: text("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  location: text("location").notNull(),
+  address: text("address"),
+  date: text("date").notNull(),
+  startTime: text("start_time"),
+  endTime: text("end_time"),
+  lumaUrl: text("luma_url"),
+  organizerName: text("organizer_name"),
+  category: text("category").default("farcon"),
+  submittedByFid: integer("submitted_by_fid"),
+  submittedByUsername: text("submitted_by_username"),
+  featured: boolean("featured").default(false).notNull(),
+  status: text("status").default("approved").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// ─── ROME ATTENDEES ──────────────────────────────────────────────────────────
+export const romeAttendees = pgTable("rome_attendees", {
+  id: text("id").primaryKey(),
+  fid: integer("fid"),
+  username: text("username"),
+  displayName: text("display_name").notNull(),
+  pfpUrl: text("pfp_url"),
+  bio: text("bio"),
+  walletAddress: text("wallet_address"),
+  ticketVerified: boolean("ticket_verified").default(false).notNull(),
+  contractAddress: text("contract_address"),
+  selfAdded: boolean("self_added").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// ─── ROME DISPATCH CACHE ─────────────────────────────────────────────────────
+export const romeDispatchCache = pgTable("rome_dispatch_cache", {
+  id: text("id").primaryKey(),
+  date: text("date").notNull(),
+  content: text("content").notNull(),
+  generatedAt: timestamp("generated_at").defaultNow().notNull(),
+  model: text("model"),
+});
+
 /**
  * Community happenings — user-submitted events in the Today tab
  */

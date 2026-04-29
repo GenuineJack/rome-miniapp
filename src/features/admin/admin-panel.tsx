@@ -19,7 +19,7 @@ import {
   adminToggleBuilderVerified,
   adminDeleteBuilder,
   adminUpdateBuilderProfile,
-} from "@/db/actions/boston-actions";
+} from "@/db/actions/rome-actions";
 import {
   getDispatchForDate,
   updateDispatchContent,
@@ -32,7 +32,7 @@ import {
   type MonthlyHappening,
 } from "@/db/actions/monthly-happenings-actions";
 import { verifyAdminSecret, getAdminFid } from "@/db/actions/admin-auth";
-import type { Spot, Builder } from "@/features/boston/types";
+import type { Spot, Builder } from "@/features/rome/types";
 import { ChevronRight, Trash2, Pencil, X, Check } from "lucide-react";
 
 const ADMIN_FID = 218957;
@@ -732,7 +732,7 @@ export function AdminPanel() {
                         <div className="flex items-center gap-1 shrink-0">
                           <button
                             type="button"
-                            onClick={() => handleToggleTouristPick(spot.id, spot.touristPick)}
+                            onClick={() => handleToggleTouristPick(spot.id, Boolean(spot.touristPick))}
                             className={`px-2 py-1 rounded-sm text-[11px] font-bold uppercase tracking-widest cursor-pointer border-none ${spot.touristPick ? "bg-boston-blue text-white" : "bg-boston-gray-100 t-sans-navy"}`}
                           >
                             ✈️

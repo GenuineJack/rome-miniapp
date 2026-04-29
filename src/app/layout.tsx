@@ -21,10 +21,12 @@ const lora = Lora({
 });
 
 export const metadata: Metadata = {
+  title: "Rome Miniapp",
+  description: "Your Farcaster-native guide to Rome & Farcon 2026",
   manifest: "/manifest.json",
   icons: {
-    icon: { url: "https://raw.githubusercontent.com/GenuineJack/genuine-jack-site/main/public/boston-miniapp/favicon.png", type: "image/png" },
-    apple: "https://raw.githubusercontent.com/GenuineJack/genuine-jack-site/main/public/boston-miniapp/apple-touch-icon.png",
+    icon: { url: "https://raw.githubusercontent.com/GenuineJack/genuine-jack-site/main/public/rome-miniapp/favicon.png", type: "image/png" },
+    apple: "https://raw.githubusercontent.com/GenuineJack/genuine-jack-site/main/public/rome-miniapp/apple-touch-icon.png",
   },
 };
 

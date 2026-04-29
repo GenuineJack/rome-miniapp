@@ -1,7 +1,7 @@
 {
-  "name": "Boston Miniapp",
-  "short_name": "Boston",
-  "description": "Your guide to Boston — explore spots, builders, and The Dispatch.",
+  "name": "Rome Miniapp",
+  "short_name": "Rome",
+  "description": "Your Farcaster-native guide to Rome & Farcon 2026",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#091f2f",

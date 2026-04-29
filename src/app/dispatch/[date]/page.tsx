@@ -1,64 +1,76 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getDispatchForDate } from "@/db/actions/dispatch-actions";
-import { getSpots } from "@/db/actions/boston-actions";
-import { WhatsNewTab } from "@/features/boston/tabs/whats-new-tab";
+import { eq } from "drizzle-orm";
+import { db } from "@/neynar-db-sdk/db";
+import { romeDispatchCache } from "@/db/schema";
 
 export const dynamic = "force-dynamic";
 
 type PageProps = { params: Promise<{ date: string }> };
 
+type DispatchSnapshot = {
+  greeting?: string;
+  quickBriefing?: string[];
+};
+
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 function formatPretty(date: string): string {
-  // Display in ET-friendly long format
   const [y, m, d] = date.split("-").map(Number);
   if (!y || !m || !d) return date;
-  const dt = new Date(Date.UTC(y, m - 1, d, 12)); // noon UTC avoids DST flip
-  return dt.toLocaleDateString("en-US", {
+  const dt = new Date(Date.UTC(y, m - 1, d, 12));
+  return dt.toLocaleDateString("en-GB", {
     weekday: "long",
     month: "long",
     day: "numeric",
     year: "numeric",
-    timeZone: "America/New_York",
+    timeZone: "Europe/Rome",
   });
+}
+
+async function getDispatchForDate(date: string) {
+  const [row] = await db.select().from(romeDispatchCache).where(eq(romeDispatchCache.date, date)).limit(1);
+  return row ?? null;
+}
+
+function parseDispatch(value: string): DispatchSnapshot | null {
+  try {
+    return JSON.parse(value) as DispatchSnapshot;
+  } catch {
+    return null;
+  }
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { date } = await params;
-  if (!DATE_RE.test(date)) return { title: "Dispatch · Boston" };
+  if (!DATE_RE.test(date)) return { title: "Dispatch · Rome" };
 
   const row = await getDispatchForDate(date);
   if (!row) {
     return {
       title: `Dispatch · ${formatPretty(date)}`,
-      description: "Boston's daily dispatch.",
+      description: "Rome's daily dispatch.",
     };
   }
 
-  let greeting = "Boston's daily dispatch.";
-  try {
-    const parsed = JSON.parse(row.content) as { greeting?: string };
-    if (typeof parsed.greeting === "string") {
-      greeting = parsed.greeting.replace(/\s+/g, " ").slice(0, 200);
-    }
-  } catch {
-    /* noop */
-  }
+  const parsed = parseDispatch(row.content);
+  const greeting = parsed?.greeting?.replace(/\s+/g, " ").slice(0, 200) || "Rome's daily dispatch.";
+  const title = `The Dispatch · ${formatPretty(date)}`;
+  const image = `/api/share/image/og?date=${encodeURIComponent(formatPretty(date))}&title=${encodeURIComponent(title)}`;
 
   return {
-    title: `The Dispatch · ${formatPretty(date)}`,
+    title,
     description: greeting,
     openGraph: {
-      title: `The Dispatch · ${formatPretty(date)}`,
+      title,
       description: greeting,
-      images: [`/api/share/image/og?date=${encodeURIComponent(formatPretty(date))}&title=${encodeURIComponent(`The Dispatch · ${formatPretty(date)}`)}`],
+      images: [image],
     },
     twitter: {
       card: "summary_large_image",
-      title: `The Dispatch · ${formatPretty(date)}`,
+      title,
       description: greeting,
-      images: [`/api/share/image/og?date=${encodeURIComponent(formatPretty(date))}&title=${encodeURIComponent(`The Dispatch · ${formatPretty(date)}`)}`],
+      images: [image],
     },
   };
 }
@@ -70,24 +82,29 @@ export default async function DispatchByDatePage({ params }: PageProps) {
   const row = await getDispatchForDate(date);
   if (!row) notFound();
 
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(row.content);
-  } catch {
-    notFound();
-  }
-
-  // Spots are needed so the Place-of-the-Day card can deep-link.
-  const spots = await getSpots({ limit: 500 }).catch(() => []);
+  const parsed = parseDispatch(row.content);
+  if (!parsed) notFound();
 
   return (
-    <main className="flex flex-col h-dvh bg-white overflow-hidden">
-      <div className="mx-auto max-w-2xl w-full flex-1 flex flex-col overflow-hidden">
-        <WhatsNewTab
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          initialDispatch={parsed as any}
-          spots={spots}
-        />
+    <main className="min-h-dvh bg-white">
+      <div className="mx-auto max-w-2xl px-4 py-6">
+        <header className="mb-5 border-b border-boston-gray-100 pb-4">
+          <p className="text-[10px] font-bold uppercase tracking-widest t-sans-red">The Dispatch</p>
+          <h1 className="text-2xl font-semibold text-navy">{formatPretty(date)}</h1>
+          <p className="mt-2 text-sm t-serif-quote">{parsed.greeting ?? "Rome, today."}</p>
+        </header>
+        {Array.isArray(parsed.quickBriefing) && parsed.quickBriefing.length > 0 && (
+          <section>
+            <h2 className="mb-2 text-xs font-bold uppercase tracking-widest t-sans-gray">Quick Briefing</h2>
+            <ul className="space-y-2">
+              {parsed.quickBriefing.map((line, index) => (
+                <li key={index} className="text-sm leading-relaxed t-sans-navy">
+                  {line}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </div>
     </main>
   );

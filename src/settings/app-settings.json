@@ -1,13 +1,13 @@
 {
-  "name": "Boston",
-  "shortName": "Boston",
-  "subtitle": "City mapped by your community",
-  "description": "A community-curated guide to Boston neighborhoods, spots, builders, and events. Every recommendation has a Farcaster user behind it.",
-  "shortDescription": "Boston curated by the people who live here",
+  "name": "Rome Miniapp",
+  "shortName": "Rome",
+  "subtitle": "for the builders who showed up",
+  "description": "Your Farcaster-native guide to Rome & Farcon 2026",
+  "shortDescription": "Your Farcaster-native guide to Rome & Farcon 2026",
   "primaryCategory": "social",
-  "tags": ["boston", "community", "map", "local", "neighborhoods"],
+  "tags": ["rome", "farcon", "community", "map", "events"],
   "splashBackgroundColor": "#091f2f",
   "tagline": "Curated by your community",
   "requiredChains": ["eip155:8453", "eip155:1"],
-  "shareButtonTitle": "Explore Boston"
+  "shareButtonTitle": "Explore Rome"
 }
