@@ -431,30 +431,166 @@ export function VivereTab() {
         </div>
       </section>
 
-      <section className="px-4 py-4">
+      <section className="px-4 py-4 border-b border-boston-gray-100">
         <h3 className="text-sm font-black uppercase tracking-widest t-sans-navy mb-3">Getting Around Rome</h3>
         <div className="flex flex-col gap-2">
           <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
             <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Metro</h4>
-            <p className="text-xs t-serif-body mt-1">Line B is closest to the venue area. Piramide or Garbatella are both about a 10-15 minute walk to INDUSTRIE FLUVIALI.</p>
+            <p className="text-xs t-serif-body mt-1">Line B (blue) → <strong>Piramide</strong> is the closest stop to the venue, a 5 min walk. A 100-minute ticket costs €1.50 and works across bus, tram, and metro. Apps: Moovit or Roma Mobilità for live routes.</p>
           </article>
           <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
             <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Bus</h4>
-            <p className="text-xs t-serif-body mt-1">Multiple lines serve Via del Porto Fluviale. For live routes, check Moovit or Google Maps.</p>
+            <p className="text-xs t-serif-body mt-1">Lines near the venue: <strong>23, 77, 83, 96, 715, 716, 780</strong>. On foot from Testaccio ~5 min, Garbatella ~15 min, Trastevere ~20 min.</p>
+          </article>
+          <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
+            <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Scooters & Bikes</h4>
+            <p className="text-xs t-serif-body mt-1">The area is well covered by electric scooters: <strong>Lime, Bird, Dott, eCooltra</strong>. Convenient for short hops between Ostiense and Testaccio.</p>
           </article>
           <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
             <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Taxi / Rideshare</h4>
-            <p className="text-xs t-serif-body mt-1">itTaxi and FREE NOW are the common options. Uber exists but usually costs more. Ask for the tassametro in official taxis.</p>
+            <p className="text-xs t-serif-body mt-1">Apps: <strong>itTaxi</strong> or <strong>FreeNow</strong>. Avoid unlicensed taxis at tourist spots. Tell the driver: <em>"Industrie Fluviali, Via del Porto Fluviale 35."</em></p>
           </article>
           <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
-            <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Walking</h4>
-            <p className="text-xs t-serif-body mt-1">The venue is around 25 minutes from Trastevere and around 15 minutes from Ostiense station by foot.</p>
+            <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">From the Airport</h4>
+            <p className="text-xs t-serif-body mt-1"><strong>Fiumicino:</strong> Leonardo Express train to Termini (~30 min, €14) or direct to Roma Ostiense (~30 min, €8). <strong>Ciampino:</strong> Shuttle bus to Termini (~40 min, €6), then Metro B to Piramide.</p>
           </article>
         </div>
       </section>
 
-      {/* TODO: Integrate transit.land feed f-sr-atac~romatpl~trenitalia~rt */}
-      {/* API details: https://www.transit.land/feeds/f-sr-atac~romatpl~trenitalia~rt */}
+      <section className="px-4 py-4 border-b border-boston-gray-100">
+        <h3 className="text-sm font-black uppercase tracking-widest t-sans-navy mb-1">Where to Stay</h3>
+        <p className="text-xs italic t-serif-gray mb-3">Neighborhoods near Industrie Fluviali (the FarCon venue)</p>
+        <div className="flex flex-col gap-2">
+          <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Testaccio & Ostiense</h4>
+                <p className="text-[10px] font-bold uppercase tracking-widest t-sans-gray mt-0.5">Local · Authentic · Closest to Venue</p>
+              </div>
+              <span className="shrink-0 px-2 py-0.5 rounded-sm bg-navy text-white text-[10px] font-bold uppercase tracking-widest">5–10 min walk</span>
+            </div>
+            <p className="text-xs t-serif-body mt-2">Raw, local, and full of energy — one of the most authentic areas in Rome. Home to the best traditional Roman food spots, lively nightlife, and Piramide Metro station. The obvious choice if you want to stay close to the action.</p>
+          </article>
+          <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">San Saba & Aventino</h4>
+                <p className="text-[10px] font-bold uppercase tracking-widest t-sans-gray mt-0.5">Elegant · Quiet · Residential</p>
+              </div>
+              <span className="shrink-0 px-2 py-0.5 rounded-sm bg-navy text-white text-[10px] font-bold uppercase tracking-widest">10–15 min walk</span>
+            </div>
+            <p className="text-xs t-serif-body mt-2">Green, calm, and residential — the Aventine Hill area above Testaccio. Close to the Orange Garden and the famous Knights of Malta keyhole viewpoint.</p>
+          </article>
+          <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Colosseum & Celio Hill</h4>
+                <p className="text-[10px] font-bold uppercase tracking-widest t-sans-gray mt-0.5">Scenic · Historic · Peaceful</p>
+              </div>
+              <span className="shrink-0 px-2 py-0.5 rounded-sm border border-boston-gray-200 t-sans-navy text-[10px] font-bold uppercase tracking-widest">~13 min via Metro B</span>
+            </div>
+            <p className="text-xs t-serif-body mt-2">Metro B Colosseo → Piramide (2 stops, 3 min) + 10 min walk. Close to major landmarks with a quieter, more authentically Roman feel than the center.</p>
+          </article>
+          <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Rione Monti</h4>
+                <p className="text-[10px] font-bold uppercase tracking-widest t-sans-gray mt-0.5">Creative · Central · Stylish</p>
+              </div>
+              <span className="shrink-0 px-2 py-0.5 rounded-sm border border-boston-gray-200 t-sans-navy text-[10px] font-bold uppercase tracking-widest">~15 min via Metro B</span>
+            </div>
+            <p className="text-xs t-serif-body mt-2">Metro B Cavour → Piramide (3 stops, 5 min) + 10 min walk. Independent boutiques, wine bars, and great balance between history and cool vibes. Between the Colosseum and Termini.</p>
+          </article>
+          <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Centro Storico</h4>
+                <p className="text-[10px] font-bold uppercase tracking-widest t-sans-gray mt-0.5">Iconic · First-Timer Friendly</p>
+              </div>
+              <span className="shrink-0 px-2 py-0.5 rounded-sm border border-boston-gray-200 t-sans-navy text-[10px] font-bold uppercase tracking-widest">10–20 min by taxi</span>
+            </div>
+            <p className="text-xs t-serif-body mt-2">Pantheon, Trevi, Spanish Steps. Premium location, unforgettable setting. Best for first-timers who want the classic Rome experience — budget for taxis or scooters to the venue.</p>
+          </article>
+          <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Esquilino & Piazza Vittorio</h4>
+                <p className="text-[10px] font-bold uppercase tracking-widest t-sans-gray mt-0.5">Vibrant · Local · Well Connected</p>
+              </div>
+              <span className="shrink-0 px-2 py-0.5 rounded-sm border border-boston-gray-200 t-sans-navy text-[10px] font-bold uppercase tracking-widest">~20 min via Metro</span>
+            </div>
+            <p className="text-xs t-serif-body mt-2">Metro A (Vittorio Emanuele) → Termini → Metro B → Piramide + 10 min walk. Vibrant, international neighbourhood with plenty of restaurants and services at all price points.</p>
+          </article>
+        </div>
+      </section>
+
+      <section className="px-4 py-4">
+        <h3 className="text-sm font-black uppercase tracking-widest t-sans-navy mb-1">Partnered Hotels</h3>
+        <p className="text-xs italic t-serif-gray mb-3">Exclusive deals near the venue — discount codes coming soon</p>
+        <div className="flex flex-col gap-2">
+          <a
+            href="https://www.gasometerurbansuites.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white border border-boston-gray-100 rounded-sm p-3 flex items-center justify-between"
+          >
+            <div>
+              <p className="text-xs font-black t-sans-navy">Gasometer Urban Suites</p>
+              <p className="text-[10px] t-sans-gray mt-0.5">Ostiense — steps from the venue</p>
+            </div>
+            <span className="shrink-0 px-2 py-0.5 rounded-sm bg-navy text-white text-[10px] font-bold uppercase tracking-widest">15% off</span>
+          </a>
+          <a
+            href="https://www.h10hotels.com/it/hotel-roma/h10-roma-citta"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white border border-boston-gray-100 rounded-sm p-3 flex items-center justify-between"
+          >
+            <div>
+              <p className="text-xs font-black t-sans-navy">H10 Roma Città</p>
+              <p className="text-[10px] t-sans-gray mt-0.5">Near Termini station</p>
+            </div>
+            <span className="shrink-0 px-2 py-0.5 rounded-sm bg-navy text-white text-[10px] font-bold uppercase tracking-widest">15% off</span>
+          </a>
+          <a
+            href="https://www.crossroadhotel.it/indexita.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white border border-boston-gray-100 rounded-sm p-3 flex items-center justify-between"
+          >
+            <div>
+              <p className="text-xs font-black t-sans-navy">Crossroad Hotel</p>
+              <p className="text-[10px] t-sans-gray mt-0.5">Central location</p>
+            </div>
+            <span className="shrink-0 px-2 py-0.5 rounded-sm bg-navy text-white text-[10px] font-bold uppercase tracking-widest">10% off</span>
+          </a>
+          <a
+            href="https://www.booking.com/hotel/it/b-amp-b-city-lights-rome.it.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white border border-boston-gray-100 rounded-sm p-3 flex items-center justify-between"
+          >
+            <div>
+              <p className="text-xs font-black t-sans-navy">City Lights Rome</p>
+              <p className="text-[10px] t-sans-gray mt-0.5">B&B near the center</p>
+            </div>
+            <span className="shrink-0 px-2 py-0.5 rounded-sm bg-navy text-white text-[10px] font-bold uppercase tracking-widest">15% off</span>
+          </a>
+          <a
+            href="https://www.abitarthotel.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white border border-boston-gray-100 rounded-sm p-3 flex items-center justify-between"
+          >
+            <div>
+              <p className="text-xs font-black t-sans-navy">Abitart Hotel</p>
+              <p className="text-[10px] t-sans-gray mt-0.5">Ostiense — boutique design hotel</p>
+            </div>
+            <span className="shrink-0 px-2 py-0.5 rounded-sm border border-boston-gray-200 t-sans-navy text-[10px] font-bold uppercase tracking-widest">TBC</span>
+          </a>
+        </div>
+        <p className="text-xs italic t-serif-gray mt-3">Discount codes and booking instructions coming soon. Join the FarCon Telegram for updates.</p>
+      </section>
     </div>
   );
 }
