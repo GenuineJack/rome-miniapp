@@ -4,6 +4,7 @@ import { ProvidersAndInitialization } from "@/features/app/providers-and-initial
 import type { Metadata } from "next";
 import { Montserrat, Lora } from "next/font/google";
 import { ReactNode } from "react";
+import { Analytics } from "@vercel/analytics/next";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body className="antialiased" suppressHydrationWarning>
         <ProvidersAndInitialization>{children}</ProvidersAndInitialization>
+        <Analytics />
       </body>
     </html>
   );
