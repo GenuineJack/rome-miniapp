@@ -42,7 +42,7 @@ const publicConfigSchema = z.object({
     .min(1, "App subtitle is required")
     .max(30, "App subtitle must be less than 30 characters")
     .regex(
-      /^[a-zA-Z0-9\s.,!?'&-]+$/,
+      /^[a-zA-Z0-9\s.,!?'-]+$/,
       "Subtitle cannot contain special characters or emojis",
     ),
   description: z
@@ -50,7 +50,7 @@ const publicConfigSchema = z.object({
     .min(1, "App description is required")
     .max(170, "App description must be less than 170 characters")
     .regex(
-      /^[a-zA-Z0-9\s.,!?'&-]+$/,
+      /^[a-zA-Z0-9\s.,!?'-]+$/,
       "Description cannot contain special characters or emojis",
     ),
   shortDescription: z
@@ -58,7 +58,7 @@ const publicConfigSchema = z.object({
     .min(1, "App short description is required")
     .max(100, "App short description must be less than 100 characters")
     .regex(
-      /^[a-zA-Z0-9\s.,!?'&-]+$/,
+      /^[a-zA-Z0-9\s.,!?'-]+$/,
       "Short description cannot contain special characters or emojis",
     ),
   primaryCategory: z.enum([
