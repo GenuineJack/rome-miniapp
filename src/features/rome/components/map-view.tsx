@@ -51,7 +51,7 @@ export function MapView({ spots, onSpotClick, center, zoom }: MapViewProps) {
 
   return (
     <div className="relative w-full shrink-0 overflow-hidden h-[clamp(180px,30vh,240px)]">
-      <LeafletMapInner spots={spots} onSpotClick={onSpotClick} height="100%" center={center} zoom={zoom} />
+      <LeafletMapInner spots={spots} onSpotClick={onSpotClick} center={center} zoom={zoom} />
 
       {/* Spot count badge */}
       <div

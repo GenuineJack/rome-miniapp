@@ -21,9 +21,9 @@ import {
   adminUpdateBuilderProfile,
 } from "@/db/actions/rome-actions";
 import {
-  getDispatchForDate,
-  updateDispatchContent,
-  triggerDispatchGeneration,
+  getRomeDispatchForDate,
+  updateRomeDispatchContent,
+  triggerRomeDispatchGeneration,
 } from "@/db/actions/dispatch-actions";
 import {
   adminRegenerateCurrentMonth,
@@ -77,6 +77,19 @@ const TAB_LABELS: { key: TabKey; label: string }[] = [
 // ─── Dispatch JSON preview helpers ───────────────────────────────────────────
 
 type ParsedDispatch = {
+  masthead?: { date?: string; localTime?: string; weather?: string };
+  intro?: string;
+  latestFromFarcon?: unknown[];
+  todayInRome?: string;
+  buildersBuilding?: unknown[];
+  poll?: { question?: string; options?: string[] };
+  triviaQuestion?: string;
+  triviaAnswer?: string;
+  placeOfTheDay?: { name?: string; teaser?: string; spotId?: string };
+  phraseOfTheDay?: { italian?: string; english?: string; phonetic?: string; usedInSentence?: string };
+  untilTomorrow?: string;
+
+  // Legacy dispatch fields (kept for backward compatibility)
   greeting?: string;
   signOff?: string;
   hero?: { title?: string; body?: string } | null;
@@ -113,7 +126,11 @@ function PreviewBlock({ label, value }: { label: string; value: string }) {
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   const child = isValidElement<Record<string, unknown>>(children)
-    ? cloneElement(children, { "aria-label": children.props["aria-label"] ?? label })
+    ? cloneElement(children, {
+        "aria-label": children.props["aria-label"] ?? label,
+        title: children.props.title ?? label,
+        placeholder: children.props.placeholder ?? label,
+      })
     : children;
   return (
     <div className="flex flex-col gap-1">
@@ -185,7 +202,10 @@ export function AdminPanel() {
     talkAbout: string; neighborhood: string; category: string;
   } | null>(null);
 
-  const todayStr = new Date().toLocaleDateString("en-CA");
+  const todayStr = useMemo(
+    () => new Date().toLocaleDateString("en-CA", { timeZone: "Europe/Rome" }),
+    [],
+  );
   const effectiveFid = user?.fid ?? (secretAuthed ? adminFid : null);
   const isAuthed = effectiveFid === ADMIN_FID;
 
@@ -234,7 +254,7 @@ export function AdminPanel() {
       getPendingSpots(effectiveFid),
       getSubmissionErrors(50, effectiveFid),
       getSpots({ limit: 500 }),
-      getDispatchForDate(todayStr),
+      getRomeDispatchForDate(todayStr),
       adminListAllCommunityHappenings(effectiveFid, 100),
       adminListMonthlyHappenings(effectiveFid),
       adminGetAllBuilders(effectiveFid),
@@ -454,26 +474,37 @@ export function AdminPanel() {
     setRegenerating(true);
     setDispatchError("");
     try {
-      const result = await triggerDispatchGeneration(effectiveFid!, force);
+      const result = await triggerRomeDispatchGeneration(effectiveFid!, force);
       if (!result.ok) {
         setDispatchError(result.error ?? "Generation failed");
         return;
       }
-      const d = await getDispatchForDate(todayStr);
+      const d = await getRomeDispatchForDate(todayStr);
       if (d) {
         setTodayDispatch({ date: d.date, content: d.content });
         setDispatchDraft(d.content);
+      } else {
+        setDispatchError(
+          "Dispatch generated, but no cached record is available. Set DATABASE_URL to persist and edit generated dispatch.",
+        );
       }
-    } catch {
-      setDispatchError("Generation failed unexpectedly");
+    } catch (error) {
+      setDispatchError(
+        error instanceof Error ? error.message : "Generation failed unexpectedly",
+      );
     } finally {
       setRegenerating(false);
     }
   }
   async function handleSaveDispatch() {
     if (!todayDispatch) return;
-    await updateDispatchContent(todayDispatch.date, dispatchDraft, true);
+    const result = await updateRomeDispatchContent(todayDispatch.date, dispatchDraft);
+    if (!result.ok) {
+      setDispatchError(result.error ?? "Could not save dispatch content");
+      return;
+    }
     setTodayDispatch({ ...todayDispatch, content: dispatchDraft });
+    setDispatchError("");
     setDispatchEditing(false);
   }
 
@@ -733,6 +764,7 @@ export function AdminPanel() {
                           <button
                             type="button"
                             onClick={() => handleToggleTouristPick(spot.id, Boolean(spot.touristPick))}
+                            aria-label={spot.touristPick ? `Unmark tourist pick for ${spot.name}` : `Mark ${spot.name} as tourist pick`}
                             className={`px-2 py-1 rounded-sm text-[11px] font-bold uppercase tracking-widest cursor-pointer border-none ${spot.touristPick ? "bg-boston-blue text-white" : "bg-boston-gray-100 t-sans-navy"}`}
                           >
                             ✈️
@@ -740,6 +772,7 @@ export function AdminPanel() {
                           <button
                             type="button"
                             onClick={() => startEditSpot(spot)}
+                            aria-label={`Edit ${spot.name}`}
                             className="w-7 h-7 flex items-center justify-center rounded-sm admin-action-btn p-0"
                           >
                             <Pencil size={13} aria-hidden="true" />
@@ -747,6 +780,7 @@ export function AdminPanel() {
                           <button
                             type="button"
                             onClick={() => handleDeleteSpot(spot.id)}
+                            aria-label={`Delete ${spot.name}`}
                             className="w-7 h-7 flex items-center justify-center rounded-sm text-boston-red hover:bg-boston-red/10 bg-transparent border-none cursor-pointer"
                           >
                             <Trash2 size={13} aria-hidden="true" />
@@ -803,19 +837,38 @@ export function AdminPanel() {
                 </div>
                 {parsedDispatch ? (
                   <div className="border-t border-boston-gray-200 pt-3">
-                    <PreviewBlock label="Greeting" value={parsedDispatch.greeting ?? ""} />
-                    {parsedDispatch.hero && (parsedDispatch.hero.title || parsedDispatch.hero.body) && (
+                    {(parsedDispatch.masthead?.localTime || parsedDispatch.masthead?.weather) && (
                       <div className="mb-3">
-                        <p className="h-eyebrow mb-1">Hero</p>
-                        {parsedDispatch.hero.title && <p className="h-card mb-1">{parsedDispatch.hero.title}</p>}
-                        {parsedDispatch.hero.body && (
-                          <p className="text-[13px] leading-relaxed t-serif-body whitespace-pre-wrap">{parsedDispatch.hero.body}</p>
+                        <p className="h-eyebrow mb-1">Masthead</p>
+                        <p className="text-[13px] t-sans-navy">
+                          {parsedDispatch.masthead?.localTime ?? ""}
+                          {parsedDispatch.masthead?.localTime && parsedDispatch.masthead?.weather ? " · " : ""}
+                          {parsedDispatch.masthead?.weather ?? ""}
+                        </p>
+                      </div>
+                    )}
+
+                    <PreviewBlock label="Intro" value={parsedDispatch.intro ?? parsedDispatch.greeting ?? ""} />
+                    <PreviewBlock label="Today in Rome" value={parsedDispatch.todayInRome ?? ""} />
+
+                    {parsedDispatch.placeOfTheDay && (parsedDispatch.placeOfTheDay.name || parsedDispatch.placeOfTheDay.teaser) && (
+                      <div className="mb-3">
+                        <p className="h-eyebrow mb-1">Place of the Day</p>
+                        {parsedDispatch.placeOfTheDay.name && <p className="h-card mb-1">{parsedDispatch.placeOfTheDay.name}</p>}
+                        {parsedDispatch.placeOfTheDay.teaser && (
+                          <p className="text-[13px] leading-relaxed t-serif-body whitespace-pre-wrap">{parsedDispatch.placeOfTheDay.teaser}</p>
                         )}
                       </div>
                     )}
-                    <PreviewBlock label="Sign-off" value={parsedDispatch.signOff ?? ""} />
+
+                    <PreviewBlock label="Until Tomorrow" value={parsedDispatch.untilTomorrow ?? parsedDispatch.signOff ?? ""} />
                     <div className="grid grid-cols-2 gap-2 text-xs t-sans-gray">
-                      <span>News: {Array.isArray(parsedDispatch.newsHeadlines) ? parsedDispatch.newsHeadlines.length : 0}</span>
+                      <span>Farcon casts: {Array.isArray(parsedDispatch.latestFromFarcon) ? parsedDispatch.latestFromFarcon.length : 0}</span>
+                      <span>Builders: {Array.isArray(parsedDispatch.buildersBuilding) ? parsedDispatch.buildersBuilding.length : 0}</span>
+                      <span>Poll options: {Array.isArray(parsedDispatch.poll?.options) ? parsedDispatch.poll?.options.length : 0}</span>
+                      <span>Trivia: {parsedDispatch.triviaQuestion ? "yes" : "no"}</span>
+
+                      <span>Legacy news: {Array.isArray(parsedDispatch.newsHeadlines) ? parsedDispatch.newsHeadlines.length : 0}</span>
                       <span>Events: {Array.isArray(parsedDispatch.events) ? parsedDispatch.events.length : 0}</span>
                       <span>MBTA alerts: {Array.isArray(parsedDispatch.mbtaAlerts) ? parsedDispatch.mbtaAlerts.length : 0}</span>
                       <span>Markets: {parsedDispatch.markets ? "yes" : "no"}</span>
@@ -1076,33 +1129,33 @@ function SpotEditForm({
   return (
     <div className="mt-3 pt-3 border-t border-boston-gray-200 grid grid-cols-2 gap-3">
       <Field label="Name">
-        <input className={inputCls} value={draft.name} onChange={(e) => set("name", e.target.value)} />
+        <input className={inputCls} value={draft.name} onChange={(e) => set("name", e.target.value)} title="Name" placeholder="Name" />
       </Field>
       <Field label="Category">
-        <input className={inputCls} value={draft.category} onChange={(e) => set("category", e.target.value)} />
+        <input className={inputCls} value={draft.category} onChange={(e) => set("category", e.target.value)} title="Category" placeholder="Category" />
       </Field>
       <Field label="Subcategory">
-        <input className={inputCls} value={draft.subcategory} onChange={(e) => set("subcategory", e.target.value)} />
+        <input className={inputCls} value={draft.subcategory} onChange={(e) => set("subcategory", e.target.value)} title="Subcategory" placeholder="Subcategory" />
       </Field>
       <Field label="Neighborhood">
-        <input className={inputCls} value={draft.neighborhood} onChange={(e) => set("neighborhood", e.target.value)} />
+        <input className={inputCls} value={draft.neighborhood} onChange={(e) => set("neighborhood", e.target.value)} title="Neighborhood" placeholder="Neighborhood" />
       </Field>
       <div className="col-span-2">
         <Field label="Description">
-          <textarea className={textareaCls} rows={2} value={draft.description} onChange={(e) => set("description", e.target.value)} />
+          <textarea className={textareaCls} rows={2} value={draft.description} onChange={(e) => set("description", e.target.value)} title="Description" placeholder="Description" />
         </Field>
       </div>
       <Field label="Address">
-        <input className={inputCls} value={draft.address} onChange={(e) => set("address", e.target.value)} />
+        <input className={inputCls} value={draft.address} onChange={(e) => set("address", e.target.value)} title="Address" placeholder="Address" />
       </Field>
       <Field label="Link (URL)">
-        <input className={inputCls} value={draft.link} onChange={(e) => set("link", e.target.value)} />
+        <input className={inputCls} value={draft.link} onChange={(e) => set("link", e.target.value)} title="Link (URL)" placeholder="Link (URL)" />
       </Field>
       <Field label="Latitude">
-        <input className={inputCls} type="number" step="any" value={draft.latitude} onChange={(e) => set("latitude", e.target.value)} />
+        <input className={inputCls} type="number" step="any" value={draft.latitude} onChange={(e) => set("latitude", e.target.value)} title="Latitude" placeholder="Latitude" />
       </Field>
       <Field label="Longitude">
-        <input className={inputCls} type="number" step="any" value={draft.longitude} onChange={(e) => set("longitude", e.target.value)} />
+        <input className={inputCls} type="number" step="any" value={draft.longitude} onChange={(e) => set("longitude", e.target.value)} title="Longitude" placeholder="Longitude" />
       </Field>
       <div className="col-span-2 flex items-center gap-2">
         <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest t-sans-gray cursor-pointer">
@@ -1136,31 +1189,31 @@ function CommunityEditForm({
     <div className="mt-3 pt-3 border-t border-boston-gray-200 grid grid-cols-2 gap-3">
       <div className="col-span-2">
         <Field label="Title">
-          <input className={inputCls} value={draft.title} onChange={(e) => set("title", e.target.value)} />
+          <input className={inputCls} value={draft.title} onChange={(e) => set("title", e.target.value)} title="Title" placeholder="Title" />
         </Field>
       </div>
       <div className="col-span-2">
         <Field label="Description">
-          <textarea className={textareaCls} rows={2} value={draft.description} onChange={(e) => set("description", e.target.value)} />
+          <textarea className={textareaCls} rows={2} value={draft.description} onChange={(e) => set("description", e.target.value)} title="Description" placeholder="Description" />
         </Field>
       </div>
       <Field label="Emoji">
-        <input className={inputCls} value={draft.emoji} onChange={(e) => set("emoji", e.target.value)} />
+        <input className={inputCls} value={draft.emoji} onChange={(e) => set("emoji", e.target.value)} title="Emoji" placeholder="Emoji" />
       </Field>
       <Field label="Neighborhood">
-        <input className={inputCls} value={draft.neighborhood} onChange={(e) => set("neighborhood", e.target.value)} />
+        <input className={inputCls} value={draft.neighborhood} onChange={(e) => set("neighborhood", e.target.value)} title="Neighborhood" placeholder="Neighborhood" />
       </Field>
       <Field label="Date Label">
-        <input className={inputCls} value={draft.dateLabel} onChange={(e) => set("dateLabel", e.target.value)} />
+        <input className={inputCls} value={draft.dateLabel} onChange={(e) => set("dateLabel", e.target.value)} title="Date Label" placeholder="Date Label" />
       </Field>
       <Field label="URL">
-        <input className={inputCls} value={draft.url} onChange={(e) => set("url", e.target.value)} />
+        <input className={inputCls} value={draft.url} onChange={(e) => set("url", e.target.value)} title="URL" placeholder="URL" />
       </Field>
       <Field label="Start Date (YYYY-MM-DD)">
-        <input className={inputCls} value={draft.startDate} onChange={(e) => set("startDate", e.target.value)} />
+        <input className={inputCls} value={draft.startDate} onChange={(e) => set("startDate", e.target.value)} title="Start Date (YYYY-MM-DD)" placeholder="Start Date (YYYY-MM-DD)" />
       </Field>
       <Field label="End Date (YYYY-MM-DD)">
-        <input className={inputCls} value={draft.endDate} onChange={(e) => set("endDate", e.target.value)} />
+        <input className={inputCls} value={draft.endDate} onChange={(e) => set("endDate", e.target.value)} title="End Date (YYYY-MM-DD)" placeholder="End Date (YYYY-MM-DD)" />
       </Field>
       <div className="col-span-2 flex gap-2">
         <button type="button" onClick={onSave} className="admin-action-btn" data-variant="primary"><Check size={12} aria-hidden="true" /> Save</button>
@@ -1188,31 +1241,31 @@ function BuilderEditForm({
     <div className="mt-3 pt-3 border-t border-boston-gray-200 grid grid-cols-2 gap-3">
       <div className="col-span-2">
         <Field label="Bio">
-          <textarea className={textareaCls} rows={2} value={draft.bio} onChange={(e) => set("bio", e.target.value)} />
+          <textarea className={textareaCls} rows={2} value={draft.bio} onChange={(e) => set("bio", e.target.value)} title="Bio" placeholder="Bio" />
         </Field>
       </div>
       <Field label="Project Name">
-        <input className={inputCls} value={draft.projectName} onChange={(e) => set("projectName", e.target.value)} />
+        <input className={inputCls} value={draft.projectName} onChange={(e) => set("projectName", e.target.value)} title="Project Name" placeholder="Project Name" />
       </Field>
       <Field label="Category">
-        <input className={inputCls} value={draft.category} onChange={(e) => set("category", e.target.value)} />
+        <input className={inputCls} value={draft.category} onChange={(e) => set("category", e.target.value)} title="Category" placeholder="Category" />
       </Field>
       <div className="col-span-2">
         <Field label="Project Links (comma-separated)">
-          <input className={inputCls} value={draft.projectLinks} onChange={(e) => set("projectLinks", e.target.value)} />
+          <input className={inputCls} value={draft.projectLinks} onChange={(e) => set("projectLinks", e.target.value)} title="Project Links (comma-separated)" placeholder="Project Links (comma-separated)" />
         </Field>
       </div>
       <div className="col-span-2">
         <Field label="Categories (comma-separated)">
-          <input className={inputCls} value={draft.categories} onChange={(e) => set("categories", e.target.value)} />
+          <input className={inputCls} value={draft.categories} onChange={(e) => set("categories", e.target.value)} title="Categories (comma-separated)" placeholder="Categories (comma-separated)" />
         </Field>
       </div>
       <Field label="Neighborhood">
-        <input className={inputCls} value={draft.neighborhood} onChange={(e) => set("neighborhood", e.target.value)} />
+        <input className={inputCls} value={draft.neighborhood} onChange={(e) => set("neighborhood", e.target.value)} title="Neighborhood" placeholder="Neighborhood" />
       </Field>
       <div className="col-span-2">
         <Field label="Talk About">
-          <input className={inputCls} value={draft.talkAbout} onChange={(e) => set("talkAbout", e.target.value)} />
+          <input className={inputCls} value={draft.talkAbout} onChange={(e) => set("talkAbout", e.target.value)} title="Talk About" placeholder="Talk About" />
         </Field>
       </div>
       <div className="col-span-2 flex gap-2">

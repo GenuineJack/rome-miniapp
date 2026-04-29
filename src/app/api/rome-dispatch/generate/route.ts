@@ -19,7 +19,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const date = new Date().toLocaleDateString("en-CA", { timeZone: "Europe/Rome" });
-  const dispatch = await generateRomeDispatch(date);
-  return NextResponse.json({ status: "ok", date, dispatch });
+  try {
+    const date = new Date().toLocaleDateString("en-CA", { timeZone: "Europe/Rome" });
+    const dispatch = await generateRomeDispatch(date);
+    return NextResponse.json({ status: "ok", date, dispatch });
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Failed to generate Rome dispatch";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }

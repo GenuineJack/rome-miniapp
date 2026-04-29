@@ -150,7 +150,14 @@ export function AddSpotForm({ categories, onSuccess, onClose }: AddSpotFormProps
   return (
     <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
       <input value={name} onChange={(e) => setName(e.target.value)} className="submit-input" placeholder="Spot name" required />
-      <select value={category} onChange={(e) => setCategory(e.target.value)} className="submit-input" required>
+      <select
+        value={category}
+        onChange={(e) => setCategory(e.target.value)}
+        className="submit-input"
+        aria-label="Category"
+        title="Category"
+        required
+      >
         <option value="">Select category</option>
         {categories.filter((c) => c !== "All").map((c) => (
           <option key={c} value={c}>{c}</option>

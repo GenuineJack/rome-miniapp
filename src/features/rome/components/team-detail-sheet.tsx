@@ -71,13 +71,14 @@ export function TeamDetailSheet({ teamName, games, onClose }: TeamDetailSheetPro
 
       {/* Venue Map */}
       <div className="border-b border-[#e0e0e0]">
-        <LeafletMapInner
-          spots={[venueSpot]}
-          onSpotClick={() => {}}
-          height="160px"
-          center={meta.venueCoords}
-          zoom={15}
-        />
+        <div className="h-40">
+          <LeafletMapInner
+            spots={[venueSpot]}
+            onSpotClick={() => {}}
+            center={meta.venueCoords}
+            zoom={15}
+          />
+        </div>
         <div className="px-4 py-2 bg-boston-gray-50 flex items-center justify-between">
           <span className="text-xs font-bold uppercase tracking-widest t-sans-navy">
             📍 {meta.venue}

@@ -180,8 +180,8 @@ function SelfAddForm({ userFid, username, displayName, pfpUrl, onClose, onSucces
           You&apos;re already on the list ✓
         </p>
       )}
-      <input className="submit-input" value={displayName} disabled />
-      <input className="submit-input" value={username ? `@${username}` : "No username"} disabled />
+      <input className="submit-input" value={displayName} aria-label="Display name" title="Display name" disabled />
+      <input className="submit-input" value={username ? `@${username}` : "No username"} aria-label="Username" title="Username" disabled />
       <textarea
         className="submit-input submit-textarea"
         value={bio}

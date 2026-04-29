@@ -1,14 +1,12 @@
 import fs from "fs";
 import path from "path";
+import { eq } from "drizzle-orm";
 
 const SUBMITTER_FID = 218957;
 const SUBMITTER_USERNAME = "genuinejack";
 const SUBMITTER_DISPLAY_NAME = "Genuine Jack";
 const SUBMITTER_PFP_URL =
   "https://imagedelivery.net/BXluQx4ige9GuW0Ia56BHw/533a424d-d6f8-4c6a-30ec-7658555db700/original";
-
-const { db } = await import("../src/neynar-db-sdk/src/db.js");
-const { romeSpots } = await import("../src/db/schema.js");
 
 function parseCSV(content: string): Record<string, string>[] {
   const lines = content.trim().split("\n");
@@ -43,6 +41,13 @@ function parseCSV(content: string): Record<string, string>[] {
 }
 
 async function main() {
+  const { db } = await import("../src/neynar-db-sdk/src/db.js");
+  const { romeSpots } = await import("../src/db/schema.js");
+
+  if (typeof (db as unknown as { select?: unknown }).select !== "function") {
+    throw new Error("Database is not configured. Export DATABASE_URL before running this script.");
+  }
+
   const csvPath = path.join(process.cwd(), "public", "spots_seed.rome.csv");
   const csv = fs.readFileSync(csvPath, "utf-8");
   const rows = parseCSV(csv);
@@ -51,19 +56,13 @@ async function main() {
   const existing = new Set(existingRows.map((row) => row.id));
 
   let inserted = 0;
-  let skipped = 0;
+  let updated = 0;
 
   for (const row of rows) {
     const id = row.id;
     if (!id) continue;
 
-    if (existing.has(id)) {
-      skipped++;
-      continue;
-    }
-
-    await db.insert(romeSpots).values({
-      id,
+    const contentFields = {
       name: row.name,
       category: row.category,
       subcategory: row.subcategory || null,
@@ -73,6 +72,17 @@ async function main() {
       link: row.link || null,
       latitude: row.latitude ? Number(row.latitude) : null,
       longitude: row.longitude ? Number(row.longitude) : null,
+    };
+
+    if (existing.has(id)) {
+      await db.update(romeSpots).set(contentFields).where(eq(romeSpots.id, id));
+      updated++;
+      continue;
+    }
+
+    await db.insert(romeSpots).values({
+      id,
+      ...contentFields,
       submittedByFid: SUBMITTER_FID,
       submittedByUsername: SUBMITTER_USERNAME,
       submittedByDisplayName: SUBMITTER_DISPLAY_NAME,
@@ -85,7 +95,7 @@ async function main() {
     inserted++;
   }
 
-  console.log(`seed-rome-spots complete. inserted=${inserted} skipped=${skipped}`);
+  console.log(`seed-rome-spots complete. inserted=${inserted} updated=${updated}`);
 }
 
 main().catch((error) => {

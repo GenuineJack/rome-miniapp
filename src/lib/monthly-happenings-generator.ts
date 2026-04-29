@@ -2,8 +2,8 @@ import "server-only";
 
 import { setMonthlySlot, getMonthlyHappenings } from "@/db/actions/monthly-happenings-actions";
 
-const MONTHLY_HAPPENINGS_SYSTEM_PROMPT = `You are the editor of The Dispatch, Boston's daily city briefing.
-Each month you also publish a small editorial guide of "three noteworthy things happening in Boston this month."
+const MONTHLY_HAPPENINGS_SYSTEM_PROMPT = `You are the editor of The Dispatch, Rome's daily city briefing.
+Each month you also publish a small editorial guide of "three noteworthy things happening in Rome this month."
 
 Your output is always a single valid JSON object of this shape — no markdown fence, no preamble:
 
@@ -15,19 +15,19 @@ type MonthlyHappeningsOutput = {
     title: string;        // 3-7 words. Specific. Not "Spring Activities".
     summary: string;      // 1-2 sentences for the card preview. Concrete.
     body: string;         // Markdown. 3-5 short paragraphs. Headings allowed (##).
-                          // Editorial, dry, Boston-native voice. No bullet salad.
+                // Editorial, dry, Rome-native voice. No bullet salad.
                           // Include specific names, addresses, dates, neighborhoods.
                           // No links inside body — those go in sourceLinks.
     sourceLinks: { label: string; url: string }[]; // 1-4 real links. No fabrication.
   }[];                    // exactly 3 items, slots 1,2,3
 };
 
-VOICE: dry Boston wit, specific, never tourist-guide, never corporate civic.
+VOICE: dry Rome wit, specific, never tourist-guide, never corporate civic.
 Pick three things that matter THIS month — a festival, a season change, a real
-event, a neighborhood inflection point. Avoid evergreen "things to do in Boston."
+event, a neighborhood inflection point. Avoid evergreen "things to do in Rome."
 
 LINKS: only include URLs you can verify from your training data or that are
-clearly canonical (boston.gov, mbta.com, the venue's own site, museums, news outlets).
+clearly canonical (comune.roma.it, atac.roma.it, the venue's own site, museums, news outlets).
 If you are unsure, omit the link rather than fabricate.`;
 
 type MonthlyAIItem = {
@@ -66,11 +66,11 @@ export async function generateMonthlyHappenings(options?: {
     return { ok: false, error: "ANTHROPIC_API_KEY not configured" };
   }
 
-  // Default to current ET month
+  // Default to current Rome month
   const month =
     options?.month ??
     new Intl.DateTimeFormat("en-CA", {
-      timeZone: "America/New_York",
+      timeZone: "Europe/Rome",
       year: "numeric",
       month: "2-digit",
     }).format(new Date());
@@ -83,7 +83,7 @@ export async function generateMonthlyHappenings(options?: {
     }
   }
 
-  const userMessage = `Generate the "three noteworthy things in Boston" guide for ${monthLabel(month)} (month string: ${month}).
+  const userMessage = `Generate the "three noteworthy things in Rome" guide for ${monthLabel(month)} (month string: ${month}).
 Use only verifiable information. If a fact is uncertain, omit it.
 Return JSON only.`;
 

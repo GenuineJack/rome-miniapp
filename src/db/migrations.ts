@@ -1,6 +1,6 @@
 import "server-only";
 
-import { sql } from "drizzle-orm";
+import { count, sql } from "drizzle-orm";
 import { db } from "@/neynar-db-sdk/db";
 import { spots } from "@/db/schema";
 
@@ -216,8 +216,13 @@ const ALTER_MIGRATIONS: string[] = [
 ];
 
 async function runQuery(query: string): Promise<boolean> {
+  const execute = (db as unknown as { execute?: (q: unknown) => Promise<unknown> }).execute;
+  if (typeof execute !== "function") {
+    return false;
+  }
+
   try {
-    await db.execute(sql.raw(query));
+    await execute(sql.raw(query));
     return true;
   } catch (e) {
     const msg = (e as Error).message ?? String(e);
@@ -231,19 +236,29 @@ async function runQuery(query: string): Promise<boolean> {
 
 export async function runMigrations() {
   console.log("[migrations] Starting…");
-  for (const q of CREATE_TABLES) await runQuery(q);
-  for (const q of ALTER_MIGRATIONS) await runQuery(q);
+  const execute = (db as unknown as { execute?: (q: unknown) => Promise<unknown> }).execute;
+  if (typeof execute !== "function") {
+    console.log("[migrations] Raw execute unavailable in current DB mode — skipping SQL migration batch.");
+  } else {
+    for (const q of CREATE_TABLES) await runQuery(q);
+    for (const q of ALTER_MIGRATIONS) await runQuery(q);
+  }
   console.log("[migrations] Schema ready.");
   await autoSeedIfEmpty();
 }
 
 async function autoSeedIfEmpty() {
   try {
-    const result = await db.execute(sql.raw(`SELECT COUNT(*) as cnt FROM spots`));
-    const rows = result as unknown as Array<{ cnt: string | number }>;
-    const count = parseInt(String(rows[0]?.cnt ?? "0"), 10);
-    if (count > 0) {
-      console.log(`[migrations] Spots table has ${count} rows — skipping auto-seed.`);
+    const canSelect = typeof (db as unknown as { select?: unknown }).select === "function";
+    if (!canSelect) {
+      console.log("[migrations] Query methods unavailable — skipping auto-seed check.");
+      return;
+    }
+
+    const [{ cnt }] = await db.select({ cnt: count(spots.id) }).from(spots);
+    const total = Number(cnt ?? 0);
+    if (total > 0) {
+      console.log(`[migrations] Spots table has ${total} rows — skipping auto-seed.`);
       return;
     }
     console.log("[migrations] Spots table is empty — seeding…");

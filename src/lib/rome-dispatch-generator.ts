@@ -5,6 +5,12 @@ import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/neynar-db-sdk/db";
 import { romeDispatchCache, romeEvents, romeSpots, kv } from "@/db/schema";
 
+type DbMethod = "select" | "insert" | "update" | "delete";
+
+function hasDbMethod(method: DbMethod) {
+  return typeof (db as unknown as Record<string, unknown>)[method] === "function";
+}
+
 type DispatchPayload = {
   masthead: { date: string; localTime: string; weather: string };
   intro: string;
@@ -119,6 +125,8 @@ async function fetchFarconCasts(limit: number) {
 }
 
 async function fetchTodaysEvents(date: string) {
+  if (!hasDbMethod("select")) return [];
+
   return db
     .select()
     .from(romeEvents)
@@ -127,6 +135,8 @@ async function fetchTodaysEvents(date: string) {
 }
 
 async function fetchRandomFeaturedSpot() {
+  if (!hasDbMethod("select")) return null;
+
   const featured = await db
     .select()
     .from(romeSpots)
@@ -177,6 +187,8 @@ function fallbackDispatch(date: string, localTime: string, weather: string, spot
 }
 
 export async function getCachedRomeDispatch(date: string) {
+  if (!hasDbMethod("select")) return null;
+
   const rows = await db
     .select()
     .from(romeDispatchCache)
@@ -193,6 +205,8 @@ export async function getCachedRomeDispatch(date: string) {
 }
 
 export async function saveRomeDispatch(date: string, dispatch: DispatchPayload, model: string) {
+  if (!hasDbMethod("insert")) return;
+
   await db.insert(romeDispatchCache).values({
     id: randomUUID(),
     date,
@@ -202,6 +216,8 @@ export async function saveRomeDispatch(date: string, dispatch: DispatchPayload, 
 }
 
 export async function getRomeDispatchPoll(date: string) {
+  if (!hasDbMethod("select")) return {} as Record<string, number>;
+
   const key = `rome-dispatch-poll-${date}`;
   const rows = await db.select().from(kv).where(eq(kv.key, key)).limit(1);
   if (!rows.length) return {} as Record<string, number>;
@@ -216,6 +232,10 @@ export async function recordRomeDispatchVote(date: string, option: string) {
   const key = `rome-dispatch-poll-${date}`;
   const current = await getRomeDispatchPoll(date);
   const next = { ...current, [option]: (current[option] ?? 0) + 1 };
+
+  if (!hasDbMethod("insert")) {
+    return next;
+  }
 
   await db
     .insert(kv)

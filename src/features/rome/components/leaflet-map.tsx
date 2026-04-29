@@ -8,7 +8,6 @@ import { Spot } from "@/features/rome/types";
 type LeafletMapProps = {
   spots: Spot[];
   onSpotClick: (spot: Spot) => void;
-  height: string;
   center?: [number, number];
   zoom?: number;
 };
@@ -35,7 +34,7 @@ function _buildIcon(L: typeof import("leaflet"), color: string) {
   });
 }
 
-export function LeafletMapInner({ spots, onSpotClick, height, center, zoom }: LeafletMapProps) {
+export function LeafletMapInner({ spots, onSpotClick, center, zoom }: LeafletMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<LeafletMap | null>(null);
   const markersRef = useRef<import("leaflet").CircleMarker[]>([]);
@@ -66,9 +65,9 @@ export function LeafletMapInner({ spots, onSpotClick, height, center, zoom }: Le
       mapRef.current = map;
       setMapReady(true);
 
-      // CARTO Dark Matter — free, no API key, dark theme
+      // CARTO Voyager — free, no API key, better daytime contrast.
       L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+        "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
         {
           subdomains: "abcd",
           maxZoom: 19,
@@ -120,7 +119,7 @@ export function LeafletMapInner({ spots, onSpotClick, height, center, zoom }: Le
           permanent: false,
           direction: "top",
           offset: [0, -8],
-          className: "boston-map-tooltip",
+          className: "rome-map-tooltip",
         });
 
         marker.addTo(mapRef.current);
@@ -132,10 +131,10 @@ export function LeafletMapInner({ spots, onSpotClick, height, center, zoom }: Le
   return (
     <>
       <style>{`
-        .boston-map-tooltip {
-          background: #091f2f;
-          border: 1px solid #1871bd;
-          color: #fff;
+        .rome-map-tooltip {
+          background: rgba(255, 255, 255, 0.96);
+          border: 1px solid #c69214;
+          color: #3a2a1a;
           font-family: var(--font-sans);
           font-size: 12px;
           font-weight: 700;
@@ -145,22 +144,21 @@ export function LeafletMapInner({ spots, onSpotClick, height, center, zoom }: Le
           border-radius: 2px;
           white-space: nowrap;
         }
-        .boston-map-tooltip::before {
+        .rome-map-tooltip::before {
           display: none;
         }
         .leaflet-attribution-flag { display: none !important; }
         .leaflet-control-attribution {
           font-size: 10px !important;
-          background: rgba(9,31,47,0.7) !important;
-          color: rgba(255,255,255,0.4) !important;
+          background: rgba(255, 255, 255, 0.75) !important;
+          color: rgba(58, 42, 26, 0.7) !important;
           padding: 1px 4px !important;
         }
-        .leaflet-control-attribution a { color: rgba(255,255,255,0.5) !important; }
+        .leaflet-control-attribution a { color: rgba(58, 42, 26, 0.8) !important; }
       `}</style>
       <div
         ref={containerRef}
-        className="bg-[#0d1b2a]"
-        style={{ width: "100%", height }}
+        className="w-full h-full bg-[#f7f0e1]"
       />
     </>
   );

@@ -1,8 +1,8 @@
 "use server";
 
 import { db } from "@/neynar-db-sdk/db";
-import { dispatch, dispatchPollResponses } from "@/db/schema";
-import { and, eq, sql } from "drizzle-orm";
+import { dispatch, dispatchPollResponses, romeDispatchCache } from "@/db/schema";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { randomUUID } from "crypto";
 
 export async function getDispatchForDate(date: string) {
@@ -114,6 +114,101 @@ export async function recordPollVote(
 
 const ADMIN_FID = 218957;
 
+type DbMethod = "select" | "insert" | "update" | "delete";
+
+function hasDbMethod(method: DbMethod) {
+  return typeof (db as unknown as Record<string, unknown>)[method] === "function";
+}
+
+function getRomeDate(now = new Date()) {
+  return now.toLocaleDateString("en-CA", { timeZone: "Europe/Rome" });
+}
+
+export async function getRomeDispatchForDate(date: string) {
+  if (!hasDbMethod("select")) return null;
+
+  const rows = await db
+    .select()
+    .from(romeDispatchCache)
+    .where(eq(romeDispatchCache.date, date))
+    .orderBy(desc(romeDispatchCache.generatedAt))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+export async function updateRomeDispatchContent(date: string, content: string) {
+  if (!hasDbMethod("select") || !hasDbMethod("update") || !hasDbMethod("insert")) {
+    return {
+      ok: false,
+      error:
+        "Database is not configured. Set DATABASE_URL to enable editing cached dispatch.",
+    };
+  }
+
+  try {
+    JSON.parse(content);
+  } catch {
+    return { ok: false, error: "Dispatch content must be valid JSON" };
+  }
+
+  const existing = await getRomeDispatchForDate(date);
+  if (existing) {
+    await db
+      .update(romeDispatchCache)
+      .set({ content, model: "admin-override" })
+      .where(eq(romeDispatchCache.id, existing.id));
+    return { ok: true };
+  }
+
+  await db.insert(romeDispatchCache).values({
+    id: randomUUID(),
+    date,
+    content,
+    model: "admin-override",
+  });
+
+  return { ok: true };
+}
+
+export async function triggerRomeDispatchGeneration(
+  adminFid: number,
+  force: boolean,
+): Promise<{ ok: boolean; error?: string }> {
+  if (adminFid !== ADMIN_FID) {
+    return { ok: false, error: "Unauthorized" };
+  }
+
+  try {
+    const date = getRomeDate();
+    const hasSelect = hasDbMethod("select");
+    const hasDelete = hasDbMethod("delete");
+
+    if (!hasSelect || !hasDelete) {
+      const { generateRomeDispatch } = await import("@/lib/rome-dispatch-generator");
+      await generateRomeDispatch(date);
+      return { ok: true };
+    }
+
+    if (!force) {
+      const existing = await getRomeDispatchForDate(date);
+      if (existing) {
+        return { ok: true };
+      }
+    } else {
+      await db.delete(romeDispatchCache).where(eq(romeDispatchCache.date, date));
+    }
+
+    const { generateRomeDispatch } = await import("@/lib/rome-dispatch-generator");
+    await generateRomeDispatch(date);
+    return { ok: true };
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : "Dispatch generation failed",
+    };
+  }
+}
+
 /**
  * Admin server action: generate (or regenerate) today's dispatch.
  * Runs server-side so secrets stay safe.
@@ -122,11 +217,5 @@ export async function triggerDispatchGeneration(
   adminFid: number,
   force: boolean,
 ): Promise<{ ok: boolean; error?: string }> {
-  if (adminFid !== ADMIN_FID) {
-    return { ok: false, error: "Unauthorized" };
-  }
-
-  // Dynamic import to avoid pulling AI deps into every server action bundle
-  const { generateDispatchContent } = await import("@/lib/dispatch-generator");
-  return generateDispatchContent({ force });
+  return triggerRomeDispatchGeneration(adminFid, force);
 }

@@ -1302,6 +1302,20 @@ body {
   color: var(--admin-text);
 }
 
+/* Keep admin readable even if global dark mode is enabled. */
+.dark .admin-page {
+  background: var(--admin-bg) !important;
+  color: var(--admin-text) !important;
+}
+.dark .admin-page .bg-white,
+.dark .admin-page .box-bordered,
+.dark .admin-page .box-bordered-thin,
+.dark .admin-page .admin-tabs {
+  background: var(--admin-panel) !important;
+  color: var(--admin-text) !important;
+  border-color: var(--admin-border) !important;
+}
+
 /* Typography remapping — sans throughout, no washed-out grays */
 .admin-page .t-sans-navy,
 .admin-page .t-sans-gray,

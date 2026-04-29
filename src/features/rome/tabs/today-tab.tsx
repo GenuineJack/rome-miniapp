@@ -278,7 +278,15 @@ function AddEventForm({ onClose, onSuccess }: AddEventFormProps) {
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
       <input className="submit-input" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Event title" required />
       <textarea className="submit-input submit-textarea" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" required />
-      <input type="date" className="submit-input" value={date} onChange={(e) => setDate(e.target.value)} required />
+      <input
+        type="date"
+        className="submit-input"
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
+        aria-label="Event date"
+        title="Event date"
+        required
+      />
       <input className="submit-input" value={time} onChange={(e) => setTime(e.target.value)} placeholder="Time (e.g. 18:00)" />
       <input className="submit-input" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" required />
       <input className="submit-input" value={lumaUrl} onChange={(e) => setLumaUrl(e.target.value)} placeholder="Luma URL" />
