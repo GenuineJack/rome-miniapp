@@ -12,6 +12,7 @@
     "deploy:vercel": "node --loader ts-node/esm scripts/deploy.ts",
     "dev": "pnpm run db:push && next dev --turbopack",
     "dev:webpack": "pnpm run db:push && next dev -p 3001",
+    "seed:rome-events": "tsx scripts/seed-rome-events.ts",
     "install:standalone": "pnpm install",
     "lint": "eslint .",
     "lint:file": "eslint",

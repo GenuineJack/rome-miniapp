@@ -15,9 +15,9 @@ type LeafletMapProps = {
 const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
 function getPinColor(spot: Spot): string {
-  if (Date.now() - new Date(spot.createdAt).getTime() < ONE_WEEK_MS) return "#1871bd"; // new
-  if (spot.featured) return "#fcb61a"; // featured
-  return "#d22d23"; // regular
+  if (Date.now() - new Date(spot.createdAt).getTime() < ONE_WEEK_MS) return "#1f5f3a"; // new
+  if (spot.featured) return "#c69214"; // featured
+  return "#a83232"; // regular
 }
 
 // Build a circle SVG marker icon
@@ -109,7 +109,7 @@ export function LeafletMapInner({ spots, onSpotClick, center, zoom }: LeafletMap
             radius: 7,
             fillColor: color,
             fillOpacity: 0.9,
-            color: "#ffffff",
+            color: "#f5efe2",
             weight: 2,
           }
         );
@@ -150,15 +150,17 @@ export function LeafletMapInner({ spots, onSpotClick, center, zoom }: LeafletMap
         .leaflet-attribution-flag { display: none !important; }
         .leaflet-control-attribution {
           font-size: 10px !important;
-          background: rgba(255, 255, 255, 0.75) !important;
-          color: rgba(58, 42, 26, 0.7) !important;
+          background: color-mix(in srgb, #f5efe2 85%, transparent) !important;
+          color: color-mix(in srgb, #3a2a1a 70%, transparent) !important;
           padding: 1px 4px !important;
         }
-        .leaflet-control-attribution a { color: rgba(58, 42, 26, 0.8) !important; }
+        .leaflet-control-attribution a {
+          color: color-mix(in srgb, #3a2a1a 80%, transparent) !important;
+        }
       `}</style>
       <div
         ref={containerRef}
-        className="w-full h-full bg-[#f7f0e1]"
+        className="w-full h-full bg-boston-gray-50"
       />
     </>
   );

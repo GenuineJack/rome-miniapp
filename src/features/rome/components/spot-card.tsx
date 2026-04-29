@@ -12,14 +12,14 @@ type SpotCardProps = {
 
 function handleDirections(spot: Spot, e: React.MouseEvent) {
   e.stopPropagation();
-  const query = encodeURIComponent(spot.address ?? `${spot.name} Boston MA`);
+  const query = encodeURIComponent(spot.address ?? `${spot.name} Rome Italy`);
   openExternalUrl(`https://maps.google.com/?q=${query}`);
 }
 
 function handleShare(spot: Spot, e: React.MouseEvent) {
   e.stopPropagation();
   // Always use Warpcast compose URL — navigator.share is unreliable in mini-app webviews
-  const text = `${spot.name} in ${spot.neighborhood} — check it out on /boston`;
+  const text = `${spot.name} in ${spot.neighborhood} — check it out on /rome`;
   const url = `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}`;
   openExternalUrl(url);
 }
@@ -32,7 +32,7 @@ export function SpotCard({ spot, onClick, isNew }: SpotCardProps) {
       onClick={() => onClick?.(spot)}
       tabIndex={0}
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onClick?.(spot); }}
-      className="w-full text-left border-2 border-[#e0e0e0] rounded-sm p-3 bg-white transition-colors duration-150 hover:border-[#1871bd] focus:outline-none focus:border-[#1871bd] group cursor-pointer"
+      className="w-full text-left border-2 border-boston-gray-100 rounded-sm p-3 bg-white transition-colors duration-150 hover:border-boston-blue focus:outline-none focus:border-boston-blue group cursor-pointer"
     >
       <div className="flex items-start justify-between gap-2 mb-1.5">
         <span
@@ -84,7 +84,7 @@ export function SpotCard({ spot, onClick, isNew }: SpotCardProps) {
             <ExternalLink
               href={spot.link}
               onClick={(e) => e.stopPropagation()}
-              className="w-7 h-7 flex items-center justify-center rounded-sm transition-colors duration-150 hover:bg-[#f0f0f0] text-boston-gray-400"
+              className="w-7 h-7 flex items-center justify-center rounded-sm transition-colors duration-150 hover:bg-boston-gray-50 text-boston-gray-400"
               title="Website"
               aria-label={`Website for ${spot.name}`}
             >
@@ -93,7 +93,7 @@ export function SpotCard({ spot, onClick, isNew }: SpotCardProps) {
           )}
           <button
             onClick={(e) => handleDirections(spot, e)}
-            className="w-7 h-7 flex items-center justify-center rounded-sm transition-colors duration-150 focus:outline-none hover:bg-[#f0f0f0] text-boston-gray-400"
+            className="w-7 h-7 flex items-center justify-center rounded-sm transition-colors duration-150 focus:outline-none hover:bg-boston-gray-50 text-boston-gray-400"
             title="Get directions"
             aria-label={`Directions to ${spot.name}`}
           >
@@ -101,7 +101,7 @@ export function SpotCard({ spot, onClick, isNew }: SpotCardProps) {
           </button>
           <button
             onClick={(e) => handleShare(spot, e)}
-            className="w-7 h-7 flex items-center justify-center rounded-sm transition-colors duration-150 focus:outline-none hover:bg-[#f0f0f0] text-boston-gray-400"
+            className="w-7 h-7 flex items-center justify-center rounded-sm transition-colors duration-150 focus:outline-none hover:bg-boston-gray-50 text-boston-gray-400"
             title="Share"
             aria-label={`Share ${spot.name}`}
           >

@@ -70,7 +70,7 @@ export function TeamDetailSheet({ teamName, games, onClose }: TeamDetailSheetPro
       </div>
 
       {/* Venue Map */}
-      <div className="border-b border-[#e0e0e0]">
+      <div className="border-b border-boston-gray-100">
         <div className="h-40">
           <LeafletMapInner
             spots={[venueSpot]}
@@ -89,7 +89,7 @@ export function TeamDetailSheet({ teamName, games, onClose }: TeamDetailSheetPro
 
       {/* Upcoming Games */}
       {teamGames.length > 0 && (
-        <div className="px-4 py-4 border-b border-[#e0e0e0]">
+        <div className="px-4 py-4 border-b border-boston-gray-100">
           <h2 className="text-xs font-bold uppercase tracking-widest t-sans-navy mb-3">
             Upcoming
           </h2>
@@ -102,7 +102,7 @@ export function TeamDetailSheet({ teamName, games, onClose }: TeamDetailSheetPro
       )}
 
       {/* Bio */}
-      <div className="px-4 py-4 border-b border-[#e0e0e0]">
+      <div className="px-4 py-4 border-b border-boston-gray-100">
         <h2 className="text-xs font-bold uppercase tracking-widest t-sans-navy mb-2">
           About
         </h2>
@@ -111,7 +111,7 @@ export function TeamDetailSheet({ teamName, games, onClose }: TeamDetailSheetPro
 
       {/* Championships */}
       {meta.championships.length > 0 && (
-        <div className="px-4 py-4 border-b border-[#e0e0e0]">
+        <div className="px-4 py-4 border-b border-boston-gray-100">
           <h2 className="text-xs font-bold uppercase tracking-widest t-sans-navy mb-2">
             🏆 Championships ({meta.championships.length})
           </h2>

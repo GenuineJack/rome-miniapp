@@ -19,6 +19,10 @@ import {
   adminToggleBuilderVerified,
   adminDeleteBuilder,
   adminUpdateBuilderProfile,
+  adminListRomeEvents,
+  adminCreateRomeEvent,
+  adminUpdateRomeEvent,
+  adminDeleteRomeEvent,
 } from "@/db/actions/rome-actions";
 import {
   getRomeDispatchForDate,
@@ -32,7 +36,7 @@ import {
   type MonthlyHappening,
 } from "@/db/actions/monthly-happenings-actions";
 import { verifyAdminSecret, getAdminFid } from "@/db/actions/admin-auth";
-import type { Spot, Builder } from "@/features/rome/types";
+import type { Spot, Builder, RomeEvent } from "@/features/rome/types";
 import { ChevronRight, Trash2, Pencil, X, Check } from "lucide-react";
 
 const ADMIN_FID = 218957;
@@ -62,11 +66,38 @@ type CommunityRow = {
   createdAt: Date;
 };
 
-type TabKey = "overview" | "spots" | "dispatch" | "monthly" | "community" | "builders" | "errors";
+type EventCategory = "farcon" | "community" | "side-event";
+type EventStatus = "approved" | "pending" | "rejected";
+
+type EventDraft = {
+  title: string;
+  description: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  location: string;
+  address: string;
+  lumaUrl: string;
+  organizerName: string;
+  category: EventCategory;
+  status: EventStatus;
+  featured: boolean;
+};
+
+type TabKey =
+  | "overview"
+  | "spots"
+  | "events"
+  | "dispatch"
+  | "monthly"
+  | "community"
+  | "builders"
+  | "errors";
 
 const TAB_LABELS: { key: TabKey; label: string }[] = [
   { key: "overview", label: "Overview" },
   { key: "spots", label: "Spots" },
+  { key: "events", label: "Events" },
   { key: "dispatch", label: "Dispatch" },
   { key: "monthly", label: "Monthly" },
   { key: "community", label: "Community" },
@@ -143,6 +174,21 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 const inputCls = "w-full px-2 py-1.5 text-sm border border-boston-gray-200 rounded-sm t-sans-navy focus:outline-none focus:border-boston-blue bg-white";
 const textareaCls = `${inputCls} resize-none`;
 
+const EMPTY_EVENT_DRAFT: EventDraft = {
+  title: "",
+  description: "",
+  date: "",
+  startTime: "",
+  endTime: "",
+  location: "",
+  address: "",
+  lumaUrl: "",
+  organizerName: "",
+  category: "farcon",
+  status: "approved",
+  featured: false,
+};
+
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export function AdminPanel() {
@@ -160,6 +206,7 @@ export function AdminPanel() {
   const [pending, setPending] = useState<Spot[]>([]);
   const [errors, setErrors] = useState<ErrorRow[]>([]);
   const [allSpots, setAllSpots] = useState<Spot[]>([]);
+  const [events, setEvents] = useState<RomeEvent[]>([]);
   const [community, setCommunity] = useState<CommunityRow[]>([]);
   const [monthly, setMonthly] = useState<MonthlyHappening[]>([]);
   const [allBuilders, setAllBuilders] = useState<Builder[]>([]);
@@ -194,6 +241,12 @@ export function AdminPanel() {
     title: string; description: string; neighborhood: string; dateLabel: string;
     startDate: string; endDate: string; emoji: string; url: string;
   } | null>(null);
+
+  // Event inline editing / creation
+  const [editingEventId, setEditingEventId] = useState<string | null>(null);
+  const [eventDraft, setEventDraft] = useState<EventDraft | null>(null);
+  const [isCreatingEvent, setIsCreatingEvent] = useState(false);
+  const [newEventDraft, setNewEventDraft] = useState<EventDraft>(EMPTY_EVENT_DRAFT);
 
   // Builder inline editing
   const [editingBuilderId, setEditingBuilderId] = useState<string | null>(null);
@@ -250,11 +303,12 @@ export function AdminPanel() {
   const loadData = useCallback(async () => {
     if (!effectiveFid) return;
     setLoading(true);
-    const [p, e, spots, dispatch, comm, mh, bldrs] = await Promise.all([
+    const [p, e, spots, dispatch, evts, comm, mh, bldrs] = await Promise.all([
       getPendingSpots(effectiveFid),
       getSubmissionErrors(50, effectiveFid),
       getSpots({ limit: 500 }),
       getRomeDispatchForDate(todayStr),
+      adminListRomeEvents(effectiveFid, 200),
       adminListAllCommunityHappenings(effectiveFid, 100),
       adminListMonthlyHappenings(effectiveFid),
       adminGetAllBuilders(effectiveFid),
@@ -262,6 +316,7 @@ export function AdminPanel() {
     setPending(p as Spot[]);
     setErrors(e as ErrorRow[]);
     setAllSpots(spots as Spot[]);
+    setEvents(evts as RomeEvent[]);
     setCommunity(comm as CommunityRow[]);
     setMonthly(mh);
     setAllBuilders(bldrs as Builder[]);
@@ -406,6 +461,84 @@ export function AdminPanel() {
     if (r.success) setCommunity((prev) => prev.filter((c) => c.id !== id));
   }
 
+  // ── Event mutations ──
+  function toEventDraft(event: RomeEvent): EventDraft {
+    return {
+      title: event.title,
+      description: event.description,
+      date: event.date,
+      startTime: event.startTime ?? "",
+      endTime: event.endTime ?? "",
+      location: event.location,
+      address: event.address ?? "",
+      lumaUrl: event.lumaUrl ?? "",
+      organizerName: event.organizerName ?? "",
+      category: (event.category as EventCategory) ?? "farcon",
+      status: (event.status as EventStatus) ?? "approved",
+      featured: event.featured,
+    };
+  }
+
+  function toEventPayload(draft: EventDraft) {
+    return {
+      title: draft.title,
+      description: draft.description,
+      date: draft.date,
+      startTime: draft.startTime || null,
+      endTime: draft.endTime || null,
+      location: draft.location,
+      address: draft.address || null,
+      lumaUrl: draft.lumaUrl || null,
+      organizerName: draft.organizerName || null,
+      category: draft.category,
+      status: draft.status,
+      featured: draft.featured,
+    };
+  }
+
+  async function refreshEvents() {
+    const evts = await adminListRomeEvents(effectiveFid!, 200);
+    setEvents(evts as RomeEvent[]);
+  }
+
+  function startEditEvent(event: RomeEvent) {
+    setEditingEventId(event.id);
+    setEventDraft(toEventDraft(event));
+  }
+
+  async function handleCreateEvent() {
+    if (!newEventDraft.title.trim() || !newEventDraft.date.trim() || !newEventDraft.location.trim()) {
+      return;
+    }
+
+    const result = await adminCreateRomeEvent(effectiveFid!, {
+      ...toEventPayload(newEventDraft),
+      submittedByFid: user?.fid ?? effectiveFid,
+      submittedByUsername: user?.username ?? "admin",
+    });
+
+    if (!result.success) return;
+    setIsCreatingEvent(false);
+    setNewEventDraft(EMPTY_EVENT_DRAFT);
+    await refreshEvents();
+  }
+
+  async function handleSaveEvent(eventId: string) {
+    if (!eventDraft) return;
+    const result = await adminUpdateRomeEvent(effectiveFid!, eventId, toEventPayload(eventDraft));
+    if (!result.success) return;
+    setEditingEventId(null);
+    setEventDraft(null);
+    await refreshEvents();
+  }
+
+  async function handleDeleteEvent(eventId: string) {
+    if (!confirm("Delete this event? This cannot be undone.")) return;
+    const result = await adminDeleteRomeEvent(effectiveFid!, eventId);
+    if (!result.success) return;
+    setEvents((prev) => prev.filter((event) => event.id !== eventId));
+  }
+
   // ── Builder mutations ──
   function startEditBuilder(b: Builder) {
     setEditingBuilderId(b.id);
@@ -545,6 +678,16 @@ export function AdminPanel() {
     );
   }, [allSpots, spotsSearch]);
 
+  const sortedEvents = useMemo(() => {
+    return [...events].sort((a, b) => {
+      const byDate = a.date.localeCompare(b.date);
+      if (byDate !== 0) return byDate;
+      const aStart = a.startTime ?? "";
+      const bStart = b.startTime ?? "";
+      return aStart.localeCompare(bStart);
+    });
+  }, [events]);
+
   const filteredCommunity = useMemo(() => {
     if (communityFilter === "all") return community;
     const today = new Date().toISOString().split("T")[0];
@@ -632,7 +775,14 @@ export function AdminPanel() {
       {/* Sticky tab bar */}
       <div className="admin-tabs" aria-label="Admin sections">
         {TAB_LABELS.map((t) => {
-          const count = countForTab(t.key, { pending, errors, community: filteredCommunity, monthly, builders: allBuilders });
+          const count = countForTab(t.key, {
+            pending,
+            errors,
+            events,
+            community: filteredCommunity,
+            monthly,
+            builders: allBuilders,
+          });
           const selected: boolean = activeTab === t.key;
           return (
             <button
@@ -655,6 +805,7 @@ export function AdminPanel() {
         {activeTab === "overview" && (
           <section className="grid grid-cols-2 gap-3">
             <OverviewCard label="Pending Spots" value={loading ? "…" : String(pending.length)} onClick={() => setActiveTab("spots")} />
+            <OverviewCard label="Events" value={loading ? "…" : String(events.length)} onClick={() => setActiveTab("events")} />
             <OverviewCard label="Errors" value={loading ? "…" : String(errors.length)} onClick={() => setActiveTab("errors")} />
             <OverviewCard label="Community" value={loading ? "…" : String(community.length)} onClick={() => setActiveTab("community")} />
             <OverviewCard label="Monthly Slots" value={loading ? "…" : `${monthly.length}/3`} onClick={() => setActiveTab("monthly")} />
@@ -800,6 +951,127 @@ export function AdminPanel() {
               </div>
             </section>
           </>
+        )}
+
+        {/* ── Events ── */}
+        {activeTab === "events" && (
+          <section>
+            <div className="flex items-center justify-between mb-3 gap-2">
+              <h2 className="h-section">Events ({events.length})</h2>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsCreatingEvent((v) => !v);
+                  setNewEventDraft(EMPTY_EVENT_DRAFT);
+                }}
+                className="admin-action-btn"
+                data-variant="primary"
+              >
+                {isCreatingEvent ? "Close" : "Add Event"}
+              </button>
+            </div>
+
+            {isCreatingEvent && (
+              <div className="bg-white rounded-sm p-3 mb-3 box-bordered">
+                <p className="h-eyebrow mb-2">New Event</p>
+                <EventEditForm
+                  draft={newEventDraft}
+                  onChange={setNewEventDraft}
+                  onSave={handleCreateEvent}
+                  onCancel={() => {
+                    setIsCreatingEvent(false);
+                    setNewEventDraft(EMPTY_EVENT_DRAFT);
+                  }}
+                />
+              </div>
+            )}
+
+            {!loading && sortedEvents.length === 0 && (
+              <p className="text-xs italic t-serif-gray">No Rome events found.</p>
+            )}
+
+            <div className="flex flex-col gap-2">
+              {sortedEvents.map((event) => {
+                const isEditing = editingEventId === event.id;
+                return (
+                  <div key={event.id} className="bg-white rounded-sm p-3 box-bordered">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5 flex-wrap mb-1">
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest bg-boston-gray-100 t-sans-navy">
+                            {event.category ?? "farcon"}
+                          </span>
+                          <span
+                            className={`inline-flex items-center px-1.5 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest ${
+                              event.status === "approved"
+                                ? "bg-boston-yellow/25 text-boston-gray-text"
+                                : event.status === "pending"
+                                  ? "bg-boston-gray-100 t-sans-navy"
+                                  : "bg-boston-red/10 text-boston-red"
+                            }`}
+                          >
+                            {event.status}
+                          </span>
+                          {event.featured && <Badge label="Featured" color="yellow" />}
+                        </div>
+                        <p className="h-card mb-0.5">{event.title}</p>
+                        <p className="text-xs t-sans-gray mb-1">
+                          {event.date}
+                          {event.startTime ? ` · ${event.startTime}` : ""}
+                          {event.endTime ? `-${event.endTime}` : ""}
+                          {event.location ? ` · ${event.location}` : ""}
+                        </p>
+                        <p className="text-xs italic t-serif-body line-clamp-2">{event.description}</p>
+                        {event.address && <p className="text-[11px] t-sans-gray mt-0.5">📍 {event.address}</p>}
+                        {event.lumaUrl && <p className="text-[11px] t-sans-blue mt-0.5 truncate">🔗 {event.lumaUrl}</p>}
+                        {(event.submittedByUsername || event.submittedByFid) && (
+                          <p className="text-[11px] t-sans-gray mt-0.5">
+                            {event.submittedByUsername ? `@${event.submittedByUsername}` : "admin"}
+                            {event.submittedByFid ? ` · FID ${event.submittedByFid}` : ""}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-1 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            isEditing
+                              ? (setEditingEventId(null), setEventDraft(null))
+                              : startEditEvent(event)
+                          }
+                          className="w-7 h-7 flex items-center justify-center rounded-sm admin-action-btn p-0"
+                          aria-label={isEditing ? "Cancel event editing" : `Edit ${event.title}`}
+                        >
+                          {isEditing ? <X size={13} aria-hidden="true" /> : <Pencil size={13} aria-hidden="true" />}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteEvent(event.id)}
+                          className="w-7 h-7 flex items-center justify-center rounded-sm text-boston-red hover:bg-boston-red/10 bg-transparent border-none cursor-pointer"
+                          aria-label={`Delete ${event.title}`}
+                        >
+                          <Trash2 size={13} aria-hidden="true" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {isEditing && eventDraft && (
+                      <EventEditForm
+                        draft={eventDraft}
+                        onChange={setEventDraft}
+                        onSave={() => handleSaveEvent(event.id)}
+                        onCancel={() => {
+                          setEditingEventId(null);
+                          setEventDraft(null);
+                        }}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </section>
         )}
 
         {/* ── Dispatch ── */}
@@ -1038,7 +1310,7 @@ export function AdminPanel() {
                             type="button"
                             aria-label={b.featured ? "Unfeature builder" : "Feature builder"}
                             onClick={() => handleToggleBuilderFeatured(b.id, b.featured)}
-                            className={`px-2 py-1 rounded-sm text-[11px] font-bold uppercase tracking-widest cursor-pointer border-none ${b.featured ? "bg-boston-yellow text-[#091f2f]" : "bg-boston-gray-100 t-sans-navy"}`}
+                            className={`px-2 py-1 rounded-sm text-[11px] font-bold uppercase tracking-widest cursor-pointer border-none ${b.featured ? "bg-boston-yellow text-boston-gray-text" : "bg-boston-gray-100 t-sans-navy"}`}
                           >
                             ⭐
                           </button>
@@ -1223,6 +1495,161 @@ function CommunityEditForm({
   );
 }
 
+function EventEditForm({
+  draft,
+  onChange,
+  onSave,
+  onCancel,
+}: {
+  draft: EventDraft;
+  onChange: (d: EventDraft) => void;
+  onSave: () => void;
+  onCancel: () => void;
+}) {
+  const set = <K extends keyof EventDraft>(key: K, value: EventDraft[K]) => {
+    onChange({ ...draft, [key]: value });
+  };
+
+  return (
+    <div className="mt-3 pt-3 border-t border-boston-gray-200 grid grid-cols-2 gap-3">
+      <div className="col-span-2">
+        <Field label="Title">
+          <input
+            className={inputCls}
+            value={draft.title}
+            onChange={(e) => set("title", e.target.value)}
+            title="Title"
+            placeholder="Title"
+          />
+        </Field>
+      </div>
+      <div className="col-span-2">
+        <Field label="Description">
+          <textarea
+            className={textareaCls}
+            rows={3}
+            value={draft.description}
+            onChange={(e) => set("description", e.target.value)}
+            title="Description"
+            placeholder="Description"
+          />
+        </Field>
+      </div>
+      <Field label="Date (YYYY-MM-DD)">
+        <input
+          className={inputCls}
+          value={draft.date}
+          onChange={(e) => set("date", e.target.value)}
+          title="Date (YYYY-MM-DD)"
+          placeholder="YYYY-MM-DD"
+        />
+      </Field>
+      <Field label="Category">
+        <select
+          className={inputCls}
+          value={draft.category}
+          onChange={(e) => set("category", e.target.value as EventCategory)}
+          title="Category"
+        >
+          <option value="farcon">farcon</option>
+          <option value="community">community</option>
+          <option value="side-event">side-event</option>
+        </select>
+      </Field>
+      <Field label="Start Time (HH:MM)">
+        <input
+          className={inputCls}
+          value={draft.startTime}
+          onChange={(e) => set("startTime", e.target.value)}
+          title="Start Time (HH:MM)"
+          placeholder="HH:MM"
+        />
+      </Field>
+      <Field label="End Time (HH:MM)">
+        <input
+          className={inputCls}
+          value={draft.endTime}
+          onChange={(e) => set("endTime", e.target.value)}
+          title="End Time (HH:MM)"
+          placeholder="HH:MM"
+        />
+      </Field>
+      <div className="col-span-2">
+        <Field label="Location">
+          <input
+            className={inputCls}
+            value={draft.location}
+            onChange={(e) => set("location", e.target.value)}
+            title="Location"
+            placeholder="Location"
+          />
+        </Field>
+      </div>
+      <div className="col-span-2">
+        <Field label="Address">
+          <input
+            className={inputCls}
+            value={draft.address}
+            onChange={(e) => set("address", e.target.value)}
+            title="Address"
+            placeholder="Address"
+          />
+        </Field>
+      </div>
+      <div className="col-span-2">
+        <Field label="Luma URL">
+          <input
+            className={inputCls}
+            value={draft.lumaUrl}
+            onChange={(e) => set("lumaUrl", e.target.value)}
+            title="Luma URL"
+            placeholder="https://luma.com/..."
+          />
+        </Field>
+      </div>
+      <Field label="Organizer Name">
+        <input
+          className={inputCls}
+          value={draft.organizerName}
+          onChange={(e) => set("organizerName", e.target.value)}
+          title="Organizer Name"
+          placeholder="Organizer Name"
+        />
+      </Field>
+      <Field label="Status">
+        <select
+          className={inputCls}
+          value={draft.status}
+          onChange={(e) => set("status", e.target.value as EventStatus)}
+          title="Status"
+        >
+          <option value="approved">approved</option>
+          <option value="pending">pending</option>
+          <option value="rejected">rejected</option>
+        </select>
+      </Field>
+      <div className="col-span-2 flex items-center gap-2">
+        <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest t-sans-gray cursor-pointer">
+          <input
+            type="checkbox"
+            checked={draft.featured}
+            onChange={(e) => set("featured", e.target.checked)}
+          />
+          Featured
+        </label>
+      </div>
+      <div className="col-span-2 flex gap-2">
+        <button type="button" onClick={onSave} className="admin-action-btn" data-variant="primary">
+          <Check size={12} aria-hidden="true" /> Save
+        </button>
+        <button type="button" onClick={onCancel} className="admin-action-btn">
+          <X size={12} aria-hidden="true" /> Cancel
+        </button>
+      </div>
+    </div>
+  );
+}
+
 type BuilderDraftType = {
   bio: string; projectName: string; projectLinks: string; categories: string;
   talkAbout: string; neighborhood: string; category: string;
@@ -1281,8 +1708,8 @@ function BuilderEditForm({
 function Badge({ label, color }: { label: string; color: "blue" | "yellow" | "green" }) {
   const cls = {
     blue: "bg-boston-blue/10 text-boston-blue",
-    yellow: "bg-boston-yellow/20 text-[#91680a]",
-    green: "bg-green-100 text-green-800",
+    yellow: "bg-boston-yellow/20 text-boston-gray-text",
+    green: "bg-boston-gray-100 text-boston-gray-text",
   }[color];
   return (
     <span className={`inline-flex items-center px-1.5 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest ${cls}`}>
@@ -1293,10 +1720,18 @@ function Badge({ label, color }: { label: string; color: "blue" | "yellow" | "gr
 
 function countForTab(
   key: TabKey,
-  ctx: { pending: Spot[]; errors: ErrorRow[]; community: CommunityRow[]; monthly: MonthlyHappening[]; builders: Builder[] },
+  ctx: {
+    pending: Spot[];
+    errors: ErrorRow[];
+    events: RomeEvent[];
+    community: CommunityRow[];
+    monthly: MonthlyHappening[];
+    builders: Builder[];
+  },
 ): number | null {
   switch (key) {
     case "spots": return ctx.pending.length || null;
+    case "events": return ctx.events.length;
     case "errors": return ctx.errors.length || null;
     case "community": return ctx.community.length;
     case "monthly": return ctx.monthly.length;

@@ -985,6 +985,119 @@ export async function adminUpdateCommunityHappening(
   }
 }
 
+type RomeEventCategory = "farcon" | "community" | "side-event";
+type RomeEventStatus = "approved" | "pending" | "rejected";
+
+type AdminRomeEventInput = {
+  title: string;
+  description: string;
+  date: string;
+  location: string;
+  startTime?: string | null;
+  endTime?: string | null;
+  address?: string | null;
+  lumaUrl?: string | null;
+  organizerName?: string | null;
+  category?: RomeEventCategory;
+  featured?: boolean;
+  status?: RomeEventStatus;
+  submittedByFid?: number | null;
+  submittedByUsername?: string | null;
+};
+
+// ─── Admin: Rome events CRUD ────────────────────────────────────────────────
+
+export async function adminListRomeEvents(adminFid: number, limit: number = 200) {
+  if (!(await verifyAdmin(adminFid))) return [];
+  try {
+    return await db
+      .select()
+      .from(romeEvents)
+      .orderBy(asc(romeEvents.date), asc(romeEvents.startTime), asc(romeEvents.createdAt))
+      .limit(limit);
+  } catch (error) {
+    console.error("Failed to list Rome events:", error);
+    return [];
+  }
+}
+
+export async function adminCreateRomeEvent(adminFid: number, data: AdminRomeEventInput) {
+  if (!(await verifyAdmin(adminFid))) return { success: false, error: "Not authorized" };
+  try {
+    const id = randomUUID();
+    await db.insert(romeEvents).values({
+      id,
+      title: data.title.trim(),
+      description: data.description.trim(),
+      date: data.date.trim(),
+      location: data.location.trim(),
+      startTime: data.startTime?.trim() || null,
+      endTime: data.endTime?.trim() || null,
+      address: data.address?.trim() || null,
+      lumaUrl: data.lumaUrl?.trim() || null,
+      organizerName: data.organizerName?.trim() || null,
+      category: data.category ?? "farcon",
+      featured: data.featured ?? false,
+      status: data.status ?? "approved",
+      submittedByFid: data.submittedByFid ?? adminFid,
+      submittedByUsername: data.submittedByUsername?.trim() || "admin",
+      createdAt: new Date(),
+    });
+    return { success: true, id };
+  } catch (error) {
+    console.error("Failed to create Rome event:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+
+export async function adminUpdateRomeEvent(
+  adminFid: number,
+  eventId: string,
+  data: Partial<AdminRomeEventInput>
+) {
+  if (!(await verifyAdmin(adminFid))) return { success: false, error: "Not authorized" };
+  try {
+    await db
+      .update(romeEvents)
+      .set({
+        title: data.title?.trim(),
+        description: data.description?.trim(),
+        date: data.date?.trim(),
+        location: data.location?.trim(),
+        startTime: data.startTime === undefined ? undefined : data.startTime?.trim() || null,
+        endTime: data.endTime === undefined ? undefined : data.endTime?.trim() || null,
+        address: data.address === undefined ? undefined : data.address?.trim() || null,
+        lumaUrl: data.lumaUrl === undefined ? undefined : data.lumaUrl?.trim() || null,
+        organizerName:
+          data.organizerName === undefined ? undefined : data.organizerName?.trim() || null,
+        category: data.category,
+        featured: data.featured,
+        status: data.status,
+        submittedByFid: data.submittedByFid,
+        submittedByUsername:
+          data.submittedByUsername === undefined
+            ? undefined
+            : data.submittedByUsername?.trim() || null,
+      })
+      .where(eq(romeEvents.id, eventId));
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update Rome event:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+
+export async function adminDeleteRomeEvent(adminFid: number, eventId: string) {
+  if (!(await verifyAdmin(adminFid))) return { success: false, error: "Not authorized" };
+  try {
+    await db.delete(romeEvents).where(eq(romeEvents.id, eventId));
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete Rome event:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+
 // ─── Admin: Builder management ────────────────────────────────────────────────
 
 export async function adminGetAllBuilders(adminFid: number) {

@@ -1,14 +1,25 @@
 export {};
 
-const { db } = await import("../src/neynar-db-sdk/src/db.js");
-const { romeEvents } = await import("../src/db/schema.js");
+type SeedEvent = {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  address: string | null;
+  date: string;
+  startTime: string;
+  endTime: string;
+  lumaUrl: string;
+  category: "farcon" | "community" | "side-event";
+  featured: boolean;
+};
 
 const EVENTS = [
   {
     id: "rome-event-web3privacy-now-meetup",
-    title: "Web3Privacy Now Rome Meetup",
+    title: "Web3Privacy now Rome Meetup",
     description:
-      "Half-day meetup on privacy, cryptography, and public goods with talks, open debate, and aperitivo networking.",
+      "Half-day session on cryptography, open-source public goods, and civil liberties with talks, debate, and networking aperitivo.",
     location: "Urbe Hub",
     address: "Largo Dino Frisullo, 00153 Roma RM, Italy",
     date: "2026-05-08",
@@ -22,7 +33,7 @@ const EVENTS = [
     id: "rome-event-open-studio-day",
     title: "Open Studio Day",
     description:
-      "A full-day creative collab with live music, wax carving, and visual jam sessions hosted by Kismet Casa and Urbe.",
+      "Open studio collab day with Kismet Casa and Urbe featuring live acoustic music, wax carving, and visual jam sessions.",
     location: "Urbe Hub",
     address: "Largo Dino Frisullo, 00153 Roma RM, Italy",
     date: "2026-05-03",
@@ -36,7 +47,7 @@ const EVENTS = [
     id: "rome-event-logos-circle-farcon-edition",
     title: "Logos Circle Rome: Farcon Edition",
     description:
-      "Community circle focused on civil society, Farcaster ecosystem participation, and Logos movement collaboration.",
+      "Community circle on civil society and Farcaster ecosystem participation, hosted at Urbe Hub the day before Farcon.",
     location: "Urbe Hub",
     address: "Largo Dino Frisullo, 00153 Roma RM, Italy",
     date: "2026-05-03",
@@ -50,9 +61,9 @@ const EVENTS = [
     id: "rome-event-farcon-irl-morning-run",
     title: "Farcon Rome /IRL Morning Run",
     description:
-      "Relaxed 5km social run along the Tiber before Farcon, with coffee and bagels after the route.",
+      "Relaxed 5km morning run along the Tiber before Farcon, followed by coffee and bagels.",
     location: "Industrie Fluviali - Ecosistema Cultura",
-    address: "Via del Porto Fluviale 35, 00154 Roma RM, Italy",
+    address: "Via del Porto Fluviale, 35, 00154 Roma RM, Italy",
     date: "2026-05-03",
     startTime: "08:00",
     endTime: "09:30",
@@ -64,9 +75,9 @@ const EVENTS = [
     id: "rome-event-claim-the-city-5k",
     title: "Claim the City: 5k Social Run",
     description:
-      "Higher Athletics community 5k social run for Farcon attendees with a conversational pace and group route.",
+      "Higher Athletics community 5k social run at Farcon Rome with a conversational pace and group route.",
     location: "FarCon Rome",
-    address: "Via del Porto Fluviale 35, 00154 Roma RM, Italy",
+    address: null,
     date: "2026-05-05",
     startTime: "06:30",
     endTime: "08:00",
@@ -78,7 +89,7 @@ const EVENTS = [
     id: "rome-event-decode-yourself",
     title: "Decode Yourself",
     description:
-      "Beginner-friendly workshop decoding natal charts through planets, signs, and houses with open Q and A.",
+      "Beginner-friendly natal-chart workshop covering planets, signs, and houses, followed by open Q&A.",
     location: "Urbe Hub",
     address: "Largo Dino Frisullo, 00153 Roma RM, Italy",
     date: "2026-05-06",
@@ -90,9 +101,9 @@ const EVENTS = [
   },
   {
     id: "rome-event-sigil-ring-workshop",
-    title: "Sigil Ring Workshop with tinyrainboot",
+    title: "sigil ring workshop with tinyrainboot",
     description:
-      "Hands-on wax carving workshop to design and craft a personal sigil ring with small-group guidance.",
+      "Hands-on wax carving workshop to design a personal sigil ring; casting and shipping are handled after the session.",
     location: "Urbe Hub",
     address: "Largo Dino Frisullo, 00153 Roma RM, Italy",
     date: "2026-05-06",
@@ -106,8 +117,8 @@ const EVENTS = [
     id: "rome-event-post-quantum-ethereum",
     title: "Post-Quantum Ethereum Meetup in Rome",
     description:
-      "Deep dive with Ethereum Foundation researchers on post-quantum cryptography plans for Ethereum security.",
-    location: "Urbe Hub",
+      "Meetup with Ethereum Foundation researchers covering post-quantum risks and the protocol's durable-cryptography roadmap.",
+    location: "Roma, Italy",
     address: "Roma, Italy",
     date: "2026-05-08",
     startTime: "17:00",
@@ -116,34 +127,51 @@ const EVENTS = [
     category: "side-event",
     featured: false,
   },
-] as const;
+] satisfies ReadonlyArray<SeedEvent>;
 
 async function main() {
+  const [{ eq }, { db }, { romeEvents }] = await Promise.all([
+    import("drizzle-orm"),
+    import("../src/neynar-db-sdk/src/db.js"),
+    import("../src/db/schema.js"),
+  ]);
+
+  if (typeof (db as unknown as { select?: unknown }).select !== "function") {
+    throw new Error("Database is not configured. Export DATABASE_URL before running this script.");
+  }
+
   const existingRows = await db.select({ id: romeEvents.id }).from(romeEvents);
   const existing = new Set(existingRows.map((row) => row.id));
 
   let inserted = 0;
-  let skipped = 0;
+  let updated = 0;
 
   for (const event of EVENTS) {
-    if (existing.has(event.id)) {
-      skipped++;
-      continue;
-    }
-
-    await db.insert(romeEvents).values({
+    const values = {
       ...event,
       organizerName: null,
       submittedByFid: 218957,
       submittedByUsername: "genuinejack",
-      status: "approved",
+      status: "approved" as const,
+    };
+
+    if (existing.has(event.id)) {
+      await db.update(romeEvents).set(values).where(eq(romeEvents.id, event.id));
+      updated++;
+      continue;
+    }
+
+    await db.insert(romeEvents).values({
+      ...values,
       createdAt: new Date(),
     });
 
     inserted++;
   }
 
-  console.log(`seed-rome-events complete. inserted=${inserted} skipped=${skipped}`);
+  console.log(
+    `seed-rome-events complete. inserted=${inserted} updated=${updated} total=${EVENTS.length}`,
+  );
 }
 
 main().catch((error) => {
