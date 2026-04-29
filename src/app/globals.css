@@ -649,7 +649,7 @@ body {
 }
 
 .form-input:focus {
-  box-shadow: 0 0 0 3px rgba(24, 113, 189, 0.25);
+  box-shadow: 0 0 0 3px rgba(198, 146, 20, 0.28);
   border-color: #c69214;
 }
 
@@ -681,7 +681,7 @@ body {
 }
 
 .form-select:focus {
-  box-shadow: 0 0 0 3px rgba(24, 113, 189, 0.25);
+  box-shadow: 0 0 0 3px rgba(198, 146, 20, 0.28);
   border-color: #c69214;
 }
 
@@ -695,8 +695,8 @@ body {
 .form-error {
   font-style: italic;
   color: #a83232;
-  background: rgba(192, 57, 43, 0.08);
-  border: 1px solid rgba(192, 57, 43, 0.2);
+  background: rgba(168, 50, 50, 0.08);
+  border: 1px solid rgba(168, 50, 50, 0.22);
 }
 
 .btn-form-submit {
@@ -770,7 +770,7 @@ body {
 }
 .explore-search-input:focus {
   border-color: #c69214;
-  box-shadow: 0 0 0 3px rgba(24, 113, 189, 0.15);
+  box-shadow: 0 0 0 3px rgba(198, 146, 20, 0.2);
 }
 
 .btn-clear-search {
@@ -796,7 +796,7 @@ body {
 }
 
 .region-badge {
-  background: rgba(24, 113, 189, 0.1);
+  background: rgba(198, 146, 20, 0.12);
 }
 
 .spot-list-btn {
@@ -858,10 +858,14 @@ body {
 }
 .submit-input:focus {
   border-color: #c69214;
-  box-shadow: 0 0 0 2px rgba(24, 113, 189, 0.12);
+  box-shadow: 0 0 0 2px rgba(198, 146, 20, 0.2);
 }
 .submit-input-error {
   border-color: #a83232;
+}
+.submit-input-error:focus {
+  border-color: #a83232;
+  box-shadow: 0 0 0 2px rgba(168, 50, 50, 0.22);
 }
 
 .submit-textarea {
@@ -870,8 +874,8 @@ body {
 }
 
 .submit-error-box {
-  background: rgba(210, 45, 35, 0.08);
-  border: 1px solid rgba(210, 45, 35, 0.2);
+  background: rgba(168, 50, 50, 0.08);
+  border: 1px solid rgba(168, 50, 50, 0.22);
 }
 
 /* ── Weather strip ── */
@@ -968,7 +972,7 @@ body {
 }
 .emoji-btn-active {
   border: 2px solid #c69214;
-  background: rgba(24, 113, 189, 0.08);
+  background: rgba(198, 146, 20, 0.12);
 }
 .emoji-btn-inactive {
   border: 2px solid #e8d29b;
@@ -1095,7 +1099,7 @@ body {
 
 /* ── Admin panel ── */
 .admin-error-badge {
-  background: rgba(210, 45, 35, 0.1);
+  background: rgba(168, 50, 50, 0.12);
 }
 
 .admin-pre {

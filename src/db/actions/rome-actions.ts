@@ -10,7 +10,7 @@ import {
   romeEvents,
   romeAttendees,
 } from "@/db/schema";
-import { eq, desc, and, gte, or, isNull, count, asc } from "drizzle-orm";
+import { eq, desc, and, gte, or, isNull, count, asc, inArray } from "drizzle-orm";
 import { randomUUID } from "crypto";
 import type { Builder, Spot } from "@/features/rome/types";
 import { verifyAdmin, verifyFid } from "@/db/actions/admin-auth";
@@ -40,6 +40,161 @@ export type RomeSpotInput = {
   submittedByDisplayName: string;
   submittedByPfpUrl?: string;
 };
+
+type DefaultRomeEventSeed = {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  address: string | null;
+  date: string;
+  startTime: string;
+  endTime: string;
+  lumaUrl: string;
+  category: "farcon" | "community" | "side-event";
+  featured: boolean;
+};
+
+const DEFAULT_ROME_EVENTS: ReadonlyArray<DefaultRomeEventSeed> = [
+  {
+    id: "rome-event-web3privacy-now-meetup",
+    title: "Web3Privacy now Rome Meetup",
+    description:
+      "Half-day session on cryptography, open-source public goods, and civil liberties with talks, debate, and networking aperitivo.",
+    location: "Urbe Hub",
+    address: "Largo Dino Frisullo, 00153 Roma RM, Italy",
+    date: "2026-05-08",
+    startTime: "17:30",
+    endTime: "21:00",
+    lumaUrl: "https://lu.ma/q1sdbqf3",
+    category: "side-event",
+    featured: false,
+  },
+  {
+    id: "rome-event-open-studio-day",
+    title: "Open Studio Day",
+    description:
+      "Open studio collab day with Kismet Casa and Urbe featuring live acoustic music, wax carving, and visual jam sessions.",
+    location: "Urbe Hub",
+    address: "Largo Dino Frisullo, 00153 Roma RM, Italy",
+    date: "2026-05-03",
+    startTime: "14:00",
+    endTime: "22:00",
+    lumaUrl: "https://lu.ma/cg1lgqvs",
+    category: "farcon",
+    featured: true,
+  },
+  {
+    id: "rome-event-logos-circle-farcon-edition",
+    title: "Logos Circle Rome: Farcon Edition",
+    description:
+      "Community circle on civil society and Farcaster ecosystem participation, hosted at Urbe Hub the day before Farcon.",
+    location: "Urbe Hub",
+    address: "Largo Dino Frisullo, 00153 Roma RM, Italy",
+    date: "2026-05-03",
+    startTime: "12:00",
+    endTime: "14:00",
+    lumaUrl: "https://lu.ma/mrl5xefu",
+    category: "farcon",
+    featured: false,
+  },
+  {
+    id: "rome-event-farcon-irl-morning-run",
+    title: "Farcon Rome /IRL Morning Run",
+    description:
+      "Relaxed 5km morning run along the Tiber before Farcon, followed by coffee and bagels.",
+    location: "Industrie Fluviali - Ecosistema Cultura",
+    address: "Via del Porto Fluviale, 35, 00154 Roma RM, Italy",
+    date: "2026-05-03",
+    startTime: "08:00",
+    endTime: "09:30",
+    lumaUrl: "https://lu.ma/n353siyl",
+    category: "farcon",
+    featured: false,
+  },
+  {
+    id: "rome-event-claim-the-city-5k",
+    title: "Claim the City: 5k Social Run",
+    description:
+      "Higher Athletics community 5k social run at Farcon Rome with a conversational pace and group route.",
+    location: "FarCon Rome",
+    address: null,
+    date: "2026-05-05",
+    startTime: "06:30",
+    endTime: "08:00",
+    lumaUrl: "https://lu.ma/6202tei5",
+    category: "community",
+    featured: false,
+  },
+  {
+    id: "rome-event-decode-yourself",
+    title: "Decode Yourself",
+    description:
+      "Beginner-friendly natal-chart workshop covering planets, signs, and houses, followed by open Q&A.",
+    location: "Urbe Hub",
+    address: "Largo Dino Frisullo, 00153 Roma RM, Italy",
+    date: "2026-05-06",
+    startTime: "14:00",
+    endTime: "15:30",
+    lumaUrl: "https://lu.ma/lp1gmuiq",
+    category: "farcon",
+    featured: false,
+  },
+  {
+    id: "rome-event-sigil-ring-workshop",
+    title: "sigil ring workshop with tinyrainboot",
+    description:
+      "Hands-on wax carving workshop to design a personal sigil ring; casting and shipping are handled after the session.",
+    location: "Urbe Hub",
+    address: "Largo Dino Frisullo, 00153 Roma RM, Italy",
+    date: "2026-05-06",
+    startTime: "15:30",
+    endTime: "18:30",
+    lumaUrl: "https://lu.ma/m873ggkq",
+    category: "farcon",
+    featured: true,
+  },
+  {
+    id: "rome-event-post-quantum-ethereum",
+    title: "Post-Quantum Ethereum Meetup in Rome",
+    description:
+      "Meetup with Ethereum Foundation researchers covering post-quantum risks and the protocol's durable-cryptography roadmap.",
+    location: "Roma, Italy",
+    address: "Roma, Italy",
+    date: "2026-05-08",
+    startTime: "17:00",
+    endTime: "18:00",
+    lumaUrl: "https://lu.ma/nhxuwei8",
+    category: "side-event",
+    featured: false,
+  },
+];
+
+async function ensureDefaultRomeEvents() {
+  const ids = DEFAULT_ROME_EVENTS.map((event) => event.id);
+  const existingRows = await db
+    .select({ id: romeEvents.id })
+    .from(romeEvents)
+    .where(inArray(romeEvents.id, ids));
+  const existingIds = new Set(existingRows.map((row) => row.id));
+
+  let inserted = 0;
+  for (const event of DEFAULT_ROME_EVENTS) {
+    if (existingIds.has(event.id)) continue;
+
+    await db.insert(romeEvents).values({
+      ...event,
+      organizerName: null,
+      submittedByFid: 218957,
+      submittedByUsername: "genuinejack",
+      status: "approved",
+      createdAt: new Date(),
+    });
+    inserted += 1;
+  }
+
+  return inserted;
+}
 
 export async function getRomeSpots(opts?: {
   category?: string;
@@ -99,11 +254,36 @@ export async function submitRomeSpot(data: RomeSpotInput) {
 
 export async function getRomeEvents() {
   try {
-    return await db
+    const approvedEvents = await db
       .select()
       .from(romeEvents)
       .where(eq(romeEvents.status, "approved"))
       .orderBy(asc(romeEvents.date), asc(romeEvents.startTime), asc(romeEvents.createdAt));
+
+    if (approvedEvents.length > 0) {
+      return approvedEvents;
+    }
+
+    const pendingEvents = await db
+      .select()
+      .from(romeEvents)
+      .where(eq(romeEvents.status, "pending"))
+      .orderBy(asc(romeEvents.date), asc(romeEvents.startTime), asc(romeEvents.createdAt));
+
+    if (pendingEvents.length > 0) {
+      return pendingEvents;
+    }
+
+    const inserted = await ensureDefaultRomeEvents();
+    if (inserted > 0) {
+      return await db
+        .select()
+        .from(romeEvents)
+        .where(eq(romeEvents.status, "approved"))
+        .orderBy(asc(romeEvents.date), asc(romeEvents.startTime), asc(romeEvents.createdAt));
+    }
+
+    return [];
   } catch (error) {
     console.error("Failed to get Rome events:", error);
     return [];
@@ -144,7 +324,7 @@ export async function submitRomeEvent(data: {
       submittedByFid: data.submittedByFid,
       submittedByUsername: data.submittedByUsername,
       featured: false,
-      status: "pending",
+      status: "approved",
     });
     return { success: true, id };
   } catch (error) {

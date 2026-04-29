@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useFarcasterUser } from "@/neynar-farcaster-sdk/mini";
 import { getRomeEvents, submitRomeEvent } from "@/db/actions/rome-actions";
 import { copyLink, shareToFarcaster, shareToX } from "@/features/rome/utils/share";
@@ -34,6 +34,7 @@ export function TodayTab() {
   const [casts, setCasts] = useState<FarconCast[]>([]);
   const [events, setEvents] = useState<RomeEvent[]>([]);
   const [loadingEvents, setLoadingEvents] = useState(true);
+  const [eventsError, setEventsError] = useState<string | null>(null);
   const [showAddEvent, setShowAddEvent] = useState(false);
   const [copiedEventId, setCopiedEventId] = useState<string | null>(null);
 
@@ -79,16 +80,23 @@ export function TodayTab() {
       .catch(() => setCasts([]));
   }, []);
 
-  async function refreshEvents() {
+  const refreshEvents = useCallback(async () => {
     setLoadingEvents(true);
-    const data = await getRomeEvents();
-    setEvents(data as RomeEvent[]);
-    setLoadingEvents(false);
-  }
+    setEventsError(null);
+    try {
+      const data = await getRomeEvents();
+      setEvents(data as RomeEvent[]);
+    } catch (error) {
+      setEvents([]);
+      setEventsError(error instanceof Error ? error.message : "Could not load events right now.");
+    } finally {
+      setLoadingEvents(false);
+    }
+  }, []);
 
   useEffect(() => {
     refreshEvents();
-  }, []);
+  }, [refreshEvents]);
 
   const latestRows = useMemo(() => {
     return [
@@ -153,6 +161,30 @@ export function TodayTab() {
         <h3 className="text-sm font-black uppercase tracking-widest t-sans-navy mb-3">Farcon Events</h3>
         {loadingEvents ? (
           <div className="animate-pulse h-20 rounded-sm bg-boston-gray-100" />
+        ) : eventsError ? (
+          <div className="border border-boston-gray-200 bg-white rounded-sm p-3">
+            <p className="text-xs t-sans-red">{eventsError}</p>
+            <button
+              type="button"
+              onClick={refreshEvents}
+              className="mt-2 px-2.5 py-1.5 rounded-sm text-[11px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy"
+            >
+              Refresh Events
+            </button>
+          </div>
+        ) : events.length === 0 ? (
+          <div className="border border-boston-gray-200 bg-white rounded-sm p-3">
+            <p className="text-xs t-sans-gray">
+              No events are live yet. Add one below or refresh to check for newly synced events.
+            </p>
+            <button
+              type="button"
+              onClick={refreshEvents}
+              className="mt-2 px-2.5 py-1.5 rounded-sm text-[11px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy"
+            >
+              Refresh Events
+            </button>
+          </div>
         ) : (
           <div className="flex flex-col gap-3">
             {events.map((event) => {

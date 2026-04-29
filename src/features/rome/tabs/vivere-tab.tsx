@@ -21,6 +21,17 @@ type Phrase = {
   example: string;
 };
 
+type ConversionRow = {
+  code: "USD" | "EUR" | "GBP" | "ETH" | "BTC" | "USDC" | "SOL";
+  label: string;
+  rate: number | null;
+  value: number | null;
+};
+
+type ConversionDefinition = Omit<ConversionRow, "value">;
+
+const QUICK_AMOUNTS = [25, 50, 100, 250] as const;
+
 const PHRASES: Phrase[] = [
   {
     id: "metro",
@@ -125,43 +136,157 @@ export function VivereTab() {
   const [amount, setAmount] = useState("100");
   const [fiatRates, setFiatRates] = useState<Record<string, number>>({});
   const [cryptoRates, setCryptoRates] = useState<CryptoResponse>({});
+  const [fiatLoading, setFiatLoading] = useState(true);
+  const [cryptoLoading, setCryptoLoading] = useState(true);
+  const [fiatError, setFiatError] = useState<string | null>(null);
+  const [cryptoError, setCryptoError] = useState<string | null>(null);
+  const [inputError, setInputError] = useState<string | null>(null);
+  const [copyError, setCopyError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
   const [expandedPhrase, setExpandedPhrase] = useState<string | null>(null);
   const [copiedPhrase, setCopiedPhrase] = useState<string | null>(null);
 
   useEffect(() => {
+    let ignore = false;
+    setFiatLoading(true);
+    setFiatError(null);
+
     fetch(`https://api.frankfurter.app/latest?base=${baseCurrency}`)
-      .then((response) => response.json())
-      .then((data: FiatResponse) => setFiatRates({ [baseCurrency]: 1, ...data.rates }))
-      .catch(() => setFiatRates({ [baseCurrency]: 1 }));
-  }, [baseCurrency]);
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Fiat rates request failed (${response.status})`);
+        }
+        return response.json();
+      })
+      .then((data: FiatResponse) => {
+        if (ignore) return;
+        setFiatRates({ [baseCurrency]: 1, ...data.rates });
+      })
+      .catch((error) => {
+        if (ignore) return;
+        setFiatError(error instanceof Error ? error.message : "Unable to load fiat rates.");
+      })
+      .finally(() => {
+        if (!ignore) setFiatLoading(false);
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [baseCurrency, retryCount]);
 
   useEffect(() => {
+    let ignore = false;
+    setCryptoLoading(true);
+    setCryptoError(null);
+
     fetch(
       "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,bitcoin,solana&vs_currencies=usd,eur",
     )
-      .then((response) => response.json())
-      .then((data: CryptoResponse) => setCryptoRates(data))
-      .catch(() => setCryptoRates({}));
-  }, []);
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Crypto rates request failed (${response.status})`);
+        }
+        return response.json();
+      })
+      .then((data: CryptoResponse) => {
+        if (ignore) return;
+        setCryptoRates(data);
+      })
+      .catch((error) => {
+        if (ignore) return;
+        setCryptoError(error instanceof Error ? error.message : "Unable to load crypto rates.");
+      })
+      .finally(() => {
+        if (!ignore) setCryptoLoading(false);
+      });
 
-  const amountNumber = Number(amount || 0);
+    return () => {
+      ignore = true;
+    };
+  }, [retryCount]);
+
+  const amountNumber = Number.parseFloat(amount);
+  const hasValidAmount = Number.isFinite(amountNumber) && amountNumber >= 0;
+
+  useEffect(() => {
+    if (amount.trim().length === 0) {
+      setInputError(null);
+      return;
+    }
+    setInputError(hasValidAmount ? null : "Enter a valid number.");
+  }, [amount, hasValidAmount]);
+
+  function convertPriceToUnits(price: number | undefined) {
+    if (!price || price <= 0) return null;
+    return 1 / price;
+  }
+
+  function formatValue(code: ConversionRow["code"], value: number | null) {
+    if (value === null || !Number.isFinite(value)) {
+      return "Unavailable";
+    }
+
+    if (code === "ETH" || code === "BTC" || code === "SOL") {
+      const formatter = new Intl.NumberFormat("en-US", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 6,
+      });
+      return `${formatter.format(value)} ${code}`;
+    }
+
+    const formatter = new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    });
+    const symbol = code === "EUR" ? "€" : code === "GBP" ? "£" : "$";
+    return `${symbol}${formatter.format(value)}`;
+  }
+
+  function sanitizeAmountInput(raw: string) {
+    const normalized = raw.replace(/,/g, ".").replace(/[^0-9.]/g, "");
+    const parts = normalized.split(".");
+    if (parts.length <= 1) return normalized;
+    return `${parts[0]}.${parts.slice(1).join("")}`;
+  }
+
+  async function copyPhrase(text: string, phraseId: string) {
+    setCopyError(null);
+    try {
+      if (!navigator.clipboard?.writeText) {
+        throw new Error("Clipboard access is not available in this browser.");
+      }
+      await navigator.clipboard.writeText(text);
+      setCopiedPhrase(phraseId);
+      setTimeout(() => setCopiedPhrase(null), 1100);
+    } catch (error) {
+      setCopyError(error instanceof Error ? error.message : "Could not copy this phrase.");
+    }
+  }
 
   const conversions = useMemo(() => {
+    const baseKey = baseCurrency.toLowerCase() as "usd" | "eur";
     const rates = [
-      { code: "USD", label: "US Dollar", rate: fiatRates.USD ?? (baseCurrency === "USD" ? 1 : 0) },
-      { code: "EUR", label: "Euro", rate: fiatRates.EUR ?? (baseCurrency === "EUR" ? 1 : 0) },
-      { code: "GBP", label: "British Pound", rate: fiatRates.GBP ?? 0 },
-      { code: "ETH", label: "Ethereum", rate: 1 / ((cryptoRates.ethereum?.[baseCurrency.toLowerCase() as "usd" | "eur"] ?? 0) || Number.POSITIVE_INFINITY) },
-      { code: "BTC", label: "Bitcoin", rate: 1 / ((cryptoRates.bitcoin?.[baseCurrency.toLowerCase() as "usd" | "eur"] ?? 0) || Number.POSITIVE_INFINITY) },
-      { code: "USDC", label: "USD Coin", rate: baseCurrency === "USD" ? 1 : (fiatRates.USD ?? 0) },
-      { code: "SOL", label: "Solana", rate: 1 / ((cryptoRates.solana?.[baseCurrency.toLowerCase() as "usd" | "eur"] ?? 0) || Number.POSITIVE_INFINITY) },
-    ];
+      { code: "USD", label: "US Dollar", rate: baseCurrency === "USD" ? 1 : (fiatRates.USD ?? null) },
+      { code: "EUR", label: "Euro", rate: baseCurrency === "EUR" ? 1 : (fiatRates.EUR ?? null) },
+      { code: "GBP", label: "British Pound", rate: fiatRates.GBP ?? null },
+      { code: "ETH", label: "Ethereum", rate: convertPriceToUnits(cryptoRates.ethereum?.[baseKey]) },
+      { code: "BTC", label: "Bitcoin", rate: convertPriceToUnits(cryptoRates.bitcoin?.[baseKey]) },
+      { code: "USDC", label: "USD Coin", rate: baseCurrency === "USD" ? 1 : (fiatRates.USD ?? null) },
+      { code: "SOL", label: "Solana", rate: convertPriceToUnits(cryptoRates.solana?.[baseKey]) },
+    ] satisfies ConversionDefinition[];
 
     return rates.map((row) => ({
       ...row,
-      value: Number.isFinite(row.rate) ? amountNumber * row.rate : 0,
+      value:
+        hasValidAmount && row.rate !== null && Number.isFinite(row.rate)
+          ? amountNumber * row.rate
+          : null,
     }));
-  }, [amountNumber, baseCurrency, fiatRates, cryptoRates]);
+  }, [amountNumber, baseCurrency, fiatRates, cryptoRates, hasValidAmount]);
+
+  const rateLoadError = fiatError || cryptoError;
+  const loadingRates = fiatLoading || cryptoLoading;
 
   return (
     <div className="h-full overflow-y-auto pb-6">
@@ -172,6 +297,19 @@ export function VivereTab() {
 
       <section className="px-4 py-4 border-b border-boston-gray-100">
         <h3 className="text-sm font-black uppercase tracking-widest t-sans-navy mb-3">Currency Converter</h3>
+        {rateLoadError && (
+          <div className="submit-error-box rounded-sm px-3 py-2 mb-3">
+            <p className="text-xs t-sans-red">{rateLoadError}</p>
+            <button
+              type="button"
+              onClick={() => setRetryCount((count) => count + 1)}
+              className="mt-2 px-2 py-1 rounded-sm text-[10px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy"
+            >
+              Retry Rates
+            </button>
+          </div>
+        )}
+
         <div className="flex gap-2 mb-3">
           {(["USD", "EUR"] as const).map((currency) => (
             <button
@@ -188,58 +326,106 @@ export function VivereTab() {
         </div>
 
         <input
-          className="submit-input mb-3"
+          className={`submit-input mb-2 ${inputError ? "submit-input-error" : ""}`}
           value={amount}
-          onChange={(event) => setAmount(event.target.value)}
+          onChange={(event) => setAmount(sanitizeAmountInput(event.target.value))}
           placeholder={`Amount in ${baseCurrency}`}
           inputMode="decimal"
+          aria-label="Amount to convert"
         />
+        {inputError && <p className="text-xs t-sans-red mb-2">{inputError}</p>}
 
-        <div className="flex flex-col gap-2">
-          {conversions.map((row) => (
-            <div key={row.code} className="bg-white border border-boston-gray-100 rounded-sm px-3 py-2 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-widest t-sans-blue">{row.code}</p>
-                <p className="text-xs t-sans-gray">{row.label}</p>
-              </div>
-              <p className="text-sm font-black t-sans-navy">{row.value.toFixed(4)}</p>
-            </div>
+        <div className="flex flex-wrap gap-2 mb-3">
+          {QUICK_AMOUNTS.map((preset) => (
+            <button
+              key={preset}
+              type="button"
+              onClick={() => setAmount(String(preset))}
+              className="px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy"
+            >
+              {baseCurrency} {preset}
+            </button>
           ))}
         </div>
 
-        <p className="text-xs italic t-serif-gray mt-3">Rates update daily. Crypto prices update on load.</p>
+        {loadingRates ? (
+          <div className="flex flex-col gap-2">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div
+                key={`conv-skeleton-${index}`}
+                className="h-14 animate-pulse rounded-sm border border-boston-gray-100 bg-boston-gray-50"
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2">
+            {conversions.map((row) => (
+              <div
+                key={row.code}
+                className="bg-white border border-boston-gray-100 rounded-sm px-4 py-3 flex items-center justify-between"
+              >
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest t-sans-blue">{row.code}</p>
+                  <p className="text-xs t-sans-gray">{row.label}</p>
+                </div>
+                <p className={`text-sm font-black ${row.value === null ? "t-sans-gray" : "t-sans-navy"}`}>
+                  {formatValue(row.code, row.value)}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <p className="text-xs italic t-serif-gray mt-3">
+          {loadingRates
+            ? "Loading latest rates..."
+            : "Rates refresh daily for fiat; crypto values refresh when this tab loads."}
+        </p>
       </section>
 
       <section className="px-4 py-4 border-b border-boston-gray-100">
         <h3 className="text-sm font-black uppercase tracking-widest t-sans-navy mb-3">Italian Phrases</h3>
+        {copyError && <p className="text-xs t-sans-red mb-2">{copyError}</p>}
         <div className="flex flex-col gap-2">
           {PHRASES.map((phrase) => {
             const open = expandedPhrase === phrase.id;
             return (
-              <button
+              <article
                 key={phrase.id}
-                type="button"
-                onClick={async () => {
-                  setExpandedPhrase(open ? null : phrase.id);
-                  await navigator.clipboard.writeText(phrase.italian);
-                  setCopiedPhrase(phrase.id);
-                  setTimeout(() => setCopiedPhrase(null), 1000);
-                }}
-                className="text-left bg-white border border-boston-gray-100 rounded-sm p-3"
+                className="bg-white border border-boston-gray-100 rounded-sm p-3"
               >
-                <p className="text-[10px] font-bold uppercase tracking-widest t-sans-blue mb-1">{phrase.category}</p>
-                <p className="text-sm font-black t-sans-navy">{phrase.italian}</p>
-                <p className="text-xs italic t-serif-body mt-1">{phrase.english}</p>
-                <p className="text-[11px] uppercase tracking-widest t-sans-gray mt-2">
-                  {copiedPhrase === phrase.id ? "Copied" : "Tap to copy"}
-                </p>
+                <button
+                  type="button"
+                  onClick={() => setExpandedPhrase(open ? null : phrase.id)}
+                  className="w-full text-left"
+                >
+                  <p className="text-[10px] font-bold uppercase tracking-widest t-sans-blue mb-1">
+                    {phrase.category}
+                  </p>
+                  <p className="text-sm font-black t-sans-navy">{phrase.italian}</p>
+                  <p className="text-xs italic t-serif-body mt-1">{phrase.english}</p>
+                </button>
+
+                <div className="mt-2 flex items-center justify-between gap-2">
+                  <p className="text-[11px] uppercase tracking-widest t-sans-gray">
+                    {open ? "Tap phrase to hide details" : "Tap phrase for pronunciation"}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => copyPhrase(phrase.italian, phrase.id)}
+                    className="px-2 py-1 rounded-sm text-[10px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy"
+                  >
+                    {copiedPhrase === phrase.id ? "Copied" : "Copy"}
+                  </button>
+                </div>
+
                 {open && (
                   <div className="mt-2 border-t border-boston-gray-100 pt-2">
                     <p className="text-xs t-sans-gray">Pronunciation: {phrase.phonetic}</p>
                     <p className="text-xs italic t-serif-body mt-1">{phrase.example}</p>
                   </div>
                 )}
-              </button>
+              </article>
             );
           })}
         </div>
