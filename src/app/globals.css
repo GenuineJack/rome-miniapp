@@ -284,6 +284,7 @@
 
 /* Featured builder card wrapper */
 .card-featured-builder {
+  border: 2px solid rgba(255,255,255,0.12);
   border-radius: 3px;
   padding: 20px;
 }

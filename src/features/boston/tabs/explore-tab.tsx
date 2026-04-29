@@ -5,6 +5,7 @@ import { Spot, CategoryFilter, NEIGHBORHOODS } from "@/features/boston/types";
 import { SpotCard } from "@/features/boston/components/spot-card";
 import { CategoryFilterBar } from "@/features/boston/components/category-filter";
 import { MapView } from "@/features/boston/components/map-view";
+import { NeighborhoodHero } from "@/features/boston/components/neighborhood-hero";
 import { getTimeContext, TIME_CONTEXT_CATEGORY_WEIGHT } from "@/features/boston/utils/time-context";
 
 const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
@@ -114,23 +115,26 @@ export function ExploreTab({
         </button>
       )}
 
-      {/* Neighborhood filter banner */}
+      {/* Neighborhood hero + filter banner */}
       {activeNeighborhood && (
-        <div
-          className="flex items-center justify-between px-4 py-2 bg-boston-blue"
-        >
-          <span
-            className="text-xs font-bold uppercase tracking-widest text-white t-sans"
+        <>
+          <NeighborhoodHero neighborhood={activeNeighborhood} />
+          <div
+            className="flex items-center justify-between px-4 py-2 bg-boston-blue"
           >
-            {activeNeighborhood.name}
-          </span>
-          <button
-            onClick={onClearNeighborhoodFilter}
-            className="text-white text-xs font-bold uppercase tracking-widest opacity-80 hover:opacity-100 focus:outline-none t-sans"
-          >
-            × Clear
-          </button>
-        </div>
+            <span
+              className="text-xs font-bold uppercase tracking-widest text-white t-sans"
+            >
+              {activeNeighborhood.name}
+            </span>
+            <button
+              onClick={onClearNeighborhoodFilter}
+              className="text-white text-xs font-bold uppercase tracking-widest opacity-80 hover:opacity-100 focus:outline-none t-sans"
+            >
+              × Clear
+            </button>
+          </div>
+        </>
       )}
 
       {/* Submitter filter banner */}

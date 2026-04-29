@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { Map, Building2, Sun, Users, Newspaper, type LucideIcon } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Map, Building2, Sun, Users, Newspaper, Settings, type LucideIcon } from "lucide-react";
 import { ActiveTab, Spot, CategoryFilter } from "@/features/boston/types";
 import { ExploreTab } from "@/features/boston/tabs/explore-tab";
 import { NeighborhoodsTab } from "@/features/boston/tabs/neighborhoods-tab";
@@ -13,6 +14,7 @@ import { SubmitHappeningForm } from "@/features/boston/tabs/submit-happening-for
 import { SpotDetailSheet } from "@/features/boston/components/spot-detail-sheet";
 import { OnboardingOverlay } from "@/features/boston/components/onboarding-overlay";
 import { WorldCupPage } from "@/features/boston/components/world-cup-page";
+import { SettingsSheet } from "@/features/app/settings-sheet";
 import { getSpots, getBuilderByFid } from "@/db/actions/boston-actions";
 import type { Builder } from "@/features/boston/types";
 import type { WeatherCache } from "@/features/boston/components/weather-strip";
@@ -59,6 +61,9 @@ export function MiniApp({ initialSpots = [] }: { initialSpots?: Spot[] }) {
 
   // World Cup page overlay
   const [showWorldCup, setShowWorldCup] = useState(false);
+
+  // Settings sheet
+  const [showSettings, setShowSettings] = useState(false);
 
   // Lifted API caches — survive tab switches for the entire session
   const [weatherCache, setWeatherCache] = useState<WeatherCache>(null);
@@ -157,6 +162,15 @@ export function MiniApp({ initialSpots = [] }: { initialSpots?: Spot[] }) {
 
         <div className="flex items-center gap-2">
           <button
+            type="button"
+            onClick={() => setShowSettings(true)}
+            className="transition-opacity duration-150 hover:opacity-70 text-white/60 hover:text-white focus:outline-none"
+            aria-label="Settings"
+          >
+            <Settings size={18} strokeWidth={2} aria-hidden="true" />
+          </button>
+          <button
+            type="button"
             onClick={() => { setSubmitMode("picker"); setShowSubmitOverlay(true); }}
             className="transition-colors duration-150 t-sans btn-add-header"
             aria-label="Add a spot or event"
@@ -168,52 +182,61 @@ export function MiniApp({ initialSpots = [] }: { initialSpots?: Spot[] }) {
 
       {/* Tab content */}
       <main className="flex-1 overflow-hidden relative">
-        <div className={`h-full ${activeTab === "explore" || activeTab === "builders" ? "flex flex-col" : "overflow-y-auto"}`}>
-          {activeTab === "explore" && (
-            <ExploreTab
-              spots={spots}
-              loading={spotsLoading}
-              error={spotsError}
-              activeCategory={activeCategory}
-              onCategoryChange={(cat) => {
-                setActiveCategory(cat === activeCategory ? "All" : cat);
-              }}
-              neighborhoodFilter={neighborhoodFilter}
-              onClearNeighborhoodFilter={handleClearNeighborhoodFilter}
-              submitterFilter={submitterFilter}
-              onClearSubmitterFilter={handleClearSubmitterFilter}
-              onSelectSpot={setSelectedSpot}
-              onSpotDetailBuilderClick={handleViewBuilderFromSpot}
-            />
-          )}
-          {activeTab === "neighborhoods" && (
-            <NeighborhoodsTab onNavigateToExplore={handleNavigateToExplore} onSelectSpot={setSelectedSpot} />
-          )}
-          {activeTab === "today" && (
-            <TodayTab
-              onNavigateToNeighborhood={handleNavigateToExplore}
-              onOpenWorldCup={() => setShowWorldCup(true)}
-              onOpenSubmit={() => { setSubmitMode("happening"); setShowSubmitOverlay(true); }}
-              weatherCache={weatherCache}
-              onWeatherCacheUpdate={setWeatherCache}
-              sportsCache={sportsCache}
-              onSportsCacheUpdate={setSportsCache}
-              newsCache={newsCache}
-              onNewsCacheUpdate={setNewsCache}
-            />
-          )}
-          {activeTab === "builders" && (
-            <BuildersTab
-              onViewBuilderSpots={handleViewBuilderSpots}
-              onSpotClick={setSelectedSpot}
-              pendingBuilderView={pendingBuilderView}
-              onPendingBuilderViewConsumed={() => setPendingBuilderView(null)}
-            />
-          )}
-          {activeTab === "new" && (
-            <WhatsNewTab spots={spots} loading={spotsLoading} onSelectSpot={setSelectedSpot} />
-          )}
-        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, x: 8 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -8 }}
+            transition={{ duration: 0.15 }}
+            className={`h-full ${activeTab === "explore" || activeTab === "builders" ? "flex flex-col" : "overflow-y-auto"}`}
+          >
+            {activeTab === "explore" && (
+              <ExploreTab
+                spots={spots}
+                loading={spotsLoading}
+                error={spotsError}
+                activeCategory={activeCategory}
+                onCategoryChange={(cat) => {
+                  setActiveCategory(cat === activeCategory ? "All" : cat);
+                }}
+                neighborhoodFilter={neighborhoodFilter}
+                onClearNeighborhoodFilter={handleClearNeighborhoodFilter}
+                submitterFilter={submitterFilter}
+                onClearSubmitterFilter={handleClearSubmitterFilter}
+                onSelectSpot={setSelectedSpot}
+                onSpotDetailBuilderClick={handleViewBuilderFromSpot}
+              />
+            )}
+            {activeTab === "neighborhoods" && (
+              <NeighborhoodsTab onNavigateToExplore={handleNavigateToExplore} onSelectSpot={setSelectedSpot} />
+            )}
+            {activeTab === "today" && (
+              <TodayTab
+                onNavigateToNeighborhood={handleNavigateToExplore}
+                onOpenWorldCup={() => setShowWorldCup(true)}
+                onOpenSubmit={() => { setSubmitMode("happening"); setShowSubmitOverlay(true); }}
+                weatherCache={weatherCache}
+                onWeatherCacheUpdate={setWeatherCache}
+                sportsCache={sportsCache}
+                onSportsCacheUpdate={setSportsCache}
+                newsCache={newsCache}
+                onNewsCacheUpdate={setNewsCache}
+              />
+            )}
+            {activeTab === "builders" && (
+              <BuildersTab
+                onViewBuilderSpots={handleViewBuilderSpots}
+                onSpotClick={setSelectedSpot}
+                pendingBuilderView={pendingBuilderView}
+                onPendingBuilderViewConsumed={() => setPendingBuilderView(null)}
+              />
+            )}
+            {activeTab === "new" && (
+              <WhatsNewTab spots={spots} loading={spotsLoading} onSelectSpot={setSelectedSpot} />
+            )}
+          </motion.div>
+        </AnimatePresence>
 
         {/* Submit overlay */}
         {showSubmitOverlay && (
@@ -371,6 +394,11 @@ export function MiniApp({ initialSpots = [] }: { initialSpots?: Spot[] }) {
           spots={spots}
           onSelectSpot={setSelectedSpot}
         />
+      )}
+
+      {/* Settings sheet */}
+      {showSettings && (
+        <SettingsSheet onClose={() => setShowSettings(false)} />
       )}
     </div>
   );

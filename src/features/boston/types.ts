@@ -109,6 +109,7 @@ export type NeighborhoodInfo = {
   tagline: string;
   description: string;
   center?: [number, number]; // [lat, lng] for scoped map
+  heroImageUrl?: string;
 };
 
 export type ActiveTab = "explore" | "neighborhoods" | "today" | "builders" | "new";

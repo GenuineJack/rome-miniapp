@@ -52,13 +52,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title: `The Dispatch · ${formatPretty(date)}`,
       description: greeting,
-      images: ["/api/share/image/og"],
+      images: [`/api/share/image/og?date=${encodeURIComponent(formatPretty(date))}&title=${encodeURIComponent(`The Dispatch · ${formatPretty(date)}`)}`],
     },
     twitter: {
       card: "summary_large_image",
       title: `The Dispatch · ${formatPretty(date)}`,
       description: greeting,
-      images: ["/api/share/image/og"],
+      images: [`/api/share/image/og?date=${encodeURIComponent(formatPretty(date))}&title=${encodeURIComponent(`The Dispatch · ${formatPretty(date)}`)}`],
     },
   };
 }
@@ -81,8 +81,8 @@ export default async function DispatchByDatePage({ params }: PageProps) {
   const spots = await getSpots({ limit: 500 }).catch(() => []);
 
   return (
-    <main className="min-h-dvh bg-white">
-      <div className="mx-auto max-w-2xl">
+    <main className="flex flex-col h-dvh bg-white overflow-hidden">
+      <div className="mx-auto max-w-2xl w-full flex-1 flex flex-col overflow-hidden">
         <WhatsNewTab
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           initialDispatch={parsed as any}
