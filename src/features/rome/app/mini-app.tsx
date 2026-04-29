@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Map, Plane, Sun, Users, Newspaper, type LucideIcon } from "lucide-react";
 import { ExploreTab, AddSpotForm } from "@/features/rome/tabs/explore-tab";
-import { TodayTab } from "@/features/rome/tabs/today-tab";
+import { TodayTab, AddEventForm } from "@/features/rome/tabs/today-tab";
 import { VivereTab } from "@/features/rome/tabs/vivere-tab";
 import { AttendeesTab } from "@/features/rome/tabs/attendees-tab";
 import { DispatchTab } from "@/features/rome/tabs/dispatch-tab";
@@ -27,6 +27,8 @@ export function MiniApp({ initialSpots = [] }: { initialSpots?: RomeSpot[] }) {
   const [loadingSpots, setLoadingSpots] = useState(initialSpots.length === 0);
   const [selectedSpot, setSelectedSpot] = useState<RomeSpot | null>(null);
   const [showAddSpot, setShowAddSpot] = useState(false);
+  const [showAddPicker, setShowAddPicker] = useState(false);
+  const [showAddEvent, setShowAddEvent] = useState(false);
 
   async function refreshSpots() {
     setLoadingSpots(true);
@@ -62,14 +64,37 @@ export function MiniApp({ initialSpots = [] }: { initialSpots?: RomeSpot[] }) {
           <p className="font-black uppercase tracking-tight leading-none block t-sans-white text-base">The Rome Miniapp</p>
           <p className="leading-none block mt-0.5 t-serif-white text-xs italic opacity-60">for the builders who showed up</p>
         </div>
-        <button
-          type="button"
-          onClick={() => setShowAddSpot(true)}
-          className="transition-colors duration-150 t-sans btn-add-header"
-          aria-label="Add a Rome spot"
-        >
-          + ADD SPOT
-        </button>
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setShowAddPicker(true)}
+            className="transition-colors duration-150 t-sans btn-add-header"
+            aria-label="Add a spot or event"
+          >
+            + ADD
+          </button>
+          {showAddPicker && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setShowAddPicker(false)} />
+              <div className="absolute right-0 top-full mt-1 z-50 bg-white border border-boston-gray-200 rounded-sm shadow-md min-w-[140px]">
+                <button
+                  type="button"
+                  className="w-full text-left px-3 py-2 text-xs font-bold uppercase tracking-widest t-sans-navy hover:bg-boston-gray-50"
+                  onClick={() => { setShowAddPicker(false); setShowAddSpot(true); }}
+                >
+                  Add a Spot
+                </button>
+                <button
+                  type="button"
+                  className="w-full text-left px-3 py-2 text-xs font-bold uppercase tracking-widest t-sans-navy hover:bg-boston-gray-50 border-t border-boston-gray-100"
+                  onClick={() => { setShowAddPicker(false); setShowAddEvent(true); }}
+                >
+                  Add an Event
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       </header>
 
       <main className="flex-1 overflow-hidden">
@@ -133,6 +158,18 @@ export function MiniApp({ initialSpots = [] }: { initialSpots?: RomeSpot[] }) {
               categories={categories}
               onSuccess={refreshSpots}
               onClose={() => setShowAddSpot(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {showAddEvent && (
+        <div className="fixed inset-0 z-[60] bg-black/50 flex items-end sm:items-center sm:justify-center p-4">
+          <div className="w-full max-w-lg bg-white rounded-t-2xl sm:rounded-xl p-4">
+            <h4 className="text-sm font-black uppercase tracking-widest t-sans-navy mb-3">Add an Event</h4>
+            <AddEventForm
+              onClose={() => setShowAddEvent(false)}
+              onSuccess={() => setShowAddEvent(false)}
             />
           </div>
         </div>

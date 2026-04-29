@@ -311,7 +311,7 @@ export function VivereTab() {
       {/* Persistent header */}
       <section className="px-4 py-4 border-b border-boston-gray-100 shrink-0">
         <h2 className="text-lg font-black uppercase tracking-wide t-sans-navy">Vivere</h2>
-        <p className="text-xs italic t-serif-gray">to live — everything you need to exist in Rome</p>
+        <p className="text-xs t-serif-gray">You didn't fly to Rome to feel like a tourist. Metro routes, live exchange rates, the right words for a table for four — everything you need to move through the city like you've already been here.</p>
       </section>
 
       {/* Sub-tab pill bar */}
@@ -500,23 +500,23 @@ export function VivereTab() {
           <div className="px-4 py-4 flex flex-col gap-2">
             <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
               <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Metro</h4>
-              <p className="text-xs t-serif-body mt-1">Line B (blue) → <strong>Piramide</strong> is the closest stop to the venue, a 5 min walk. A 100-minute ticket costs €1.50 and works across bus, tram, and metro. Apps: Moovit or Roma Mobilità for live routes.</p>
+              <p className="text-xs t-serif-body mt-1">Line B (blue) → <a href="https://maps.google.com/?q=Piramide+Metro+Station+Rome" target="_blank" rel="noopener noreferrer" className="underline"><strong>Piramide</strong></a> is the closest stop to the venue, a 5 min walk. A 100-minute ticket costs €1.50 and works across bus, tram, and metro. Apps: <a href="https://moovit.com" target="_blank" rel="noopener noreferrer" className="underline">Moovit</a> or <a href="https://www.romamobilita.it" target="_blank" rel="noopener noreferrer" className="underline">Roma Mobilità</a> for live routes.</p>
             </article>
             <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
               <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Bus</h4>
-              <p className="text-xs t-serif-body mt-1">Lines near the venue: <strong>23, 77, 83, 96, 715, 716, 780</strong>. On foot from Testaccio ~5 min, Garbatella ~15 min, Trastevere ~20 min.</p>
+              <p className="text-xs t-serif-body mt-1">Lines near the venue: <a href="https://www.romamobilita.it" target="_blank" rel="noopener noreferrer" className="underline"><strong>23, 77, 83, 96, 715, 716, 780</strong></a>. On foot from Testaccio ~5 min, Garbatella ~15 min, Trastevere ~20 min.</p>
             </article>
             <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
               <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Scooters & Bikes</h4>
-              <p className="text-xs t-serif-body mt-1">The area is well covered by electric scooters: <strong>Lime, Bird, Dott, eCooltra</strong>. Convenient for short hops between Ostiense and Testaccio.</p>
+              <p className="text-xs t-serif-body mt-1">The area is well covered by electric scooters: <a href="https://www.li.me" target="_blank" rel="noopener noreferrer" className="underline"><strong>Lime</strong></a>, <a href="https://www.bird.co" target="_blank" rel="noopener noreferrer" className="underline"><strong>Bird</strong></a>, <a href="https://ridedott.com" target="_blank" rel="noopener noreferrer" className="underline"><strong>Dott</strong></a>, <a href="https://www.ecooltra.com" target="_blank" rel="noopener noreferrer" className="underline"><strong>eCooltra</strong></a>. Convenient for short hops between Ostiense and Testaccio.</p>
             </article>
             <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
               <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Taxi / Rideshare</h4>
-              <p className="text-xs t-serif-body mt-1">Apps: <strong>itTaxi</strong> or <strong>FreeNow</strong>. Avoid unlicensed taxis at tourist spots. Tell the driver: <em>"Industrie Fluviali, Via del Porto Fluviale 35."</em></p>
+              <p className="text-xs t-serif-body mt-1">Apps: <a href="https://www.ittaxi.it" target="_blank" rel="noopener noreferrer" className="underline"><strong>itTaxi</strong></a> or <a href="https://free-now.com" target="_blank" rel="noopener noreferrer" className="underline"><strong>FreeNow</strong></a>. Avoid unlicensed taxis at tourist spots. Tell the driver: <em>"Industrie Fluviali, Via del Porto Fluviale 35."</em></p>
             </article>
             <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
               <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">From the Airport</h4>
-              <p className="text-xs t-serif-body mt-1"><strong>Fiumicino:</strong> Leonardo Express train to Termini (~30 min, €14) or direct to Roma Ostiense (~30 min, €8). <strong>Ciampino:</strong> Shuttle bus to Termini (~40 min, €6), then Metro B to Piramide.</p>
+              <p className="text-xs t-serif-body mt-1"><a href="https://www.adr.it/fiumicino" target="_blank" rel="noopener noreferrer" className="underline"><strong>Fiumicino:</strong></a> Leonardo Express train to Termini (~30 min, €14) or direct to Roma Ostiense (~30 min, €8). <a href="https://www.adr.it/ciampino" target="_blank" rel="noopener noreferrer" className="underline"><strong>Ciampino:</strong></a> Shuttle bus to Termini (~40 min, €6), then Metro B to Piramide.</p>
             </article>
           </div>
         )}
@@ -653,7 +653,8 @@ export function VivereTab() {
                 <span className="shrink-0 px-2 py-0.5 rounded-sm border border-boston-gray-200 t-sans-navy text-[10px] font-bold uppercase tracking-widest">TBC</span>
               </a>
             </div>
-            <p className="text-xs italic t-serif-gray mt-3">Discount codes and booking instructions coming soon. Join the FarCon Telegram for updates.</p>
+            <p className="text-xs italic t-serif-gray mt-3">Discount codes and booking instructions coming soon. Join the <a href="https://t.me/+0eVCwB_glXY3ZTU0" target="_blank" rel="noopener noreferrer" className="underline">FarCon Telegram</a> for updates.</p>
+            <a href="https://farconeu.notion.site/farcon-rome-staying" target="_blank" rel="noopener noreferrer" className="mt-2 block text-xs font-bold uppercase tracking-widest t-sans-blue underline">→ FarCon Rome Staying Guide (Notion)</a>
           </div>
         )}
 

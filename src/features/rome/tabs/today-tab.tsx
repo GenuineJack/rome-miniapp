@@ -159,8 +159,16 @@ export function TodayTab() {
         </div>
       </section>
 
+      <section className="px-4 pt-3 pb-1 flex gap-2">
+        <a href="https://t.me/+0eVCwB_glXY3ZTU0" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy">Telegram</a>
+        <a href="https://farcaster.xyz/~/channel/farcon-rome" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy">Farcaster</a>
+      </section>
+
       <section className="px-4 py-4">
-        <h3 className="text-sm font-black uppercase tracking-widest t-sans-navy mb-3">Farcon Events</h3>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-black uppercase tracking-widest t-sans-navy">Farcon Events</h3>
+          <button type="button" onClick={() => setShowAddEvent(true)} className="px-2.5 py-1 rounded-sm text-[11px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-blue">+ Add</button>
+        </div>
         {loadingEvents ? (
           <div className="animate-pulse h-20 rounded-sm bg-boston-gray-100" />
         ) : eventsError ? (
@@ -264,7 +272,7 @@ type AddEventFormProps = {
   onSuccess: () => Promise<void> | void;
 };
 
-function AddEventForm({ onClose, onSuccess }: AddEventFormProps) {
+export function AddEventForm({ onClose, onSuccess }: AddEventFormProps) {
   const { data: user } = useFarcasterUser();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
