@@ -8,8 +8,16 @@ import type { PgDatabase } from "drizzle-orm/pg-core";
 /**
  * Database Connection and Client
  *
- * Uses direct Postgres connection locally and an HTTP SQL proxy on Vercel
- * (where IPv6-only Supabase connections are unreachable).
+ * Connection priority:
+ * 1. SQL_PROXY_URL + SQL_PROXY_SECRET — legacy HTTP proxy path (Supabase Edge Function).
+ *    Only used if both vars are present. Kept for backwards compatibility.
+ * 2. DATABASE_URL — direct Postgres connection. Use the Supabase connection pooler URL
+ *    (port 6543, transaction mode) on Vercel for reliable IPv4 connectivity.
+ *    `prepare: false` is already set, making it compatible with PgBouncer transaction mode.
+ *
+ * Recommended Vercel env for Supabase Pro:
+ *   DATABASE_URL=postgres://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres
+ *   (Remove SQL_PROXY_URL and SQL_PROXY_SECRET once DATABASE_URL is set)
  */
 
 declare global {
@@ -25,7 +33,7 @@ const sqlProxyUrl = process.env.SQL_PROXY_URL;
 const sqlProxySecret = process.env.SQL_PROXY_SECRET;
 
 if (sqlProxyUrl && sqlProxySecret) {
-  // Production (Vercel): Route queries through Supabase Edge Function over HTTPS
+  // Legacy: Route queries through Supabase Edge Function over HTTPS
   db = drizzleProxy(
     async (sql, params, method) => {
       const response = await fetch(sqlProxyUrl, {
@@ -52,19 +60,23 @@ if (sqlProxyUrl && sqlProxySecret) {
   // Stub connection — not used in proxy mode
   connection = null as unknown as postgres.Sql;
 } else if (process.env.DATABASE_URL) {
-  // Local development: Direct Postgres connection
+  // Detect if using Supabase connection pooler (port 6543) — transaction mode
+  const isPooler = process.env.DATABASE_URL.includes(":6543");
+
   const pgOptions = {
     ssl: "require" as const,
-    prepare: false,
-    max: 10,
+    prepare: false, // required for PgBouncer transaction mode
+    max: isPooler ? 1 : 10, // pooler handles connection management; 1 per serverless invocation
     idle_timeout: 20,
     connect_timeout: 10,
+    max_lifetime: isPooler ? 30 : undefined, // release connections quickly in pooler mode
   };
 
   if (process.env.NODE_ENV === "production") {
     connection = postgres(process.env.DATABASE_URL, pgOptions);
     db = drizzlePg(connection, { schema });
   } else {
+    // Dev: reuse connection across hot reloads
     if (!globalThis.__dbConnection) {
       globalThis.__dbConnection = postgres(process.env.DATABASE_URL, pgOptions);
       globalThis.__db = drizzlePg(globalThis.__dbConnection, { schema });

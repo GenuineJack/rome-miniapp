@@ -615,7 +615,7 @@ export async function generateDispatchContent(options?: { force?: boolean }): Pr
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-6",
         max_tokens: 4096,
         system: DISPATCH_SYSTEM_PROMPT,
         messages: [{ role: "user", content: contextMessage }],
@@ -655,7 +655,7 @@ export async function generateDispatchContent(options?: { force?: boolean }): Pr
             "anthropic-version": "2023-06-01",
           },
           body: JSON.stringify({
-            model: "claude-sonnet-4-20250514",
+            model: "claude-sonnet-4-6",
             max_tokens: 4096,
             system: `You are a senior editor reviewing a draft of The Dispatch — Boston's daily city briefing. Your voice mandate: dry Boston wit, specific, never tourist-guide, never corporate civic.
 

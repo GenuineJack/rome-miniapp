@@ -220,7 +220,11 @@ async function runQuery(query: string): Promise<boolean> {
     await db.execute(sql.raw(query));
     return true;
   } catch (e) {
-    console.warn("[migrations] Warning:", (e as Error).message?.slice(0, 120));
+    const msg = (e as Error).message ?? String(e);
+    // Suppress harmless "already exists" noise; log everything else in full
+    if (!msg.includes("already exists") && !msg.includes("does not exist")) {
+      console.warn("[migrations] Warning:", msg);
+    }
     return false;
   }
 }
