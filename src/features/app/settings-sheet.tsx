@@ -1,50 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-const STORAGE_KEY = "rome-theme";
-const LEGACY_STORAGE_KEY = "boston-theme";
-
-function getStoredTheme(): "light" | "dark" {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw === "dark" || raw === "light" ? raw : "light";
-  } catch {
-    return "light";
-  }
-}
-
-function applyTheme(theme: "light" | "dark") {
-  try {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-    localStorage.removeItem(LEGACY_STORAGE_KEY);
-    localStorage.setItem(STORAGE_KEY, theme);
-  } catch {
-    // ignore
-  }
-}
-
 type Props = {
   onClose: () => void;
 };
 
 export function SettingsSheet({ onClose }: Props) {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-
-  useEffect(() => {
-    setTheme(getStoredTheme());
-  }, []);
-
-  function toggle() {
-    const next = theme === "light" ? "dark" : "light";
-    setTheme(next);
-    applyTheme(next);
-  }
-
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col justify-end">
       {/* Backdrop */}
@@ -66,37 +26,11 @@ export function SettingsSheet({ onClose }: Props) {
             Settings
           </h2>
 
-          {/* Dark mode row */}
-          <div className="flex items-center justify-between py-3 border-t border-[#e0e0e0]">
-            <div>
-              <p className="text-sm font-bold t-sans-navy">Dark Mode</p>
-              <p className="text-xs italic t-serif-gray mt-0.5">
-                Switch between light and dark theme
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={toggle}
-              aria-label="Toggle dark mode"
-              title="Toggle dark mode"
-              className={`relative inline-flex w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none shrink-0 ${
-                theme === "dark" ? "bg-boston-blue" : "bg-[#e0e0e0]"
-              }`}
-            >
-              <span className="sr-only">Toggle dark mode</span>
-              <span
-                className={`inline-block w-5 h-5 mt-0.5 rounded-full bg-white shadow transition-transform duration-200 ${
-                  theme === "dark" ? "translate-x-5" : "translate-x-0.5"
-                }`}
-              />
-            </button>
-          </div>
-
           {/* Close */}
           <button
             type="button"
             onClick={onClose}
-            className="w-full mt-3 mb-6 py-2.5 rounded-sm text-xs font-bold uppercase tracking-widest t-sans-navy bg-boston-gray-50 hover:bg-[#e0e0e0] transition-colors duration-150 focus:outline-none"
+            className="w-full mt-2 mb-6 py-2.5 rounded-sm text-xs font-bold uppercase tracking-widest t-sans-navy bg-boston-gray-50 hover:bg-[#e0e0e0] transition-colors duration-150 focus:outline-none"
           >
             Done
           </button>
