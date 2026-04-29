@@ -112,13 +112,31 @@ export function BuildersTab({ onViewBuilderSpots, onSpotClick, pendingBuilderVie
             The people making things in Boston
           </p>
         </div>
-        {!loading && allBuilders.length > 0 && (
-          <span
-            className="text-[11px] font-bold uppercase tracking-widest shrink-0 mb-0.5 t-sans text-white/50"
-          >
-            {allBuilders.length} builder{allBuilders.length === 1 ? "" : "s"}
-          </span>
-        )}
+        <div className="flex items-center gap-2 shrink-0 mb-0.5">
+          {/* "Add Yourself" CTA — pinned in header so it's always visible on desktop */}
+          {!loading && !showJoinOverlay && directoryCheckDone && !userIsInDirectory && user && (
+            <button
+              type="button"
+              onClick={() => setShowJoinOverlay(true)}
+              className="px-3 py-1.5 rounded-sm text-xs font-bold uppercase tracking-widest t-sans bg-boston-blue text-white hover:opacity-90 transition-opacity focus:outline-none"
+            >
+              Add Yourself →
+            </button>
+          )}
+          {!loading && !showJoinOverlay && isWebContext && !user && (
+            <ExternalLink
+              href="https://warpcast.com/~/mini-app/launch?domain=boston.neynar.com"
+              className="px-3 py-1.5 rounded-sm text-xs font-bold uppercase tracking-widest t-sans bg-boston-blue text-white hover:opacity-90 transition-opacity no-underline"
+            >
+              Add Yourself →
+            </ExternalLink>
+          )}
+          {!loading && allBuilders.length > 0 && (
+            <span className="text-[11px] font-bold uppercase tracking-widest t-sans text-white/50">
+              {allBuilders.length} builder{allBuilders.length === 1 ? "" : "s"}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Filter bar */}

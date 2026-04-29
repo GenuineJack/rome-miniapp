@@ -21,6 +21,7 @@ const lora = Lora({
 });
 
 export const metadata: Metadata = {
+  manifest: "/manifest.json",
   icons: {
     icon: { url: "https://raw.githubusercontent.com/GenuineJack/genuine-jack-site/main/public/boston-miniapp/favicon.png", type: "image/png" },
     apple: "https://raw.githubusercontent.com/GenuineJack/genuine-jack-site/main/public/boston-miniapp/apple-touch-icon.png",
