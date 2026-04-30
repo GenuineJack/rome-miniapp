@@ -4,6 +4,71 @@ import sdk from "@farcaster/miniapp-sdk";
 import { publicConfig } from "@/config/public-config";
 import { buildComposeUrl } from "@/lib/farcaster-urls";
 
+type MiniAppNavigator = {
+  isInMiniApp?: () => Promise<boolean>;
+};
+
+type MiniAppActions = {
+  viewCast?: (options: { hash: string; authorUsername?: string }) => Promise<void>;
+  viewProfile?: (options: { fid: number }) => Promise<void>;
+};
+
+let miniAppContextHint: boolean | null = null;
+
+function getMiniAppNavigator(): MiniAppNavigator {
+  return sdk as unknown as MiniAppNavigator;
+}
+
+function getMiniAppActions(): MiniAppActions {
+  return sdk.actions as unknown as MiniAppActions;
+}
+
+function normalizeCastHash(hash: string): string | null {
+  const trimmed = hash.trim().toLowerCase();
+  if (!trimmed) return null;
+  const withPrefix = trimmed.startsWith("0x") ? trimmed : `0x${trimmed}`;
+  if (!/^0x[0-9a-f]+$/.test(withPrefix)) return null;
+  return withPrefix;
+}
+
+function normalizeUsername(username?: string): string | undefined {
+  if (!username) return undefined;
+  const trimmed = username.trim().replace(/^@/, "");
+  return trimmed || undefined;
+}
+
+function inferMiniAppContextSync() {
+  if (typeof window === "undefined") return false;
+  if (window.self !== window.top) return true;
+  const withWebView = window as Window & { ReactNativeWebView?: unknown };
+  return Boolean(withWebView.ReactNativeWebView);
+}
+
+function hydrateMiniAppContextHint() {
+  const navigator = getMiniAppNavigator();
+  if (typeof navigator.isInMiniApp !== "function") return;
+  void navigator
+    .isInMiniApp()
+    .then((result) => {
+      miniAppContextHint = result;
+    })
+    .catch(() => {
+      /* noop */
+    });
+}
+
+if (typeof window !== "undefined") {
+  miniAppContextHint = inferMiniAppContextSync();
+  hydrateMiniAppContextHint();
+}
+
+export function shouldUseMiniAppNavigation() {
+  if (miniAppContextHint !== null) return miniAppContextHint;
+  miniAppContextHint = inferMiniAppContextSync();
+  hydrateMiniAppContextHint();
+  return miniAppContextHint;
+}
+
 type AddMiniAppReason =
   | "rejected_by_user"
   | "invalid_domain_manifest"
@@ -169,12 +234,75 @@ export async function addMiniAppWithHandling(source: string): Promise<AddMiniApp
 }
 
 export async function openExternalUrl(url: string) {
+  let popup: Window | null = null;
+  if (typeof window !== "undefined") {
+    try {
+      popup = window.open(url, "_blank", "noopener,noreferrer");
+    } catch {
+      popup = null;
+    }
+  }
+
+  if (!popup) {
+    try {
+      await sdk.actions.openUrl(url);
+    } catch {
+      if (typeof window !== "undefined") {
+        try {
+          window.location.href = url;
+        } catch {
+          /* noop */
+        }
+      }
+    }
+  }
+}
+
+export async function openExternalUrlInMiniApp(url: string) {
   try {
     await sdk.actions.openUrl(url);
   } catch {
-    if (typeof window !== "undefined") {
-      window.open(url, "_blank", "noopener,noreferrer");
-    }
+    await openExternalUrl(url);
+  }
+}
+
+export async function openFarcasterCast(options: {
+  hash: string;
+  authorUsername?: string;
+  fallbackUrl: string;
+}) {
+  const actions = getMiniAppActions();
+  const hash = normalizeCastHash(options.hash);
+  const authorUsername = normalizeUsername(options.authorUsername);
+
+  if (!hash || typeof actions.viewCast !== "function") {
+    await openExternalUrl(options.fallbackUrl);
+    return;
+  }
+
+  try {
+    await actions.viewCast({ hash, authorUsername });
+  } catch {
+    await openExternalUrl(options.fallbackUrl);
+  }
+}
+
+export async function openFarcasterProfile(options: {
+  fid?: number | null;
+  fallbackUrl: string;
+}) {
+  const actions = getMiniAppActions();
+  const fid = typeof options.fid === "number" ? options.fid : null;
+
+  if (!fid || typeof actions.viewProfile !== "function") {
+    await openExternalUrl(options.fallbackUrl);
+    return;
+  }
+
+  try {
+    await actions.viewProfile({ fid });
+  } catch {
+    await openExternalUrl(options.fallbackUrl);
   }
 }
 

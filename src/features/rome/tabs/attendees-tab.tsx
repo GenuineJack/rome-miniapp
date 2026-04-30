@@ -1,9 +1,9 @@
 "use client";
 
-import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { FormEvent, MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useFarcasterUser } from "@/neynar-farcaster-sdk/mini";
 import { getRomeAttendees, getRomeAttendeeByFid, upsertRomeAttendee } from "@/db/actions/rome-actions";
-import { openExternalUrl } from "@/features/rome/utils/share";
+import { openFarcasterProfile, shouldUseMiniAppNavigation } from "@/features/rome/utils/share";
 import { buildProfileUrl } from "@/lib/farcaster-urls";
 import type { RomeAttendee } from "@/features/rome/types";
 
@@ -81,7 +81,55 @@ export function AttendeesTab({ onMeaningfulActionSuccess }: AttendeesTabProps) {
     refresh();
   }, [refresh]);
 
+  // Auto-sync verified ticket holders if the last sync is stale (>10 min) or never run.
+  useEffect(() => {
+    const STALE_MS = 10 * 60 * 1000;
+    const STORAGE_KEY = "rome:attendees:lastSync";
+
+    let lastSync = 0;
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY);
+      lastSync = raw ? Number(raw) : 0;
+    } catch {
+      // localStorage unavailable; treat as stale.
+    }
+
+    if (Date.now() - lastSync < STALE_MS) {
+      return;
+    }
+
+    let cancelled = false;
+    (async () => {
+      await syncTicketHolders();
+      if (cancelled) return;
+      try {
+        window.localStorage.setItem(STORAGE_KEY, String(Date.now()));
+      } catch {
+        // ignore storage errors
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // Run once on mount; syncTicketHolders is stable enough that we intentionally
+    // don't list it as a dep to avoid re-firing on every filter change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const countLabel = useMemo(() => `${attendees.length} attending`, [attendees.length]);
+
+  const handleProfileLinkClick = useCallback(
+    (event: MouseEvent<HTMLAnchorElement>, attendee: RomeAttendee, profileUrl: string) => {
+      if (!shouldUseMiniAppNavigation()) return;
+      event.preventDefault();
+      void openFarcasterProfile({
+        fid: attendee.fid,
+        fallbackUrl: profileUrl,
+      });
+    },
+    [],
+  );
 
   return (
     <div className="h-full overflow-y-auto pb-6">
@@ -166,7 +214,9 @@ export function AttendeesTab({ onMeaningfulActionSuccess }: AttendeesTabProps) {
                   return (
                     <a
                       href={profileUrl}
-                      onClick={(e) => { e.preventDefault(); openExternalUrl(profileUrl); }}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => handleProfileLinkClick(e, attendee, profileUrl)}
                       className="inline-block mt-2 text-xs uppercase tracking-widest t-sans-blue underline cursor-pointer"
                     >
                       View on Farcaster

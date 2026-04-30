@@ -1,7 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { shareToFarcaster, openExternalUrl } from "@/features/rome/utils/share";
+import { MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  openFarcasterCast,
+  shareToFarcaster,
+  shouldUseMiniAppNavigation,
+} from "@/features/rome/utils/share";
 import { buildCastUrl } from "@/lib/farcaster-urls";
 
 type DispatchPayload = {
@@ -46,6 +50,24 @@ export function DispatchTab({ onOpenSpot }: DispatchTabProps) {
     [pollResults],
   );
 
+  const handleCastLinkClick = useCallback(
+    (
+      event: MouseEvent<HTMLAnchorElement>,
+      castHash: string,
+      authorUsername: string,
+      castUrl: string,
+    ) => {
+      if (!shouldUseMiniAppNavigation()) return;
+      event.preventDefault();
+      void openFarcasterCast({
+        hash: castHash,
+        authorUsername,
+        fallbackUrl: castUrl,
+      });
+    },
+    [],
+  );
+
   async function vote(option: string) {
     if (!dispatch || selectedOption) return;
     setSelectedOption(option);
@@ -80,11 +102,32 @@ export function DispatchTab({ onOpenSpot }: DispatchTabProps) {
 
   return (
     <div className="h-full overflow-y-auto pb-6">
-      <section className="px-4 py-4 bg-navy-bar border-b border-boston-gray-100">
-        <h2 className="text-lg font-black uppercase tracking-wide t-sans-white">The Dispatch Rome</h2>
-        <p className="text-xs italic t-serif-white opacity-80 mt-1">
-          {dispatch.masthead.date} · {dispatch.masthead.localTime} · {dispatch.masthead.weather}
+      <section className="px-4 pt-5 pb-4 bg-white border-b-4 border-double border-navy">
+        <div className="border-t-2 border-b border-navy py-2">
+          <p className="text-center text-[10px] font-bold uppercase tracking-[0.4em] t-sans-navy">
+            Rome Edition · Vol. I
+          </p>
+        </div>
+        <h2 className="text-center font-serif text-3xl sm:text-4xl tracking-tight t-sans-navy mt-3 mb-1 leading-none">
+          The Dispatch
+        </h2>
+        <p className="text-center text-[11px] italic t-serif-gray mb-3">
+          Daily field notes from the Eternal City
         </p>
+        <div className="flex items-stretch justify-between border-t border-b border-navy divide-x divide-boston-gray-200 text-center">
+          <div className="flex-1 py-2 px-2">
+            <p className="text-[9px] font-bold uppercase tracking-widest t-sans-gray">Date</p>
+            <p className="text-xs font-bold uppercase tracking-wide t-sans-navy mt-0.5">{dispatch.masthead.date}</p>
+          </div>
+          <div className="flex-1 py-2 px-2">
+            <p className="text-[9px] font-bold uppercase tracking-widest t-sans-gray">Rome</p>
+            <p className="text-xs font-bold uppercase tracking-wide t-sans-navy mt-0.5">{dispatch.masthead.localTime}</p>
+          </div>
+          <div className="flex-1 py-2 px-2">
+            <p className="text-[9px] font-bold uppercase tracking-widest t-sans-gray">Weather</p>
+            <p className="text-xs font-bold uppercase tracking-wide t-sans-navy mt-0.5">{dispatch.masthead.weather}</p>
+          </div>
+        </div>
       </section>
 
       <section className="px-4 py-4 border-b border-boston-gray-100">
@@ -104,7 +147,9 @@ export function DispatchTab({ onOpenSpot }: DispatchTabProps) {
                 {castUrl && (
                   <a
                     href={castUrl}
-                    onClick={(e) => { e.preventDefault(); openExternalUrl(castUrl); }}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => handleCastLinkClick(e, item.castHash, item.author, castUrl)}
                     className="inline-block mt-2 text-xs uppercase tracking-widest t-sans-blue underline cursor-pointer"
                   >
                     View Cast

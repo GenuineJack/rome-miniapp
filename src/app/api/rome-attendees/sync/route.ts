@@ -183,20 +183,30 @@ async function upsertVerifiedAttendees(
     .select({
       id: romeAttendees.id,
       fid: romeAttendees.fid,
+      username: romeAttendees.username,
+      displayName: romeAttendees.displayName,
+      pfpUrl: romeAttendees.pfpUrl,
+      bio: romeAttendees.bio,
+      walletAddress: romeAttendees.walletAddress,
+      ticketVerified: romeAttendees.ticketVerified,
+      contractAddress: romeAttendees.contractAddress,
       selfAdded: romeAttendees.selfAdded,
     })
     .from(romeAttendees)
     .where(inArray(romeAttendees.fid, fids));
 
-  const existingByFid = new Map<number, { id: string; selfAdded: boolean }>();
+  type ExistingRow = (typeof existingRows)[number];
+  const existingByFid = new Map<number, ExistingRow>();
   for (const row of existingRows) {
     if (typeof row.fid === "number") {
-      existingByFid.set(row.fid, { id: row.id, selfAdded: row.selfAdded });
+      existingByFid.set(row.fid, row);
     }
   }
 
-  let inserted = 0;
-  let updated = 0;
+  // Build new rows (no existing match) for a single batched insert.
+  const toInsert: typeof romeAttendees.$inferInsert[] = [];
+  // Build update tasks only for rows whose content actually changed.
+  const updateTasks: Array<Promise<unknown>> = [];
 
   for (const [fid, payload] of attendees.entries()) {
     const user = payload.user;
@@ -207,24 +217,38 @@ async function upsertVerifiedAttendees(
     const existing = existingByFid.get(fid);
 
     if (existing) {
-      await db
-        .update(romeAttendees)
-        .set({
-          username,
-          displayName,
-          pfpUrl,
-          bio,
-          walletAddress: payload.walletAddress,
-          ticketVerified: true,
-          contractAddress,
-          selfAdded: existing.selfAdded,
-        })
-        .where(eq(romeAttendees.id, existing.id));
-      updated += 1;
+      const changed =
+        existing.username !== username ||
+        existing.displayName !== displayName ||
+        existing.pfpUrl !== pfpUrl ||
+        existing.bio !== bio ||
+        existing.walletAddress !== payload.walletAddress ||
+        existing.ticketVerified !== true ||
+        existing.contractAddress !== contractAddress;
+
+      if (!changed) {
+        continue;
+      }
+
+      updateTasks.push(
+        db
+          .update(romeAttendees)
+          .set({
+            username,
+            displayName,
+            pfpUrl,
+            bio,
+            walletAddress: payload.walletAddress,
+            ticketVerified: true,
+            contractAddress,
+            selfAdded: existing.selfAdded,
+          })
+          .where(eq(romeAttendees.id, existing.id)),
+      );
       continue;
     }
 
-    await db.insert(romeAttendees).values({
+    toInsert.push({
       id: randomUUID(),
       fid,
       username,
@@ -236,10 +260,20 @@ async function upsertVerifiedAttendees(
       contractAddress,
       selfAdded: false,
     });
-    inserted += 1;
   }
 
-  return { inserted, updated };
+  // Single bulk INSERT (one round-trip) for all new rows.
+  if (toInsert.length > 0) {
+    await db.insert(romeAttendees).values(toInsert);
+  }
+
+  // Run updates in small concurrent batches to avoid hammering the DB.
+  const UPDATE_CONCURRENCY = 4;
+  for (let i = 0; i < updateTasks.length; i += UPDATE_CONCURRENCY) {
+    await Promise.all(updateTasks.slice(i, i + UPDATE_CONCURRENCY));
+  }
+
+  return { inserted: toInsert.length, updated: updateTasks.length };
 }
 
 async function runSync() {

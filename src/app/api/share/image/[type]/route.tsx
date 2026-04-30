@@ -61,6 +61,11 @@ export async function GET(
       {
         width: 1200,
         height: 630,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET, OPTIONS",
+          "Cache-Control": "public, max-age=3600, s-maxage=3600",
+        },
       },
     );
   }

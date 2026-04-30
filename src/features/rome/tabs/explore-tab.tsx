@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useMemo, useRef, useState } from "react";
 import { useFarcasterUser } from "@/neynar-farcaster-sdk/mini";
 import { MapView } from "@/features/rome/components/map-view";
 import { submitRomeSpot } from "@/db/actions/rome-actions";
@@ -21,6 +21,8 @@ type AddSpotFormProps = {
 export function ExploreTab({ spots, loading, onSelectSpot }: ExploreTabProps) {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
+  const [mapCollapsed, setMapCollapsed] = useState(false);
+  const listRef = useRef<HTMLDivElement | null>(null);
 
   const categories = useMemo(() => {
     const set = new Set(spots.map((spot) => spot.category).filter(Boolean));
@@ -37,6 +39,20 @@ export function ExploreTab({ spots, loading, onSelectSpot }: ExploreTabProps) {
     });
   }, [spots, activeCategory, search]);
 
+  function handleListScroll(event: React.UIEvent<HTMLDivElement>) {
+    const top = event.currentTarget.scrollTop;
+    if (!mapCollapsed && top > 80) {
+      setMapCollapsed(true);
+    } else if (mapCollapsed && top < 20) {
+      setMapCollapsed(false);
+    }
+  }
+
+  function handleShowMap() {
+    setMapCollapsed(false);
+    listRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   return (
     <div className="flex flex-col h-full">
       <MapView
@@ -44,7 +60,19 @@ export function ExploreTab({ spots, loading, onSelectSpot }: ExploreTabProps) {
         onSpotClick={(spot) => onSelectSpot(spot as RomeSpot)}
         center={[41.9028, 12.4964]}
         zoom={13}
+        collapsed={mapCollapsed}
       />
+
+      {mapCollapsed && (
+        <button
+          type="button"
+          onClick={handleShowMap}
+          className="px-4 py-2 border-b border-boston-gray-100 bg-boston-gray-50 text-xs font-bold uppercase tracking-widest t-sans-blue text-left flex items-center gap-2"
+        >
+          <span aria-hidden="true">▾</span>
+          Show Map
+        </button>
+      )}
 
       <div className="px-4 pt-3 pb-2 border-b border-boston-gray-100 bg-boston-gray-50">
         <input
@@ -71,7 +99,11 @@ export function ExploreTab({ spots, loading, onSelectSpot }: ExploreTabProps) {
         ))}
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
+      <div
+        ref={listRef}
+        onScroll={handleListScroll}
+        className="flex-1 overflow-y-auto p-4 flex flex-col gap-3"
+      >
         {loading ? (
           <div className="animate-pulse h-20 rounded-sm bg-boston-gray-100" />
         ) : filtered.length === 0 ? (

@@ -44,13 +44,18 @@ type MapViewProps = {
   onSpotClick: (spot: Spot) => void;
   center?: [number, number];
   zoom?: number;
+  collapsed?: boolean;
 };
 
-export function MapView({ spots, onSpotClick, center, zoom }: MapViewProps) {
+export function MapView({ spots, onSpotClick, center, zoom, collapsed = false }: MapViewProps) {
   const spotsWithCoords = spots.filter((s) => s.latitude !== null && s.longitude !== null);
 
   return (
-    <div className="relative w-full shrink-0 overflow-hidden h-[clamp(180px,30vh,240px)]">
+    <div
+      className={`relative w-full shrink-0 overflow-hidden transition-[height] duration-300 ease-out ${
+        collapsed ? "h-0" : "h-[clamp(180px,30vh,240px)]"
+      }`}
+    >
       <LeafletMapInner spots={spots} onSpotClick={onSpotClick} center={center} zoom={zoom} />
 
       {/* Spot count badge */}

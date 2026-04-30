@@ -34,25 +34,53 @@ const sqlProxySecret = process.env.SQL_PROXY_SECRET;
 
 if (sqlProxyUrl && sqlProxySecret) {
   // Legacy: Route queries through Supabase Edge Function over HTTPS
+  const isTransientConnectionError = (status: number, text: string) => {
+    if (status < 500) return false;
+    const lowered = text.toLowerCase();
+    return (
+      lowered.includes("connection slot") ||
+      lowered.includes("too many connections") ||
+      lowered.includes("remaining connection slots")
+    );
+  };
+
+  const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
   db = drizzleProxy(
     async (sql, params, method) => {
-      const response = await fetch(sqlProxyUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-proxy-secret": sqlProxySecret,
-        },
-        body: JSON.stringify({ sql, params, method }),
-      });
+      const MAX_ATTEMPTS = 3;
+      let lastError: Error | null = null;
+      for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+        const response = await fetch(sqlProxyUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-proxy-secret": sqlProxySecret,
+          },
+          body: JSON.stringify({ sql, params, method }),
+        });
 
-      if (!response.ok) {
+        if (response.ok) {
+          const result = await response.json();
+          if (result.error) throw new Error(`SQL proxy: ${result.error}`);
+          return result;
+        }
+
         const text = await response.text();
-        throw new Error(`SQL proxy error (${response.status}): ${text}`);
+        lastError = new Error(`SQL proxy error (${response.status}): ${text}`);
+
+        if (attempt < MAX_ATTEMPTS && isTransientConnectionError(response.status, text)) {
+          // Exponential backoff with jitter: ~250ms, ~750ms
+          const base = 250 * Math.pow(3, attempt - 1);
+          const jitter = Math.floor(Math.random() * 150);
+          await sleep(base + jitter);
+          continue;
+        }
+
+        throw lastError;
       }
 
-      const result = await response.json();
-      if (result.error) throw new Error(`SQL proxy: ${result.error}`);
-      return result;
+      throw lastError ?? new Error("SQL proxy: unknown error");
     },
     { schema },
   );

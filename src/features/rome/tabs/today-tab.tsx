@@ -1,9 +1,16 @@
 "use client";
 
-import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { FormEvent, MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useFarcasterUser } from "@/neynar-farcaster-sdk/mini";
 import { getRomeEvents, submitRomeEvent } from "@/db/actions/rome-actions";
-import { copyLink, shareToFarcaster, shareToX, openExternalUrl } from "@/features/rome/utils/share";
+import {
+  copyLink,
+  openExternalUrlInMiniApp,
+  openFarcasterCast,
+  shareToFarcaster,
+  shareToX,
+  shouldUseMiniAppNavigation,
+} from "@/features/rome/utils/share";
 import { buildCastUrl, buildChannelUrl } from "@/lib/farcaster-urls";
 import type { RomeEvent } from "@/features/rome/types";
 
@@ -112,6 +119,30 @@ export function TodayTab({ onMeaningfulActionSuccess }: TodayTabProps) {
     ];
   }, [news, casts]);
 
+  const farconChannelUrl = useMemo(() => buildChannelUrl("farcon-rome"), []);
+
+  const handleExternalLinkClick = useCallback(
+    (event: MouseEvent<HTMLAnchorElement>, url: string) => {
+      if (!shouldUseMiniAppNavigation()) return;
+      event.preventDefault();
+      void openExternalUrlInMiniApp(url);
+    },
+    [],
+  );
+
+  const handleCastLinkClick = useCallback(
+    (event: MouseEvent<HTMLAnchorElement>, cast: FarconCast, castUrl: string) => {
+      if (!shouldUseMiniAppNavigation()) return;
+      event.preventDefault();
+      void openFarcasterCast({
+        hash: cast.hash,
+        authorUsername: cast.author.username,
+        fallbackUrl: castUrl,
+      });
+    },
+    [],
+  );
+
   return (
     <div className="h-full overflow-y-auto pb-6">
       <section className="px-4 py-4 bg-navy-bar border-b border-boston-gray-100">
@@ -126,7 +157,14 @@ export function TodayTab({ onMeaningfulActionSuccess }: TodayTabProps) {
           {latestRows.map((row, index) => {
             if (row.type === "news") {
               return (
-                <a key={`news-${index}`} href={row.item.link} onClick={(e) => { e.preventDefault(); openExternalUrl(row.item.link); }} className="block bg-white border border-boston-gray-100 rounded-sm p-3 cursor-pointer">
+                <a
+                  key={`news-${index}`}
+                  href={row.item.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => handleExternalLinkClick(e, row.item.link)}
+                  className="block bg-white border border-boston-gray-100 rounded-sm p-3 cursor-pointer"
+                >
                   <p className="text-xs font-bold uppercase tracking-widest t-sans-blue mb-1">{row.item.source}</p>
                   <p className="text-sm t-sans-navy">{row.item.title}</p>
                   <p className="text-xs t-sans-gray mt-1">{new Date(row.item.pubDate).toLocaleString()}</p>
@@ -153,7 +191,13 @@ export function TodayTab({ onMeaningfulActionSuccess }: TodayTabProps) {
                     <p className="text-sm t-serif-body mt-1">{castText}</p>
                     <div className="flex items-center gap-2 mt-2">
                       <span className="text-xs uppercase tracking-widest t-sans-gray">Likes {cast.reactions.likes_count}</span>
-                      <a href={castUrl} onClick={(e) => { e.preventDefault(); openExternalUrl(castUrl); }} className="text-xs uppercase tracking-widest t-sans-blue underline cursor-pointer">
+                      <a
+                        href={castUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => handleCastLinkClick(e, cast, castUrl)}
+                        className="text-xs uppercase tracking-widest t-sans-blue underline cursor-pointer"
+                      >
                         View on Farcaster
                       </a>
                     </div>
@@ -165,9 +209,40 @@ export function TodayTab({ onMeaningfulActionSuccess }: TodayTabProps) {
         </div>
       </section>
 
-      <section className="px-4 pt-3 pb-1 flex gap-2">
-        <a href="https://t.me/+0eVCwB_glXY3ZTU0" onClick={(e) => { e.preventDefault(); openExternalUrl("https://t.me/+0eVCwB_glXY3ZTU0"); }} className="px-3 py-2 rounded-sm text-xs font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy cursor-pointer">Telegram</a>
-        <a href={buildChannelUrl("farcon-rome") ?? "#"} onClick={(e) => { e.preventDefault(); const url = buildChannelUrl("farcon-rome"); if (url) openExternalUrl(url); }} className="px-3 py-2 rounded-sm text-xs font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy cursor-pointer">Farcaster</a>
+      <section className="px-4 pt-4 pb-1">
+        <h3 className="text-sm font-black uppercase tracking-widest t-sans-navy mb-2">Community Links</h3>
+        <div className="flex flex-wrap gap-2">
+          <a
+            href="https://t.me/+0eVCwB_glXY3ZTU0"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => handleExternalLinkClick(e, "https://t.me/+0eVCwB_glXY3ZTU0")}
+            className="px-3 py-2 rounded-sm text-xs font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy cursor-pointer"
+          >
+            Telegram
+          </a>
+          <a
+            href={farconChannelUrl ?? "#"}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => {
+              if (!farconChannelUrl) return;
+              handleExternalLinkClick(e, farconChannelUrl);
+            }}
+            className="px-3 py-2 rounded-sm text-xs font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy cursor-pointer"
+          >
+            Farcaster
+          </a>
+          <a
+            href="https://farcaster.xyz/miniapps/bXodEs141bmW/farcon-rome"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => handleExternalLinkClick(e, "https://farcaster.xyz/miniapps/bXodEs141bmW/farcon-rome")}
+            className="px-3 py-2 rounded-sm text-xs font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy cursor-pointer"
+          >
+            Farcon App
+          </a>
+        </div>
       </section>
 
       <section className="px-4 py-4">
@@ -219,7 +294,13 @@ export function TodayTab({ onMeaningfulActionSuccess }: TodayTabProps) {
 
                   <div className="flex flex-wrap gap-2 mt-3">
                     {event.lumaUrl && (
-                      <a href={event.lumaUrl} onClick={(e) => { e.preventDefault(); openExternalUrl(event.lumaUrl!); }} className="px-2.5 py-2 rounded-sm text-xs font-bold uppercase tracking-widest bg-boston-blue text-white cursor-pointer">
+                      <a
+                        href={event.lumaUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => handleExternalLinkClick(e, event.lumaUrl!)}
+                        className="px-2.5 py-2 rounded-sm text-xs font-bold uppercase tracking-widest bg-boston-blue text-white cursor-pointer"
+                      >
                         Luma
                       </a>
                     )}
