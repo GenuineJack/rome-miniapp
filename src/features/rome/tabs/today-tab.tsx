@@ -3,7 +3,7 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useFarcasterUser } from "@/neynar-farcaster-sdk/mini";
 import { getRomeEvents, submitRomeEvent } from "@/db/actions/rome-actions";
-import { copyLink, shareToFarcaster, shareToX } from "@/features/rome/utils/share";
+import { copyLink, shareToFarcaster, shareToX, openExternalUrl } from "@/features/rome/utils/share";
 import { buildCastUrl, buildChannelUrl } from "@/lib/farcaster-urls";
 import type { RomeEvent } from "@/features/rome/types";
 
@@ -122,10 +122,10 @@ export function TodayTab() {
           {latestRows.map((row, index) => {
             if (row.type === "news") {
               return (
-                <a key={`news-${index}`} href={row.item.link} target="_blank" rel="noreferrer" className="block bg-white border border-boston-gray-100 rounded-sm p-3">
-                  <p className="text-[10px] font-bold uppercase tracking-widest t-sans-blue mb-1">{row.item.source}</p>
+                <a key={`news-${index}`} href={row.item.link} onClick={(e) => { e.preventDefault(); openExternalUrl(row.item.link); }} className="block bg-white border border-boston-gray-100 rounded-sm p-3 cursor-pointer">
+                  <p className="text-xs font-bold uppercase tracking-widest t-sans-blue mb-1">{row.item.source}</p>
                   <p className="text-sm t-sans-navy">{row.item.title}</p>
-                  <p className="text-[11px] t-sans-gray mt-1">{new Date(row.item.pubDate).toLocaleString()}</p>
+                  <p className="text-xs t-sans-gray mt-1">{new Date(row.item.pubDate).toLocaleString()}</p>
                 </a>
               );
             }
@@ -148,8 +148,8 @@ export function TodayTab() {
                     <p className="text-xs font-bold uppercase tracking-widest t-sans-navy">@{cast.author.username}</p>
                     <p className="text-sm t-serif-body mt-1">{castText}</p>
                     <div className="flex items-center gap-2 mt-2">
-                      <span className="text-[11px] uppercase tracking-widest t-sans-gray">Likes {cast.reactions.likes_count}</span>
-                      <a href={castUrl} target="_blank" rel="noreferrer" className="text-[11px] uppercase tracking-widest t-sans-blue underline">
+                      <span className="text-xs uppercase tracking-widest t-sans-gray">Likes {cast.reactions.likes_count}</span>
+                      <a href={castUrl} onClick={(e) => { e.preventDefault(); openExternalUrl(castUrl); }} className="text-xs uppercase tracking-widest t-sans-blue underline cursor-pointer">
                         View on Farcaster
                       </a>
                     </div>
@@ -162,14 +162,14 @@ export function TodayTab() {
       </section>
 
       <section className="px-4 pt-3 pb-1 flex gap-2">
-        <a href="https://t.me/+0eVCwB_glXY3ZTU0" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy">Telegram</a>
-        <a href={buildChannelUrl("farcon-rome") ?? "#"} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy">Farcaster</a>
+        <a href="https://t.me/+0eVCwB_glXY3ZTU0" onClick={(e) => { e.preventDefault(); openExternalUrl("https://t.me/+0eVCwB_glXY3ZTU0"); }} className="px-3 py-2 rounded-sm text-xs font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy cursor-pointer">Telegram</a>
+        <a href={buildChannelUrl("farcon-rome") ?? "#"} onClick={(e) => { e.preventDefault(); const url = buildChannelUrl("farcon-rome"); if (url) openExternalUrl(url); }} className="px-3 py-2 rounded-sm text-xs font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy cursor-pointer">Farcaster</a>
       </section>
 
       <section className="px-4 py-4">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-black uppercase tracking-widest t-sans-navy">Farcon Events</h3>
-          <button type="button" onClick={() => setShowAddEvent(true)} className="px-2.5 py-1 rounded-sm text-[11px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-blue">+ Add</button>
+          <button type="button" onClick={() => setShowAddEvent(true)} className="px-2.5 py-2 rounded-sm text-xs font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-blue">+ Add</button>
         </div>
         {loadingEvents ? (
           <div className="animate-pulse h-20 rounded-sm bg-boston-gray-100" />
@@ -179,7 +179,7 @@ export function TodayTab() {
             <button
               type="button"
               onClick={refreshEvents}
-              className="mt-2 px-2.5 py-1.5 rounded-sm text-[11px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy"
+              className="mt-2 px-2.5 py-2 rounded-sm text-xs font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy"
             >
               Refresh Events
             </button>
@@ -192,7 +192,7 @@ export function TodayTab() {
             <button
               type="button"
               onClick={refreshEvents}
-              className="mt-2 px-2.5 py-1.5 rounded-sm text-[11px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy"
+              className="mt-2 px-2.5 py-2 rounded-sm text-xs font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy"
             >
               Refresh Events
             </button>
@@ -203,26 +203,26 @@ export function TodayTab() {
               const text = `📅 ${event.title} — ${event.date} in Rome. Get details: ${event.lumaUrl ?? "https://rome-miniapp.com"} #FarconRome`;
               return (
                 <article key={event.id} className="border border-boston-gray-100 bg-white rounded-sm p-3">
-                  <p className="text-[11px] font-bold uppercase tracking-widest t-sans-blue">{event.category ?? "farcon"}</p>
+                  <p className="text-xs font-bold uppercase tracking-widest t-sans-blue">{event.category ?? "farcon"}</p>
                   <h4 className="text-sm font-black uppercase tracking-wide t-sans-navy mt-1">{event.title}</h4>
                   <p className="text-xs t-serif-body mt-1">{event.description}</p>
-                  <p className="text-[11px] uppercase tracking-widest t-sans-gray mt-2">
+                  <p className="text-xs uppercase tracking-widest t-sans-gray mt-2">
                     {event.date}
                     {event.startTime ? ` · ${event.startTime}` : ""}
                     {event.endTime ? `-${event.endTime}` : ""}
                   </p>
-                  <p className="text-[11px] uppercase tracking-widest t-sans-gray mt-1">{event.location}</p>
+                  <p className="text-xs uppercase tracking-widest t-sans-gray mt-1">{event.location}</p>
 
                   <div className="flex flex-wrap gap-2 mt-3">
                     {event.lumaUrl && (
-                      <a href={event.lumaUrl} target="_blank" rel="noreferrer" className="px-2.5 py-1.5 rounded-sm text-[11px] font-bold uppercase tracking-widest bg-boston-blue text-white">
+                      <a href={event.lumaUrl} onClick={(e) => { e.preventDefault(); openExternalUrl(event.lumaUrl!); }} className="px-2.5 py-2 rounded-sm text-xs font-bold uppercase tracking-widest bg-boston-blue text-white cursor-pointer">
                         Luma
                       </a>
                     )}
-                    <button type="button" onClick={() => shareToFarcaster(text)} className="px-2.5 py-1.5 rounded-sm text-[11px] font-bold uppercase tracking-widest bg-navy text-white">
+                    <button type="button" onClick={() => shareToFarcaster(text)} className="px-2.5 py-2 rounded-sm text-xs font-bold uppercase tracking-widest bg-navy text-white">
                       Share FC
                     </button>
-                    <button type="button" onClick={() => shareToX(text, event.lumaUrl ?? undefined)} className="px-2.5 py-1.5 rounded-sm text-[11px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy">
+                    <button type="button" onClick={() => shareToX(text, event.lumaUrl ?? undefined)} className="px-2.5 py-2 rounded-sm text-xs font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy">
                       Share X
                     </button>
                     <button
@@ -231,7 +231,7 @@ export function TodayTab() {
                         const ok = await copyLink(event.lumaUrl ?? `https://rome-miniapp.com?eventId=${event.id}`);
                         setCopiedEventId(ok ? event.id : null);
                       }}
-                      className="px-2.5 py-1.5 rounded-sm text-[11px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy"
+                      className="px-2.5 py-2 rounded-sm text-xs font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy"
                     >
                       {copiedEventId === event.id ? "Copied" : "Copy"}
                     </button>

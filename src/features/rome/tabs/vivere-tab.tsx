@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { openExternalUrl } from "@/features/rome/utils/share";
 
 type VivereSubTab = "home" | "currency" | "phrases" | "around" | "stay";
 
@@ -321,7 +322,7 @@ export function VivereTab() {
             key={tab.id}
             type="button"
             onClick={() => setVivereSubTab(tab.id)}
-            className={`shrink-0 px-3 py-1.5 rounded-sm text-xs font-bold uppercase tracking-widest ${
+            className={`shrink-0 px-3 py-2 rounded-sm text-xs font-bold uppercase tracking-widest ${
               vivereSubTab === tab.id
                 ? "bg-navy text-white"
                 : "border border-boston-gray-100 t-sans-navy"
@@ -364,7 +365,7 @@ export function VivereTab() {
                 <button
                   type="button"
                   onClick={() => setRetryCount((count) => count + 1)}
-                  className="mt-2 px-2 py-1 rounded-sm text-[10px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy"
+                  className="mt-2 px-2 py-2 rounded-sm text-xs font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy"
                 >
                   Retry Rates
                 </button>
@@ -377,7 +378,7 @@ export function VivereTab() {
                   key={currency}
                   type="button"
                   onClick={() => setBaseCurrency(currency)}
-                  className={`px-3 py-1.5 rounded-sm text-xs font-bold uppercase tracking-widest ${
+                  className={`px-3 py-2 rounded-sm text-xs font-bold uppercase tracking-widest ${
                     baseCurrency === currency ? "bg-navy text-white" : "border border-boston-gray-100 t-sans-navy"
                   }`}
                 >
@@ -402,7 +403,7 @@ export function VivereTab() {
                   key={preset}
                   type="button"
                   onClick={() => setAmount(String(preset))}
-                  className="px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy"
+                  className="px-2.5 py-2 rounded-sm text-xs font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy"
                 >
                   {baseCurrency} {preset}
                 </button>
@@ -462,7 +463,7 @@ export function VivereTab() {
                       onClick={() => setExpandedPhrase(open ? null : phrase.id)}
                       className="w-full text-left"
                     >
-                      <p className="text-[10px] font-bold uppercase tracking-widest t-sans-blue mb-1">
+                      <p className="text-xs font-bold uppercase tracking-widest t-sans-blue mb-1">
                         {phrase.category}
                       </p>
                       <p className="text-sm font-black t-sans-navy">{phrase.italian}</p>
@@ -470,13 +471,13 @@ export function VivereTab() {
                     </button>
 
                     <div className="mt-2 flex items-center justify-between gap-2">
-                      <p className="text-[11px] uppercase tracking-widest t-sans-gray">
+                      <p className="text-xs uppercase tracking-widest t-sans-gray">
                         {open ? "Tap phrase to hide details" : "Tap phrase for pronunciation"}
                       </p>
                       <button
                         type="button"
                         onClick={() => copyPhrase(phrase.italian, phrase.id)}
-                        className="px-2 py-1 rounded-sm text-[10px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy"
+                        className="px-2 py-2 rounded-sm text-xs font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy"
                       >
                         {copiedPhrase === phrase.id ? "Copied" : "Copy"}
                       </button>
@@ -500,23 +501,23 @@ export function VivereTab() {
           <div className="px-4 py-4 flex flex-col gap-2">
             <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
               <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Metro</h4>
-              <p className="text-xs t-serif-body mt-1">Line B (blue) → <a href="https://maps.google.com/?q=Piramide+Metro+Station+Rome" target="_blank" rel="noopener noreferrer" className="underline"><strong>Piramide</strong></a> is the closest stop to the venue, a 5 min walk. A 100-minute ticket costs €1.50 and works across bus, tram, and metro. Apps: <a href="https://moovit.com" target="_blank" rel="noopener noreferrer" className="underline">Moovit</a> or <a href="https://www.romamobilita.it" target="_blank" rel="noopener noreferrer" className="underline">Roma Mobilità</a> for live routes.</p>
+              <p className="text-xs t-serif-body mt-1">Line B (blue) → <a href="https://maps.google.com/?q=Piramide+Metro+Station+Rome" onClick={(e) => { e.preventDefault(); openExternalUrl("https://maps.google.com/?q=Piramide+Metro+Station+Rome"); }} className="underline cursor-pointer"><strong>Piramide</strong></a> is the closest stop to the venue, a 5 min walk. A 100-minute ticket costs €1.50 and works across bus, tram, and metro. Apps: <a href="https://moovit.com" onClick={(e) => { e.preventDefault(); openExternalUrl("https://moovit.com"); }} className="underline cursor-pointer">Moovit</a> or <a href="https://www.romamobilita.it" onClick={(e) => { e.preventDefault(); openExternalUrl("https://www.romamobilita.it"); }} className="underline cursor-pointer">Roma Mobilità</a> for live routes.</p>
             </article>
             <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
               <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Bus</h4>
-              <p className="text-xs t-serif-body mt-1">Lines near the venue: <a href="https://www.romamobilita.it" target="_blank" rel="noopener noreferrer" className="underline"><strong>23, 77, 83, 96, 715, 716, 780</strong></a>. On foot from Testaccio ~5 min, Garbatella ~15 min, Trastevere ~20 min.</p>
+              <p className="text-xs t-serif-body mt-1">Lines near the venue: <a href="https://www.romamobilita.it" onClick={(e) => { e.preventDefault(); openExternalUrl("https://www.romamobilita.it"); }} className="underline cursor-pointer"><strong>23, 77, 83, 96, 715, 716, 780</strong></a>. On foot from Testaccio ~5 min, Garbatella ~15 min, Trastevere ~20 min.</p>
             </article>
             <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
               <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Scooters & Bikes</h4>
-              <p className="text-xs t-serif-body mt-1">The area is well covered by electric scooters: <a href="https://www.li.me" target="_blank" rel="noopener noreferrer" className="underline"><strong>Lime</strong></a>, <a href="https://www.bird.co" target="_blank" rel="noopener noreferrer" className="underline"><strong>Bird</strong></a>, <a href="https://ridedott.com" target="_blank" rel="noopener noreferrer" className="underline"><strong>Dott</strong></a>, <a href="https://www.ecooltra.com" target="_blank" rel="noopener noreferrer" className="underline"><strong>eCooltra</strong></a>. Convenient for short hops between Ostiense and Testaccio.</p>
+              <p className="text-xs t-serif-body mt-1">The area is well covered by electric scooters: <a href="https://www.li.me" onClick={(e) => { e.preventDefault(); openExternalUrl("https://www.li.me"); }} className="underline cursor-pointer"><strong>Lime</strong></a>, <a href="https://www.bird.co" onClick={(e) => { e.preventDefault(); openExternalUrl("https://www.bird.co"); }} className="underline cursor-pointer"><strong>Bird</strong></a>, <a href="https://ridedott.com" onClick={(e) => { e.preventDefault(); openExternalUrl("https://ridedott.com"); }} className="underline cursor-pointer"><strong>Dott</strong></a>, <a href="https://www.ecooltra.com" onClick={(e) => { e.preventDefault(); openExternalUrl("https://www.ecooltra.com"); }} className="underline cursor-pointer"><strong>eCooltra</strong></a>. Convenient for short hops between Ostiense and Testaccio.</p>
             </article>
             <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
               <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Taxi / Rideshare</h4>
-              <p className="text-xs t-serif-body mt-1">Apps: <a href="https://www.ittaxi.it" target="_blank" rel="noopener noreferrer" className="underline"><strong>itTaxi</strong></a> or <a href="https://free-now.com" target="_blank" rel="noopener noreferrer" className="underline"><strong>FreeNow</strong></a>. Avoid unlicensed taxis at tourist spots. Tell the driver: <em>"Industrie Fluviali, Via del Porto Fluviale 35."</em></p>
+              <p className="text-xs t-serif-body mt-1">Apps: <a href="https://www.ittaxi.it" onClick={(e) => { e.preventDefault(); openExternalUrl("https://www.ittaxi.it"); }} className="underline cursor-pointer"><strong>itTaxi</strong></a> or <a href="https://free-now.com" onClick={(e) => { e.preventDefault(); openExternalUrl("https://free-now.com"); }} className="underline cursor-pointer"><strong>FreeNow</strong></a>. Avoid unlicensed taxis at tourist spots. Tell the driver: <em>"Industrie Fluviali, Via del Porto Fluviale 35."</em></p>
             </article>
             <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
               <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">From the Airport</h4>
-              <p className="text-xs t-serif-body mt-1"><a href="https://www.adr.it/fiumicino" target="_blank" rel="noopener noreferrer" className="underline"><strong>Fiumicino:</strong></a> Leonardo Express train to Termini (~30 min, €14) or direct to Roma Ostiense (~30 min, €8). <a href="https://www.adr.it/ciampino" target="_blank" rel="noopener noreferrer" className="underline"><strong>Ciampino:</strong></a> Shuttle bus to Termini (~40 min, €6), then Metro B to Piramide.</p>
+              <p className="text-xs t-serif-body mt-1"><a href="https://www.adr.it/fiumicino" onClick={(e) => { e.preventDefault(); openExternalUrl("https://www.adr.it/fiumicino"); }} className="underline cursor-pointer"><strong>Fiumicino:</strong></a> Leonardo Express train to Termini (~30 min, €14) or direct to Roma Ostiense (~30 min, €8). <a href="https://www.adr.it/ciampino" onClick={(e) => { e.preventDefault(); openExternalUrl("https://www.adr.it/ciampino"); }} className="underline cursor-pointer"><strong>Ciampino:</strong></a> Shuttle bus to Termini (~40 min, €6), then Metro B to Piramide.</p>
             </article>
           </div>
         )}
@@ -531,9 +532,9 @@ export function VivereTab() {
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Testaccio & Ostiense</h4>
-                    <p className="text-[10px] font-bold uppercase tracking-widest t-sans-gray mt-0.5">Local · Authentic · Closest to Venue</p>
+                    <p className="text-xs font-bold uppercase tracking-widest t-sans-gray mt-0.5">Local · Authentic · Closest to Venue</p>
                   </div>
-                  <span className="shrink-0 px-2 py-0.5 rounded-sm bg-navy text-white text-[10px] font-bold uppercase tracking-widest">5–10 min walk</span>
+                  <span className="shrink-0 px-2 py-0.5 rounded-sm bg-navy text-white text-xs font-bold uppercase tracking-widest">5–10 min walk</span>
                 </div>
                 <p className="text-xs t-serif-body mt-2">Raw, local, and full of energy — one of the most authentic areas in Rome. Home to the best traditional Roman food spots, lively nightlife, and Piramide Metro station. The obvious choice if you want to stay close to the action.</p>
               </article>
@@ -541,9 +542,9 @@ export function VivereTab() {
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">San Saba & Aventino</h4>
-                    <p className="text-[10px] font-bold uppercase tracking-widest t-sans-gray mt-0.5">Elegant · Quiet · Residential</p>
+                    <p className="text-xs font-bold uppercase tracking-widest t-sans-gray mt-0.5">Elegant · Quiet · Residential</p>
                   </div>
-                  <span className="shrink-0 px-2 py-0.5 rounded-sm bg-navy text-white text-[10px] font-bold uppercase tracking-widest">10–15 min walk</span>
+                  <span className="shrink-0 px-2 py-0.5 rounded-sm bg-navy text-white text-xs font-bold uppercase tracking-widest">10–15 min walk</span>
                 </div>
                 <p className="text-xs t-serif-body mt-2">Green, calm, and residential — the Aventine Hill area above Testaccio. Close to the Orange Garden and the famous Knights of Malta keyhole viewpoint.</p>
               </article>
@@ -551,9 +552,9 @@ export function VivereTab() {
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Colosseum & Celio Hill</h4>
-                    <p className="text-[10px] font-bold uppercase tracking-widest t-sans-gray mt-0.5">Scenic · Historic · Peaceful</p>
+                    <p className="text-xs font-bold uppercase tracking-widest t-sans-gray mt-0.5">Scenic · Historic · Peaceful</p>
                   </div>
-                  <span className="shrink-0 px-2 py-0.5 rounded-sm border border-boston-gray-200 t-sans-navy text-[10px] font-bold uppercase tracking-widest">~13 min via Metro B</span>
+                  <span className="shrink-0 px-2 py-0.5 rounded-sm border border-boston-gray-200 t-sans-navy text-xs font-bold uppercase tracking-widest">~13 min via Metro B</span>
                 </div>
                 <p className="text-xs t-serif-body mt-2">Metro B Colosseo → Piramide (2 stops, 3 min) + 10 min walk. Close to major landmarks with a quieter, more authentically Roman feel than the center.</p>
               </article>
@@ -561,9 +562,9 @@ export function VivereTab() {
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Rione Monti</h4>
-                    <p className="text-[10px] font-bold uppercase tracking-widest t-sans-gray mt-0.5">Creative · Central · Stylish</p>
+                    <p className="text-xs font-bold uppercase tracking-widest t-sans-gray mt-0.5">Creative · Central · Stylish</p>
                   </div>
-                  <span className="shrink-0 px-2 py-0.5 rounded-sm border border-boston-gray-200 t-sans-navy text-[10px] font-bold uppercase tracking-widest">~15 min via Metro B</span>
+                  <span className="shrink-0 px-2 py-0.5 rounded-sm border border-boston-gray-200 t-sans-navy text-xs font-bold uppercase tracking-widest">~15 min via Metro B</span>
                 </div>
                 <p className="text-xs t-serif-body mt-2">Metro B Cavour → Piramide (3 stops, 5 min) + 10 min walk. Independent boutiques, wine bars, and great balance between history and cool vibes. Between the Colosseum and Termini.</p>
               </article>
@@ -571,9 +572,9 @@ export function VivereTab() {
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Centro Storico</h4>
-                    <p className="text-[10px] font-bold uppercase tracking-widest t-sans-gray mt-0.5">Iconic · First-Timer Friendly</p>
+                    <p className="text-xs font-bold uppercase tracking-widest t-sans-gray mt-0.5">Iconic · First-Timer Friendly</p>
                   </div>
-                  <span className="shrink-0 px-2 py-0.5 rounded-sm border border-boston-gray-200 t-sans-navy text-[10px] font-bold uppercase tracking-widest">10–20 min by taxi</span>
+                  <span className="shrink-0 px-2 py-0.5 rounded-sm border border-boston-gray-200 t-sans-navy text-xs font-bold uppercase tracking-widest">10–20 min by taxi</span>
                 </div>
                 <p className="text-xs t-serif-body mt-2">Pantheon, Trevi, Spanish Steps. Premium location, unforgettable setting. Best for first-timers who want the classic Rome experience — budget for taxis or scooters to the venue.</p>
               </article>
@@ -581,9 +582,9 @@ export function VivereTab() {
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Esquilino & Piazza Vittorio</h4>
-                    <p className="text-[10px] font-bold uppercase tracking-widest t-sans-gray mt-0.5">Vibrant · Local · Well Connected</p>
+                    <p className="text-xs font-bold uppercase tracking-widest t-sans-gray mt-0.5">Vibrant · Local · Well Connected</p>
                   </div>
-                  <span className="shrink-0 px-2 py-0.5 rounded-sm border border-boston-gray-200 t-sans-navy text-[10px] font-bold uppercase tracking-widest">~20 min via Metro</span>
+                  <span className="shrink-0 px-2 py-0.5 rounded-sm border border-boston-gray-200 t-sans-navy text-xs font-bold uppercase tracking-widest">~20 min via Metro</span>
                 </div>
                 <p className="text-xs t-serif-body mt-2">Metro A (Vittorio Emanuele) → Termini → Metro B → Piramide + 10 min walk. Vibrant, international neighbourhood with plenty of restaurants and services at all price points.</p>
               </article>
@@ -594,67 +595,62 @@ export function VivereTab() {
             <div className="flex flex-col gap-2">
               <a
                 href="https://www.gasometerurbansuites.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-white border border-boston-gray-100 rounded-sm p-3 flex items-center justify-between"
+                onClick={(e) => { e.preventDefault(); openExternalUrl("https://www.gasometerurbansuites.com/"); }}
+                className="bg-white border border-boston-gray-100 rounded-sm p-3 flex items-center justify-between cursor-pointer"
               >
                 <div>
                   <p className="text-xs font-black t-sans-navy">Gasometer Urban Suites</p>
-                  <p className="text-[10px] t-sans-gray mt-0.5">Ostiense — steps from the venue</p>
+                  <p className="text-xs t-sans-gray mt-0.5">Ostiense — steps from the venue</p>
                 </div>
-                <span className="shrink-0 px-2 py-0.5 rounded-sm bg-navy text-white text-[10px] font-bold uppercase tracking-widest">15% off</span>
+                <span className="shrink-0 px-2 py-0.5 rounded-sm bg-navy text-white text-xs font-bold uppercase tracking-widest">15% off</span>
               </a>
               <a
                 href="https://www.h10hotels.com/it/hotel-roma/h10-roma-citta"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-white border border-boston-gray-100 rounded-sm p-3 flex items-center justify-between"
+                onClick={(e) => { e.preventDefault(); openExternalUrl("https://www.h10hotels.com/it/hotel-roma/h10-roma-citta"); }}
+                className="bg-white border border-boston-gray-100 rounded-sm p-3 flex items-center justify-between cursor-pointer"
               >
                 <div>
                   <p className="text-xs font-black t-sans-navy">H10 Roma Città</p>
-                  <p className="text-[10px] t-sans-gray mt-0.5">Near Termini station</p>
+                  <p className="text-xs t-sans-gray mt-0.5">Near Termini station</p>
                 </div>
-                <span className="shrink-0 px-2 py-0.5 rounded-sm bg-navy text-white text-[10px] font-bold uppercase tracking-widest">15% off</span>
+                <span className="shrink-0 px-2 py-0.5 rounded-sm bg-navy text-white text-xs font-bold uppercase tracking-widest">15% off</span>
               </a>
               <a
                 href="https://www.crossroadhotel.it/indexita.html"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-white border border-boston-gray-100 rounded-sm p-3 flex items-center justify-between"
+                onClick={(e) => { e.preventDefault(); openExternalUrl("https://www.crossroadhotel.it/indexita.html"); }}
+                className="bg-white border border-boston-gray-100 rounded-sm p-3 flex items-center justify-between cursor-pointer"
               >
                 <div>
                   <p className="text-xs font-black t-sans-navy">Crossroad Hotel</p>
-                  <p className="text-[10px] t-sans-gray mt-0.5">Central location</p>
+                  <p className="text-xs t-sans-gray mt-0.5">Central location</p>
                 </div>
-                <span className="shrink-0 px-2 py-0.5 rounded-sm bg-navy text-white text-[10px] font-bold uppercase tracking-widest">10% off</span>
+                <span className="shrink-0 px-2 py-0.5 rounded-sm bg-navy text-white text-xs font-bold uppercase tracking-widest">10% off</span>
               </a>
               <a
                 href="https://www.booking.com/hotel/it/b-amp-b-city-lights-rome.it.html"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-white border border-boston-gray-100 rounded-sm p-3 flex items-center justify-between"
+                onClick={(e) => { e.preventDefault(); openExternalUrl("https://www.booking.com/hotel/it/b-amp-b-city-lights-rome.it.html"); }}
+                className="bg-white border border-boston-gray-100 rounded-sm p-3 flex items-center justify-between cursor-pointer"
               >
                 <div>
                   <p className="text-xs font-black t-sans-navy">City Lights Rome</p>
-                  <p className="text-[10px] t-sans-gray mt-0.5">B&B near the center</p>
+                  <p className="text-xs t-sans-gray mt-0.5">B&B near the center</p>
                 </div>
-                <span className="shrink-0 px-2 py-0.5 rounded-sm bg-navy text-white text-[10px] font-bold uppercase tracking-widest">15% off</span>
+                <span className="shrink-0 px-2 py-0.5 rounded-sm bg-navy text-white text-xs font-bold uppercase tracking-widest">15% off</span>
               </a>
               <a
                 href="https://www.abitarthotel.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-white border border-boston-gray-100 rounded-sm p-3 flex items-center justify-between"
+                onClick={(e) => { e.preventDefault(); openExternalUrl("https://www.abitarthotel.com/"); }}
+                className="bg-white border border-boston-gray-100 rounded-sm p-3 flex items-center justify-between cursor-pointer"
               >
                 <div>
                   <p className="text-xs font-black t-sans-navy">Abitart Hotel</p>
-                  <p className="text-[10px] t-sans-gray mt-0.5">Ostiense — boutique design hotel</p>
+                  <p className="text-xs t-sans-gray mt-0.5">Ostiense — boutique design hotel</p>
                 </div>
-                <span className="shrink-0 px-2 py-0.5 rounded-sm border border-boston-gray-200 t-sans-navy text-[10px] font-bold uppercase tracking-widest">TBC</span>
+                <span className="shrink-0 px-2 py-0.5 rounded-sm border border-boston-gray-200 t-sans-navy text-xs font-bold uppercase tracking-widest">TBC</span>
               </a>
             </div>
-            <p className="text-xs italic t-serif-gray mt-3">Discount codes and booking instructions coming soon. Join the <a href="https://t.me/+0eVCwB_glXY3ZTU0" target="_blank" rel="noopener noreferrer" className="underline">FarCon Telegram</a> for updates.</p>
-            <a href="https://farconeu.notion.site/farcon-rome-staying" target="_blank" rel="noopener noreferrer" className="mt-2 block text-xs font-bold uppercase tracking-widest t-sans-blue underline">→ FarCon Rome Staying Guide (Notion)</a>
+            <p className="text-xs italic t-serif-gray mt-3">Discount codes and booking instructions coming soon. Join the <a href="https://t.me/+0eVCwB_glXY3ZTU0" onClick={(e) => { e.preventDefault(); openExternalUrl("https://t.me/+0eVCwB_glXY3ZTU0"); }} className="underline cursor-pointer">FarCon Telegram</a> for updates.</p>
+            <a href="https://farconeu.notion.site/farcon-rome-staying" onClick={(e) => { e.preventDefault(); openExternalUrl("https://farconeu.notion.site/farcon-rome-staying"); }} className="mt-2 block text-xs font-bold uppercase tracking-widest t-sans-blue underline cursor-pointer">→ FarCon Rome Staying Guide (Notion)</a>
           </div>
         )}
 

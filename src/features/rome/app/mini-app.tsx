@@ -121,9 +121,9 @@ export function MiniApp({ initialSpots = [] }: { initialSpots?: RomeSpot[] }) {
                 aria-current={isActive ? "page" : undefined}
               >
                 <div className={`flex items-center justify-center transition-colors duration-150 tab-circle ${isActive ? "tab-circle-active" : "tab-circle-inactive"}`}>
-                  <tab.icon size={20} strokeWidth={2} className={isActive ? "text-white" : "text-white opacity-60"} aria-hidden="true" />
+                  <tab.icon size={24} strokeWidth={2} className={isActive ? "text-white" : "text-white opacity-60"} aria-hidden="true" />
                 </div>
-                <span className={`text-[11px] font-bold uppercase tracking-widest leading-none t-sans ${isActive ? "tab-label-active" : "tab-label-inactive"}`}>
+                <span className={`text-xs font-bold uppercase tracking-widest leading-none t-sans ${isActive ? "tab-label-active" : "tab-label-inactive"}`}>
                   {tab.label}
                 </span>
               </button>
@@ -139,8 +139,8 @@ export function MiniApp({ initialSpots = [] }: { initialSpots?: RomeSpot[] }) {
               aria-current={isActive ? "page" : undefined}
             >
               {isActive && <div className="absolute top-0 left-1/2 -translate-x-1/2 tab-indicator" />}
-              <tab.icon size={20} strokeWidth={2} className={isActive ? "text-white" : "text-white opacity-45"} aria-hidden="true" />
-              <span className={`text-[11px] font-bold uppercase tracking-widest leading-none t-sans ${isActive ? "tab-label-active" : "tab-label-inactive"}`}>
+              <tab.icon size={24} strokeWidth={2} className={isActive ? "text-white" : "text-white opacity-45"} aria-hidden="true" />
+              <span className={`text-xs font-bold uppercase tracking-widest leading-none t-sans ${isActive ? "tab-label-active" : "tab-label-inactive"}`}>
                 {tab.label}
               </span>
             </button>

@@ -3,6 +3,16 @@
 import sdk from "@farcaster/miniapp-sdk";
 import { buildComposeUrl } from "@/lib/farcaster-urls";
 
+export async function openExternalUrl(url: string) {
+  try {
+    await sdk.actions.openUrl(url);
+  } catch {
+    if (typeof window !== "undefined") {
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+  }
+}
+
 export async function shareToFarcaster(text: string) {
   try {
     await sdk.actions.composeCast({ text });

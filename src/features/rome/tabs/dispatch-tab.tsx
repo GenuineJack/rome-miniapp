@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { shareToFarcaster } from "@/features/rome/utils/share";
+import { shareToFarcaster, openExternalUrl } from "@/features/rome/utils/share";
 import { buildCastUrl } from "@/lib/farcaster-urls";
 
 type DispatchPayload = {
@@ -98,15 +98,14 @@ export function DispatchTab({ onOpenSpot }: DispatchTabProps) {
             const castUrl = buildCastUrl({ hash: item.castHash, author: item.author });
             return (
               <article key={item.castHash} className="bg-white border border-boston-gray-100 rounded-sm p-3">
-                <p className="text-[11px] font-bold uppercase tracking-widest t-sans-blue">{item.author}</p>
+                <p className="text-xs font-bold uppercase tracking-widest t-sans-blue">{item.author}</p>
                 <p className="text-sm t-serif-body mt-1">{item.text}</p>
                 <p className="text-xs italic t-serif-gray mt-1">{item.commentary}</p>
                 {castUrl && (
                   <a
                     href={castUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-block mt-2 text-[10px] uppercase tracking-widest t-sans-blue underline"
+                    onClick={(e) => { e.preventDefault(); openExternalUrl(castUrl); }}
+                    className="inline-block mt-2 text-xs uppercase tracking-widest t-sans-blue underline cursor-pointer"
                   >
                     View Cast
                   </a>
@@ -127,7 +126,7 @@ export function DispatchTab({ onOpenSpot }: DispatchTabProps) {
         <div className="flex flex-col gap-2">
           {dispatch.buildersBuilding.map((item) => (
             <article key={item.castHash} className="bg-white border border-boston-gray-100 rounded-sm p-3">
-              <p className="text-[11px] font-bold uppercase tracking-widest t-sans-blue">{item.author}</p>
+              <p className="text-xs font-bold uppercase tracking-widest t-sans-blue">{item.author}</p>
               <p className="text-sm t-serif-body mt-1">{item.text}</p>
               <p className="text-xs italic t-serif-gray mt-1">{item.whatTheyreBuilding}</p>
             </article>
@@ -154,7 +153,7 @@ export function DispatchTab({ onOpenSpot }: DispatchTabProps) {
                 >
                   <span className="text-xs font-bold uppercase tracking-widest t-sans-navy">{option}</span>
                   {(selectedOption || totalVotes > 0) && (
-                    <span className="ml-2 text-[10px] uppercase tracking-widest t-sans-blue">{percentage}%</span>
+                    <span className="ml-2 text-xs uppercase tracking-widest t-sans-blue">{percentage}%</span>
                   )}
                 </button>
               );
@@ -168,7 +167,7 @@ export function DispatchTab({ onOpenSpot }: DispatchTabProps) {
           <button
             type="button"
             onClick={() => setShowTriviaAnswer((prev) => !prev)}
-            className="mt-3 px-3 py-1.5 rounded-sm border border-boston-gray-100 text-[10px] font-bold uppercase tracking-widest t-sans-navy"
+            className="mt-3 px-3 py-2 rounded-sm border border-boston-gray-100 text-xs font-bold uppercase tracking-widest t-sans-navy"
           >
             {showTriviaAnswer ? "Hide Answer" : "Reveal Answer"}
           </button>
@@ -184,7 +183,7 @@ export function DispatchTab({ onOpenSpot }: DispatchTabProps) {
           <button
             type="button"
             onClick={() => onOpenSpot?.(dispatch.placeOfTheDay.spotId)}
-            className="mt-3 px-3 py-1.5 rounded-sm bg-boston-blue text-white text-[10px] font-bold uppercase tracking-widest"
+            className="mt-3 px-3 py-2 rounded-sm bg-boston-blue text-white text-xs font-bold uppercase tracking-widest"
           >
             See in Explore
           </button>

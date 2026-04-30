@@ -62,7 +62,7 @@ export function ExploreTab({ spots, loading, onSelectSpot }: ExploreTabProps) {
             key={category}
             type="button"
             onClick={() => setActiveCategory(category)}
-            className={`cat-filter-btn px-3 py-1 rounded-sm text-xs font-bold uppercase tracking-widest ${
+            className={`cat-filter-btn px-3 py-2 rounded-sm text-xs font-bold uppercase tracking-widest ${
               category === activeCategory ? "cat-filter-active" : "cat-filter-inactive"
             }`}
           >
@@ -84,10 +84,10 @@ export function ExploreTab({ spots, loading, onSelectSpot }: ExploreTabProps) {
               onClick={() => onSelectSpot(spot)}
               className="text-left border border-boston-gray-100 bg-white rounded-sm p-3"
             >
-              <p className="text-[11px] font-bold uppercase tracking-widest t-sans-blue mb-1">{spot.category}</p>
+              <p className="text-xs font-bold uppercase tracking-widest t-sans-blue mb-1">{spot.category}</p>
               <h3 className="text-sm font-black uppercase tracking-wide t-sans-navy">{spot.name}</h3>
               <p className="text-xs italic t-serif-body mt-1">{spot.description}</p>
-              <p className="text-[11px] uppercase tracking-widest t-sans-gray mt-2">{spot.neighborhood}</p>
+              <p className="text-xs uppercase tracking-widest t-sans-gray mt-2">{spot.neighborhood}</p>
             </button>
           ))
         )}

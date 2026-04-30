@@ -3,6 +3,7 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useFarcasterUser } from "@/neynar-farcaster-sdk/mini";
 import { getRomeAttendees, getRomeAttendeeByFid, upsertRomeAttendee } from "@/db/actions/rome-actions";
+import { openExternalUrl } from "@/features/rome/utils/share";
 import { buildProfileUrl } from "@/lib/farcaster-urls";
 import type { RomeAttendee } from "@/features/rome/types";
 
@@ -86,7 +87,7 @@ export function AttendeesTab() {
             <h2 className="text-lg font-black uppercase tracking-wide t-sans-navy">Attendees</h2>
             <p className="text-xs italic t-serif-gray">Farcon Rome crew</p>
           </div>
-          <span className="px-2 py-1 rounded-sm text-[10px] font-bold uppercase tracking-widest bg-boston-blue text-white">
+          <span className="px-2 py-1 rounded-sm text-xs font-bold uppercase tracking-widest bg-boston-blue text-white">
             {countLabel}
           </span>
         </div>
@@ -109,7 +110,7 @@ export function AttendeesTab() {
               key={option.id}
               type="button"
               onClick={() => setFilter(option.id)}
-              className={`px-2.5 py-1.5 rounded-sm text-[10px] font-bold uppercase tracking-widest ${
+              className={`px-2.5 py-2 rounded-sm text-xs font-bold uppercase tracking-widest ${
                 filter === option.id ? "bg-boston-blue text-white" : "border border-boston-gray-100 t-sans-navy"
               }`}
             >
@@ -119,14 +120,14 @@ export function AttendeesTab() {
         </div>
 
         <div className="mt-3 p-2 rounded-sm border border-boston-gray-100 bg-white flex items-start justify-between gap-2">
-          <p className={`text-[11px] leading-tight ${syncError ? "t-sans-red" : "t-sans-gray"}`}>
+          <p className={`text-xs leading-tight ${syncError ? "t-sans-red" : "t-sans-gray"}`}>
             {syncingTickets ? "Syncing verified ticket holders..." : syncError ?? syncSummary}
           </p>
           <button
             type="button"
             onClick={syncTicketHolders}
             disabled={syncingTickets}
-            className="shrink-0 px-2 py-1 rounded-sm text-[10px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy disabled:opacity-60"
+            className="shrink-0 px-2 py-2 rounded-sm text-xs font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy disabled:opacity-60"
           >
             {syncingTickets ? "Syncing" : "Sync tickets"}
           </button>
@@ -149,7 +150,7 @@ export function AttendeesTab() {
                   )}
                   <div className="min-w-0">
                     <p className="text-xs font-black uppercase tracking-widest t-sans-navy truncate">{attendee.displayName}</p>
-                    {attendee.username && <p className="text-[11px] t-sans-blue truncate">@{attendee.username}</p>}
+                    {attendee.username && <p className="text-xs t-sans-blue truncate">@{attendee.username}</p>}
                   </div>
                 </div>
 
@@ -161,9 +162,8 @@ export function AttendeesTab() {
                   return (
                     <a
                       href={profileUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-block mt-2 text-[10px] uppercase tracking-widest t-sans-blue underline"
+                      onClick={(e) => { e.preventDefault(); openExternalUrl(profileUrl); }}
+                      className="inline-block mt-2 text-xs uppercase tracking-widest t-sans-blue underline cursor-pointer"
                     >
                       View on Farcaster
                     </a>
