@@ -2,6 +2,7 @@
 
 import { Spot, CATEGORY_LUCIDE, Category } from "@/features/rome/types";
 import { ExternalLink, openExternalUrl } from "@/neynar-farcaster-sdk/mini";
+import { buildComposeUrl } from "@/lib/farcaster-urls";
 import { Globe, MapPin, Share2, Sparkles } from "lucide-react";
 
 type SpotCardProps = {
@@ -18,10 +19,9 @@ function handleDirections(spot: Spot, e: React.MouseEvent) {
 
 function handleShare(spot: Spot, e: React.MouseEvent) {
   e.stopPropagation();
-  // Always use Warpcast compose URL — navigator.share is unreliable in mini-app webviews
+  // navigator.share is unreliable in mini-app webviews, so always go through compose.
   const text = `${spot.name} in ${spot.neighborhood} — check it out on /rome`;
-  const url = `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}`;
-  openExternalUrl(url);
+  openExternalUrl(buildComposeUrl(text));
 }
 
 export function SpotCard({ spot, onClick, isNew }: SpotCardProps) {

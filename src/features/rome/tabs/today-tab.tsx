@@ -4,6 +4,7 @@ import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useFarcasterUser } from "@/neynar-farcaster-sdk/mini";
 import { getRomeEvents, submitRomeEvent } from "@/db/actions/rome-actions";
 import { copyLink, shareToFarcaster, shareToX } from "@/features/rome/utils/share";
+import { buildCastUrl, buildChannelUrl } from "@/lib/farcaster-urls";
 import type { RomeEvent } from "@/features/rome/types";
 
 type RomeNewsItem = {
@@ -131,7 +132,8 @@ export function TodayTab() {
 
             const cast = row.cast;
             const castText = cast.text.length > 180 ? `${cast.text.slice(0, 177)}...` : cast.text;
-            const castUrl = `https://farcaster.xyz/~/conversations/${cast.hash}`;
+            const castUrl = buildCastUrl(cast);
+            if (!castUrl) return null;
 
             return (
               <article key={`cast-${cast.hash}`} className="bg-white border border-boston-gray-100 rounded-sm p-3">
@@ -161,7 +163,7 @@ export function TodayTab() {
 
       <section className="px-4 pt-3 pb-1 flex gap-2">
         <a href="https://t.me/+0eVCwB_glXY3ZTU0" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy">Telegram</a>
-        <a href="https://farcaster.xyz/~/channel/farcon-rome" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy">Farcaster</a>
+        <a href={buildChannelUrl("farcon-rome") ?? "#"} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy">Farcaster</a>
       </section>
 
       <section className="px-4 py-4">

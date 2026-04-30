@@ -22,7 +22,7 @@ export function BuilderFooter() {
           </a>
           <span className="text-white/20">·</span>
           <a
-            href="https://warpcast.com/genuinejack"
+            href="https://farcaster.xyz/genuinejack"
             target="_blank"
             rel="noopener noreferrer"
             className="t-sans text-xs font-bold uppercase tracking-[0.12em] text-[#288be4] hover:text-white transition-colors"
@@ -34,7 +34,7 @@ export function BuilderFooter() {
         <p className="t-serif text-sm text-white/60">
           Built by{" "}
           <a
-            href="https://warpcast.com/genuinejack"
+            href="https://farcaster.xyz/genuinejack"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[#288be4] hover:text-white transition-colors"

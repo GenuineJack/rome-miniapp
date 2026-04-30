@@ -7,6 +7,7 @@ import { getSpotsByBuilder } from "@/db/actions/rome-actions";
 import { SpotCard } from "@/features/rome/components/spot-card";
 import { BuilderAvatar } from "@/features/rome/components/builder-card";
 import { useShare, ExternalLink } from "@/neynar-farcaster-sdk/mini";
+import { buildProfileUrl } from "@/lib/farcaster-urls";
 
 type BuilderDetailSheetProps = {
   builder: Builder | null;
@@ -303,7 +304,7 @@ export function BuilderDetailSheet({
           {/* Action buttons */}
           <div className="flex gap-3">
             <ExternalLink
-              href={`https://farcaster.xyz/${builder.username}`}
+              href={buildProfileUrl(builder.username) ?? "#"}
               className="flex-1 py-3 rounded-sm text-xs font-bold uppercase tracking-widest text-center transition-colors duration-150 hover:opacity-90 t-sans-white bg-boston-blue min-h-11 flex items-center justify-center no-underline"
             >
               View on Farcaster
