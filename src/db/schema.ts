@@ -1,4 +1,4 @@
-import { pgTable, text, integer, boolean, timestamp, real, serial } from "drizzle-orm/pg-core";
+import { pgTable, text, integer, boolean, timestamp, real, serial, uniqueIndex } from "drizzle-orm/pg-core";
 
 /**
  * Key-Value Store Table
@@ -89,19 +89,26 @@ export const romeEvents = pgTable("rome_events", {
 });
 
 // ─── ROME ATTENDEES ──────────────────────────────────────────────────────────
-export const romeAttendees = pgTable("rome_attendees", {
-  id: text("id").primaryKey(),
-  fid: integer("fid"),
-  username: text("username"),
-  displayName: text("display_name").notNull(),
-  pfpUrl: text("pfp_url"),
-  bio: text("bio"),
-  walletAddress: text("wallet_address"),
-  ticketVerified: boolean("ticket_verified").default(false).notNull(),
-  contractAddress: text("contract_address"),
-  selfAdded: boolean("self_added").default(false).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+export const romeAttendees = pgTable(
+  "rome_attendees",
+  {
+    id: text("id").primaryKey(),
+    fid: integer("fid"),
+    username: text("username"),
+    displayName: text("display_name").notNull(),
+    pfpUrl: text("pfp_url"),
+    bio: text("bio"),
+    walletAddress: text("wallet_address"),
+    ticketVerified: boolean("ticket_verified").default(false).notNull(),
+    contractAddress: text("contract_address"),
+    selfAdded: boolean("self_added").default(false).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    lastSyncedAt: timestamp("last_synced_at"),
+  },
+  (table) => ({
+    fidUnique: uniqueIndex("rome_attendees_fid_unique").on(table.fid),
+  }),
+);
 
 // ─── ROME DISPATCH CACHE ─────────────────────────────────────────────────────
 export const romeDispatchCache = pgTable("rome_dispatch_cache", {

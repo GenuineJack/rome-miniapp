@@ -4,5 +4,18 @@
       "path": "/api/rome-dispatch/generate",
       "schedule": "0 5 * * *"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.rome-miniapp.com"
+        }
+      ],
+      "destination": "https://rome-miniapp.com/:path*",
+      "permanent": true
+    }
   ]
 }

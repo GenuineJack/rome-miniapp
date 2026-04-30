@@ -34,6 +34,7 @@ export function DispatchTab({ onOpenSpot }: DispatchTabProps) {
   const [showTriviaAnswer, setShowTriviaAnswer] = useState(false);
   const [pollResults, setPollResults] = useState<PollResults>({});
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [isPreviousEdition, setIsPreviousEdition] = useState(false);
 
   useEffect(() => {
     fetch("/api/rome-dispatch")
@@ -41,6 +42,7 @@ export function DispatchTab({ onOpenSpot }: DispatchTabProps) {
       .then((data) => {
         setDispatch((data.dispatch ?? null) as DispatchPayload | null);
         setPollResults((data.pollResults ?? {}) as PollResults);
+        setIsPreviousEdition(Boolean(data.isPreviousEdition));
       })
       .finally(() => setLoading(false));
   }, []);
@@ -106,6 +108,7 @@ export function DispatchTab({ onOpenSpot }: DispatchTabProps) {
         <div className="border-t-2 border-b border-navy py-2">
           <p className="text-center text-[10px] font-bold uppercase tracking-[0.4em] t-sans-navy">
             Rome Edition · Vol. I
+            {isPreviousEdition && <span className="ml-2 t-sans-red">· Yesterday</span>}
           </p>
         </div>
         <h2 className="text-center font-serif text-3xl sm:text-4xl tracking-tight t-sans-navy mt-3 mb-1 leading-none">

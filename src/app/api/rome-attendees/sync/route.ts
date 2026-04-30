@@ -1,7 +1,7 @@
 import { Configuration, NeynarAPIClient } from "@neynar/nodejs-sdk";
 import type { User } from "@neynar/nodejs-sdk/build/api/models";
 import { randomUUID } from "crypto";
-import { inArray, eq } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { romeAttendees } from "@/db/schema";
 import { db } from "@/neynar-db-sdk/db";
@@ -179,101 +179,58 @@ async function upsertVerifiedAttendees(
     return { inserted: 0, updated: 0 };
   }
 
-  const existingRows = await db
-    .select({
-      id: romeAttendees.id,
-      fid: romeAttendees.fid,
-      username: romeAttendees.username,
-      displayName: romeAttendees.displayName,
-      pfpUrl: romeAttendees.pfpUrl,
-      bio: romeAttendees.bio,
-      walletAddress: romeAttendees.walletAddress,
-      ticketVerified: romeAttendees.ticketVerified,
-      contractAddress: romeAttendees.contractAddress,
-      selfAdded: romeAttendees.selfAdded,
-    })
-    .from(romeAttendees)
-    .where(inArray(romeAttendees.fid, fids));
-
-  type ExistingRow = (typeof existingRows)[number];
-  const existingByFid = new Map<number, ExistingRow>();
-  for (const row of existingRows) {
-    if (typeof row.fid === "number") {
-      existingByFid.set(row.fid, row);
-    }
-  }
-
-  // Build new rows (no existing match) for a single batched insert.
-  const toInsert: typeof romeAttendees.$inferInsert[] = [];
-  // Build update tasks only for rows whose content actually changed.
-  const updateTasks: Array<Promise<unknown>> = [];
-
-  for (const [fid, payload] of attendees.entries()) {
+  const now = new Date();
+  const rows = fids.map((fid) => {
+    const payload = attendees.get(fid)!;
     const user = payload.user;
     const displayName = (user.display_name || user.username || `fid-${fid}`).trim();
-    const username = user.username || null;
-    const pfpUrl = user.pfp_url || null;
-    const bio = user.profile?.bio?.text?.trim() || null;
-    const existing = existingByFid.get(fid);
-
-    if (existing) {
-      const changed =
-        existing.username !== username ||
-        existing.displayName !== displayName ||
-        existing.pfpUrl !== pfpUrl ||
-        existing.bio !== bio ||
-        existing.walletAddress !== payload.walletAddress ||
-        existing.ticketVerified !== true ||
-        existing.contractAddress !== contractAddress;
-
-      if (!changed) {
-        continue;
-      }
-
-      updateTasks.push(
-        db
-          .update(romeAttendees)
-          .set({
-            username,
-            displayName,
-            pfpUrl,
-            bio,
-            walletAddress: payload.walletAddress,
-            ticketVerified: true,
-            contractAddress,
-            selfAdded: existing.selfAdded,
-          })
-          .where(eq(romeAttendees.id, existing.id)),
-      );
-      continue;
-    }
-
-    toInsert.push({
+    return {
       id: randomUUID(),
       fid,
-      username,
+      username: user.username || null,
       displayName,
-      pfpUrl,
-      bio,
+      pfpUrl: user.pfp_url || null,
+      bio: user.profile?.bio?.text?.trim() || null,
       walletAddress: payload.walletAddress,
       ticketVerified: true,
       contractAddress,
       selfAdded: false,
-    });
-  }
+      lastSyncedAt: now,
+    };
+  });
 
-  // Single bulk INSERT (one round-trip) for all new rows.
-  if (toInsert.length > 0) {
-    await db.insert(romeAttendees).values(toInsert);
-  }
+  // Single batched UPSERT keyed on the unique fid index. Returns rows so we can
+  // distinguish inserts vs updates by comparing createdAt to lastSyncedAt.
+  const result = await db
+    .insert(romeAttendees)
+    .values(rows)
+    .onConflictDoUpdate({
+      target: romeAttendees.fid,
+      set: {
+        username: sql`excluded.username`,
+        displayName: sql`excluded.display_name`,
+        pfpUrl: sql`excluded.pfp_url`,
+        bio: sql`excluded.bio`,
+        walletAddress: sql`excluded.wallet_address`,
+        ticketVerified: sql`excluded.ticket_verified`,
+        contractAddress: sql`excluded.contract_address`,
+        lastSyncedAt: sql`excluded.last_synced_at`,
+        // Preserve selfAdded if it was already true
+        selfAdded: sql`${romeAttendees.selfAdded} OR excluded.self_added`,
+      },
+    })
+    .returning({ id: romeAttendees.id, createdAt: romeAttendees.createdAt });
 
-  // Run updates in small concurrent batches to avoid hammering the DB.
-  const UPDATE_CONCURRENCY = 4;
-  for (let i = 0; i < updateTasks.length; i += UPDATE_CONCURRENCY) {
-    await Promise.all(updateTasks.slice(i, i + UPDATE_CONCURRENCY));
+  // Approximate inserted vs updated: rows whose createdAt equals our `now`
+  // are inserts (DB default would have stamped a slightly different value
+  // for pre-existing rows). Tolerance of 5s handles any clock drift.
+  let inserted = 0;
+  for (const row of result) {
+    if (row.createdAt && Math.abs(row.createdAt.getTime() - now.getTime()) < 5000) {
+      inserted += 1;
+    }
   }
-
-  return { inserted: toInsert.length, updated: updateTasks.length };
+  return { inserted, updated: result.length - inserted };
 }
 
 async function runSync() {

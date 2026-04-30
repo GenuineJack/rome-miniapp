@@ -201,6 +201,18 @@ const ALTER_MIGRATIONS: string[] = [
     created_at timestamp DEFAULT now() NOT NULL
   )`,
   `CREATE UNIQUE INDEX IF NOT EXISTS monthly_happenings_month_slot_idx ON monthly_happenings (month, slot)`,
+  // rome_attendees: add lastSyncedAt for incremental sync; unique fid index for upserts.
+  // NULL fids are allowed (Postgres treats NULLs as distinct in unique indexes).
+  `ALTER TABLE rome_attendees ADD COLUMN IF NOT EXISTS last_synced_at timestamp`,
+  // Dedupe any pre-existing duplicate fids before adding the unique index. Keep the
+  // newest row per fid (latest created_at), drop older copies.
+  `DELETE FROM rome_attendees a USING rome_attendees b
+     WHERE a.fid IS NOT NULL
+       AND a.fid = b.fid
+       AND a.id <> b.id
+       AND (a.created_at < b.created_at
+            OR (a.created_at = b.created_at AND a.id < b.id))`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS rome_attendees_fid_unique ON rome_attendees (fid)`,
   // Tag ~10 iconic Boston spots as tourist picks
   `UPDATE spots SET tourist_pick = true WHERE id IN (
     'd5e10c8d-ea81-40ab-870a-4169c40b5ee5',
