@@ -1,17 +1,18 @@
 "use client";
 
 import sdk from "@farcaster/miniapp-sdk";
+import { buildComposeUrl } from "@/lib/farcaster-urls";
 
 export async function shareToFarcaster(text: string) {
   try {
     await sdk.actions.composeCast({ text });
     return { success: true, method: "sdk" as const };
   } catch {
-    const url = `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}`;
+    const url = buildComposeUrl(text);
     if (typeof window !== "undefined") {
       window.open(url, "_blank", "noopener,noreferrer");
     }
-    return { success: false, method: "warpcast" as const };
+    return { success: false, method: "fallback" as const };
   }
 }
 

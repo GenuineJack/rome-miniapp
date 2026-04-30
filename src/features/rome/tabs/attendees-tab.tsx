@@ -3,6 +3,7 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useFarcasterUser } from "@/neynar-farcaster-sdk/mini";
 import { getRomeAttendees, getRomeAttendeeByFid, upsertRomeAttendee } from "@/db/actions/rome-actions";
+import { buildProfileUrl } from "@/lib/farcaster-urls";
 import type { RomeAttendee } from "@/features/rome/types";
 
 type Filter = "all" | "verified" | "self";
@@ -154,16 +155,20 @@ export function AttendeesTab() {
 
                 {attendee.bio && <p className="text-xs italic t-serif-body mt-2 line-clamp-3">{attendee.bio}</p>}
 
-                {attendee.fid && (
-                  <a
-                    href={`https://farcaster.xyz/${attendee.username ?? ""}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-block mt-2 text-[10px] uppercase tracking-widest t-sans-blue underline"
-                  >
-                    View on Farcaster
-                  </a>
-                )}
+                {attendee.fid && attendee.username && (() => {
+                  const profileUrl = buildProfileUrl(attendee.username);
+                  if (!profileUrl) return null;
+                  return (
+                    <a
+                      href={profileUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-block mt-2 text-[10px] uppercase tracking-widest t-sans-blue underline"
+                    >
+                      View on Farcaster
+                    </a>
+                  );
+                })()}
               </article>
             ))}
           </div>

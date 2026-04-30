@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { shareToFarcaster } from "@/features/rome/utils/share";
+import { buildCastUrl } from "@/lib/farcaster-urls";
 
 type DispatchPayload = {
   masthead: { date: string; localTime: string; weather: string };
@@ -93,21 +94,26 @@ export function DispatchTab({ onOpenSpot }: DispatchTabProps) {
       <section className="px-4 py-4 border-b border-boston-gray-100">
         <h3 className="text-sm font-black uppercase tracking-widest t-sans-navy mb-3">Latest From Farcon</h3>
         <div className="flex flex-col gap-2">
-          {dispatch.latestFromFarcon.map((item) => (
-            <article key={item.castHash} className="bg-white border border-boston-gray-100 rounded-sm p-3">
-              <p className="text-[11px] font-bold uppercase tracking-widest t-sans-blue">{item.author}</p>
-              <p className="text-sm t-serif-body mt-1">{item.text}</p>
-              <p className="text-xs italic t-serif-gray mt-1">{item.commentary}</p>
-              <a
-                href={`https://farcaster.xyz/~/conversations/${item.castHash}`}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-block mt-2 text-[10px] uppercase tracking-widest t-sans-blue underline"
-              >
-                View Cast
-              </a>
-            </article>
-          ))}
+          {dispatch.latestFromFarcon.map((item) => {
+            const castUrl = buildCastUrl({ hash: item.castHash, author: item.author });
+            return (
+              <article key={item.castHash} className="bg-white border border-boston-gray-100 rounded-sm p-3">
+                <p className="text-[11px] font-bold uppercase tracking-widest t-sans-blue">{item.author}</p>
+                <p className="text-sm t-serif-body mt-1">{item.text}</p>
+                <p className="text-xs italic t-serif-gray mt-1">{item.commentary}</p>
+                {castUrl && (
+                  <a
+                    href={castUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-block mt-2 text-[10px] uppercase tracking-widest t-sans-blue underline"
+                  >
+                    View Cast
+                  </a>
+                )}
+              </article>
+            );
+          })}
         </div>
       </section>
 
