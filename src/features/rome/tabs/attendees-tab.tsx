@@ -22,7 +22,11 @@ type AttendeeSyncResponse = {
   unmappedWallets?: number;
 };
 
-export function AttendeesTab() {
+type AttendeesTabProps = {
+  onMeaningfulActionSuccess?: () => Promise<void> | void;
+};
+
+export function AttendeesTab({ onMeaningfulActionSuccess }: AttendeesTabProps) {
   const { data: user } = useFarcasterUser();
   const [filter, setFilter] = useState<Filter>("all");
   const [attendees, setAttendees] = useState<RomeAttendee[]>([]);
@@ -188,6 +192,7 @@ export function AttendeesTab() {
               onSuccess={async () => {
                 await refresh();
                 setShowSelfAdd(false);
+                await onMeaningfulActionSuccess?.();
               }}
             />
           </div>

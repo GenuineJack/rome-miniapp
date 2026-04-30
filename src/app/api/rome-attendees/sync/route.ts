@@ -243,14 +243,18 @@ async function upsertVerifiedAttendees(
 }
 
 async function runSync() {
-  const contractAddress = normalizeAddress(process.env.FARCON_CONTRACT_ADDRESS);
+  const contractAddresses = [
+    normalizeAddress(process.env.FARCON_BUILDER_ADDRESS),
+    normalizeAddress(process.env.FARCON_SUMMIT_ADDRESS),
+  ].filter(Boolean) as string[];
+
   const neynarApiKey = (process.env.NEYNAR_API_KEY ?? "").trim();
 
-  if (!contractAddress) {
+  if (contractAddresses.length === 0) {
     return NextResponse.json(
       {
         success: false,
-        error: "FARCON_CONTRACT_ADDRESS is required to sync attendees.",
+        error: "At least one of FARCON_BUILDER_ADDRESS or FARCON_SUMMIT_ADDRESS is required to sync attendees.",
       },
       { status: 503 },
     );
@@ -267,37 +271,45 @@ async function runSync() {
   }
 
   const chainId = resolveUnlockChainId(process.env.FARCON_CHAIN);
+  let totalHolders = 0;
+  let totalMapped = 0;
+  let totalInserted = 0;
+  let totalUpdated = 0;
+  let totalUnmapped = 0;
+  const allWarnings: string[] = [];
+  const contracts: Array<{ contractAddress: string; holdersFound: number; mappedUsers: number; inserted: number; updated: number }> = [];
 
   try {
-    const { holders, warnings } = await fetchHolderAddresses(contractAddress, chainId);
+    for (const contractAddress of contractAddresses) {
+      const { holders, warnings } = await fetchHolderAddresses(contractAddress, chainId);
+      allWarnings.push(...warnings);
+      totalHolders += holders.length;
 
-    if (holders.length === 0) {
-      return NextResponse.json({
-        success: true,
-        contractAddress,
-        chainId,
-        holdersFound: 0,
-        mappedUsers: 0,
-        inserted: 0,
-        updated: 0,
-        unmappedWallets: 0,
-        warnings,
-      });
+      if (holders.length === 0) {
+        contracts.push({ contractAddress, holdersFound: 0, mappedUsers: 0, inserted: 0, updated: 0 });
+        continue;
+      }
+
+      const { byFid, unmappedWallets } = await mapAddressesToUsers(holders, neynarApiKey);
+      const { inserted, updated } = await upsertVerifiedAttendees(byFid, contractAddress);
+
+      totalMapped += byFid.size;
+      totalInserted += inserted;
+      totalUpdated += updated;
+      totalUnmapped += unmappedWallets;
+      contracts.push({ contractAddress, holdersFound: holders.length, mappedUsers: byFid.size, inserted, updated });
     }
-
-    const { byFid, unmappedWallets } = await mapAddressesToUsers(holders, neynarApiKey);
-    const { inserted, updated } = await upsertVerifiedAttendees(byFid, contractAddress);
 
     return NextResponse.json({
       success: true,
-      contractAddress,
       chainId,
-      holdersFound: holders.length,
-      mappedUsers: byFid.size,
-      inserted,
-      updated,
-      unmappedWallets,
-      warnings,
+      contracts,
+      holdersFound: totalHolders,
+      mappedUsers: totalMapped,
+      inserted: totalInserted,
+      updated: totalUpdated,
+      unmappedWallets: totalUnmapped,
+      warnings: allWarnings,
     });
   } catch (error) {
     return NextResponse.json(

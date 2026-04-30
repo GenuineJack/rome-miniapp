@@ -22,7 +22,11 @@ type FarconCast = {
   hash: string;
 };
 
-export function TodayTab() {
+type TodayTabProps = {
+  onMeaningfulActionSuccess?: () => Promise<void> | void;
+};
+
+export function TodayTab({ onMeaningfulActionSuccess }: TodayTabProps) {
   const [romeTime, setRomeTime] = useState(() =>
     new Date().toLocaleTimeString("en-GB", {
       timeZone: "Europe/Rome",
@@ -260,6 +264,7 @@ export function TodayTab() {
               onSuccess={async () => {
                 await refreshEvents();
                 setShowAddEvent(false);
+                await onMeaningfulActionSuccess?.();
               }}
             />
           </div>

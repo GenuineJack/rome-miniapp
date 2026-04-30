@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Map, Plane, Sun, Users, Newspaper, type LucideIcon } from "lucide-react";
+import { useSDKReady } from "@/neynar-farcaster-sdk/mini";
 import { ExploreTab, AddSpotForm } from "@/features/rome/tabs/explore-tab";
 import { TodayTab, AddEventForm } from "@/features/rome/tabs/today-tab";
 import { VivereTab } from "@/features/rome/tabs/vivere-tab";
 import { AttendeesTab } from "@/features/rome/tabs/attendees-tab";
 import { DispatchTab } from "@/features/rome/tabs/dispatch-tab";
 import { SpotDetailSheet } from "@/features/rome/components/spot-detail-sheet";
+import { addMiniAppWithHandling } from "@/features/rome/utils/share";
 import { getRomeSpots } from "@/db/actions/rome-actions";
 import type { RomeSpot } from "@/features/rome/types";
 
@@ -22,6 +24,7 @@ const TABS: { id: ActiveTab; label: string; icon: LucideIcon; isCenter?: boolean
 ];
 
 export function MiniApp({ initialSpots = [] }: { initialSpots?: RomeSpot[] }) {
+  const sdkReady = useSDKReady();
   const [activeTab, setActiveTab] = useState<ActiveTab>("today");
   const [spots, setSpots] = useState<RomeSpot[]>(initialSpots);
   const [loadingSpots, setLoadingSpots] = useState(initialSpots.length === 0);
@@ -29,6 +32,17 @@ export function MiniApp({ initialSpots = [] }: { initialSpots?: RomeSpot[] }) {
   const [showAddSpot, setShowAddSpot] = useState(false);
   const [showAddPicker, setShowAddPicker] = useState(false);
   const [showAddEvent, setShowAddEvent] = useState(false);
+  const hasAttemptedAddMiniAppRef = useRef(false);
+
+  async function promptAddMiniAppAfterAction(source: string) {
+    // Native addMiniApp should only run inside Farcaster miniapp context.
+    if (!sdkReady || hasAttemptedAddMiniAppRef.current) {
+      return;
+    }
+
+    hasAttemptedAddMiniAppRef.current = true;
+    await addMiniAppWithHandling(source);
+  }
 
   async function refreshSpots() {
     setLoadingSpots(true);
@@ -102,8 +116,16 @@ export function MiniApp({ initialSpots = [] }: { initialSpots?: RomeSpot[] }) {
           <ExploreTab spots={spots} loading={loadingSpots} onSelectSpot={setSelectedSpot} />
         )}
         {activeTab === "vivere" && <VivereTab />}
-        {activeTab === "today" && <TodayTab />}
-        {activeTab === "attendees" && <AttendeesTab />}
+        {activeTab === "today" && (
+          <TodayTab
+            onMeaningfulActionSuccess={() => promptAddMiniAppAfterAction("add_event_today")}
+          />
+        )}
+        {activeTab === "attendees" && (
+          <AttendeesTab
+            onMeaningfulActionSuccess={() => promptAddMiniAppAfterAction("join_attendees")}
+          />
+        )}
         {activeTab === "dispatch" && <DispatchTab onOpenSpot={openSpotFromDispatch} />}
       </main>
 
@@ -156,7 +178,10 @@ export function MiniApp({ initialSpots = [] }: { initialSpots?: RomeSpot[] }) {
             <h3 className="text-sm font-black uppercase tracking-widest t-sans-navy mb-3">Add Spot</h3>
             <AddSpotForm
               categories={categories}
-              onSuccess={refreshSpots}
+              onSuccess={async () => {
+                await refreshSpots();
+                await promptAddMiniAppAfterAction("add_spot");
+              }}
               onClose={() => setShowAddSpot(false)}
             />
           </div>
@@ -169,7 +194,10 @@ export function MiniApp({ initialSpots = [] }: { initialSpots?: RomeSpot[] }) {
             <h4 className="text-sm font-black uppercase tracking-widest t-sans-navy mb-3">Add an Event</h4>
             <AddEventForm
               onClose={() => setShowAddEvent(false)}
-              onSuccess={() => setShowAddEvent(false)}
+              onSuccess={async () => {
+                setShowAddEvent(false);
+                await promptAddMiniAppAfterAction("add_event_header");
+              }}
             />
           </div>
         </div>
