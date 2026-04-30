@@ -1,8 +1,12 @@
 /* eslint-disable @neynar/no-process-env */
 import { Configuration, NeynarAPIClient } from "@neynar/nodejs-sdk";
 import type { User } from "@neynar/nodejs-sdk/build/api/models";
+import { randomUUID } from "crypto";
+import { sql } from "drizzle-orm";
 import { createPublicClient, http, parseAbi } from "viem";
 import { base } from "viem/chains";
+import { romeAttendees } from "@/db/schema";
+import { db } from "@/neynar-db-sdk/db";
 import type { RomeAttendee } from "@/features/rome/types";
 
 // Hardcoded Farcon Unlock lock addresses on Base. Env vars override if set.
@@ -181,6 +185,46 @@ function userToAttendee(
   };
 }
 
+async function persistVerifiedAttendees(verified: RomeAttendee[]): Promise<void> {
+  if (verified.length === 0) return;
+  const now = new Date();
+  const rows = verified
+    .filter((a) => typeof a.fid === "number")
+    .map((a) => ({
+      id: randomUUID(),
+      fid: a.fid as number,
+      username: a.username,
+      displayName: a.displayName,
+      pfpUrl: a.pfpUrl,
+      bio: a.bio,
+      walletAddress: a.walletAddress,
+      ticketVerified: true,
+      contractAddress: a.contractAddress,
+      selfAdded: false,
+      lastSyncedAt: now,
+    }));
+  if (rows.length === 0) return;
+
+  await db
+    .insert(romeAttendees)
+    .values(rows)
+    .onConflictDoUpdate({
+      target: romeAttendees.fid,
+      set: {
+        username: sql`excluded.username`,
+        displayName: sql`excluded.display_name`,
+        pfpUrl: sql`excluded.pfp_url`,
+        bio: sql`excluded.bio`,
+        walletAddress: sql`excluded.wallet_address`,
+        ticketVerified: sql`excluded.ticket_verified`,
+        contractAddress: sql`excluded.contract_address`,
+        lastSyncedAt: sql`excluded.last_synced_at`,
+        // Preserve selfAdded if it was already true.
+        selfAdded: sql`${romeAttendees.selfAdded} OR excluded.self_added`,
+      },
+    });
+}
+
 async function runFetch(): Promise<FarconAttendeesResult> {
   const { builder, summit } = resolveLockAddresses();
   const neynarApiKey = (process.env.NEYNAR_API_KEY ?? "").trim();
@@ -229,6 +273,15 @@ async function runFetch(): Promise<FarconAttendeesResult> {
     seenFids.add(user.fid);
     const contractAddress = ownerToContract.get(walletAddress) ?? builder;
     verified.push(userToAttendee(user, walletAddress, contractAddress));
+  }
+
+  // Best-effort persist; don't fail the fetch if DB write hiccups.
+  try {
+    await persistVerifiedAttendees(verified);
+  } catch (error) {
+    warnings.push(
+      `Persist failed: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 
   return {

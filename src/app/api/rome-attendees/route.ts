@@ -1,57 +1,77 @@
+import { desc } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { fetchFarconAttendees } from "@/lib/farcon-attendees";
-import { getRomeAttendees } from "@/db/actions/rome-actions";
+import { romeAttendees } from "@/db/schema";
+import { db } from "@/neynar-db-sdk/db";
 import type { RomeAttendee } from "@/features/rome/types";
+import { fetchFarconAttendees } from "@/lib/farcon-attendees";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 60;
 
-export async function GET() {
-  let verified: RomeAttendee[] = [];
-  let fetchedAt = Date.now();
-  let error: string | null = null;
-  let unmappedWallets = 0;
+const REFRESH_INTERVAL_MS = 3 * 60 * 60 * 1000; // 3 hours
 
+async function readAttendeesFromDb(): Promise<RomeAttendee[]> {
   try {
-    const result = await fetchFarconAttendees();
-    verified = result.verified;
-    fetchedAt = result.fetchedAt;
-    unmappedWallets = result.unmappedWallets;
-  } catch (err) {
-    error = err instanceof Error ? err.message : "Unable to fetch verified ticket holders.";
-    console.error("[rome-attendees] verified fetch failed:", err);
+    const rows = await db
+      .select()
+      .from(romeAttendees)
+      .orderBy(desc(romeAttendees.ticketVerified), desc(romeAttendees.createdAt));
+    return rows as RomeAttendee[];
+  } catch (error) {
+    console.error("[rome-attendees] DB read failed:", error);
+    return [];
   }
+}
 
-  let selfAdded: RomeAttendee[] = [];
+function lastSyncedAt(rows: RomeAttendee[]): number {
+  let max = 0;
+  for (const row of rows) {
+    const ts = (row as RomeAttendee & { lastSyncedAt?: Date | string | null }).lastSyncedAt;
+    if (!ts) continue;
+    const time = ts instanceof Date ? ts.getTime() : new Date(ts).getTime();
+    if (Number.isFinite(time) && time > max) max = time;
+  }
+  return max;
+}
+
+async function refreshSilently(force: boolean): Promise<void> {
   try {
-    selfAdded = (await getRomeAttendees("self")) as RomeAttendee[];
-  } catch (err) {
-    console.error("[rome-attendees] self-added fetch failed:", err);
+    await fetchFarconAttendees({ force });
+  } catch (error) {
+    console.error("[rome-attendees] background refresh failed:", error);
   }
+}
 
-  // Merge: verified by FID takes precedence; self-added rows are appended only if
-  // their FID isn't already in the verified list.
-  const verifiedFids = new Set<number>();
-  for (const v of verified) {
-    if (typeof v.fid === "number") verifiedFids.add(v.fid);
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const force = url.searchParams.get("force") === "1";
+
+  let rows = await readAttendeesFromDb();
+  const lastSync = lastSyncedAt(rows);
+  const verifiedCount = rows.filter((r) => r.ticketVerified).length;
+  const isStale = Date.now() - lastSync > REFRESH_INTERVAL_MS;
+  const needsBlockingRefresh = force || verifiedCount === 0;
+
+  let refreshError: string | null = null;
+  if (needsBlockingRefresh) {
+    try {
+      await fetchFarconAttendees({ force: true });
+      rows = await readAttendeesFromDb();
+    } catch (error) {
+      refreshError =
+        error instanceof Error ? error.message : "Unable to refresh ticket holders.";
+      console.error("[rome-attendees] blocking refresh failed:", error);
+    }
+  } else if (isStale) {
+    // Fire-and-forget; serve cached DB rows immediately.
+    void refreshSilently(false);
   }
-
-  const merged: RomeAttendee[] = [...verified];
-  for (const s of selfAdded) {
-    if (typeof s.fid === "number" && verifiedFids.has(s.fid)) continue;
-    merged.push(s);
-  }
-
-  merged.sort((a, b) => {
-    if (a.ticketVerified !== b.ticketVerified) return a.ticketVerified ? -1 : 1;
-    return a.displayName.localeCompare(b.displayName);
-  });
 
   return NextResponse.json({
-    attendees: merged,
-    verifiedCount: verified.length,
-    selfAddedCount: selfAdded.length,
-    unmappedWallets,
-    fetchedAt,
-    error,
+    attendees: rows,
+    verifiedCount: rows.filter((r) => r.ticketVerified).length,
+    selfAddedCount: rows.filter((r) => r.selfAdded).length,
+    lastSyncedAt: lastSyncedAt(rows),
+    error: refreshError,
   });
 }

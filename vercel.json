@@ -3,6 +3,10 @@
     {
       "path": "/api/rome-dispatch/generate",
       "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/rome-attendees?force=1",
+      "schedule": "0 */3 * * *"
     }
   ]
 }
