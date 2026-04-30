@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { openExternalUrlInMiniApp, shouldUseMiniAppNavigation } from "@/features/rome/utils/share";
+import { Coins, MessageSquareText, TramFront, BedDouble } from "lucide-react";
+import {
+  openExternalUrl,
+  openExternalUrlInMiniApp,
+  shouldUseMiniAppNavigation,
+} from "@/features/rome/utils/share";
 
 type VivereSubTab = "home" | "currency" | "phrases" | "around" | "stay";
 
@@ -142,11 +147,48 @@ const SUB_TABS: { id: VivereSubTab; label: string }[] = [
   { id: "stay", label: "Stay" },
 ];
 
-const NAV_CARDS: { id: VivereSubTab; title: string; description: string }[] = [
-  { id: "currency", title: "Currency", description: "Fiat + crypto converter" },
-  { id: "phrases", title: "Phrases", description: "12 Italian essentials" },
-  { id: "around", title: "Getting Around", description: "Metro, bus, taxi & airport" },
-  { id: "stay", title: "Stay & Hotels", description: "Neighborhoods + partner hotel deals" },
+type NavCard = {
+  id: VivereSubTab;
+  title: string;
+  description: string;
+  tileClass: string;
+  iconClass: string;
+  icon: React.ReactNode;
+};
+
+const NAV_CARDS: NavCard[] = [
+  {
+    id: "currency",
+    title: "Currency",
+    description: "Fiat + crypto converter",
+    tileClass: "bg-boston-blue",
+    iconClass: "text-white",
+    icon: <Coins className="w-7 h-7" strokeWidth={2} aria-hidden="true" />,
+  },
+  {
+    id: "phrases",
+    title: "Phrases",
+    description: "12 Italian essentials",
+    tileClass: "bg-boston-yellow",
+    iconClass: "text-navy",
+    icon: <MessageSquareText className="w-7 h-7" strokeWidth={2} aria-hidden="true" />,
+  },
+  {
+    id: "around",
+    title: "Getting Around",
+    description: "Metro, bus, taxi & airport",
+    tileClass: "bg-boston-red",
+    iconClass: "text-white",
+    icon: <TramFront className="w-7 h-7" strokeWidth={2} aria-hidden="true" />,
+  },
+  {
+    id: "stay",
+    title: "Stay & Hotels",
+    description: "Neighborhoods + partner hotel deals",
+    tileClass: "bg-navy",
+    iconClass: "text-white",
+    icon: <BedDouble className="w-7 h-7" strokeWidth={2} aria-hidden="true" />,
+  },
 ];
 
 export function VivereTab() {
@@ -312,7 +354,7 @@ export function VivereTab() {
       {/* Persistent header */}
       <section className="px-4 py-4 border-b border-boston-gray-100 shrink-0">
         <h2 className="text-lg font-black uppercase tracking-wide t-sans-navy">Vivere</h2>
-        <p className="text-xs t-serif-gray">You didn&apos;t fly to Rome to feel like a tourist. Metro routes, live exchange rates, the right words for a table for four — everything you need to move through the city like you&apos;ve already been here.</p>
+        <p className="text-xs t-serif-gray">You didn't fly to Rome to feel like a tourist. Metro routes, live exchange rates, the right words for a table for four — everything you need to move through the city like you've already been here.</p>
       </section>
 
       {/* Sub-tab pill bar */}
@@ -344,13 +386,16 @@ export function VivereTab() {
                 key={card.id}
                 type="button"
                 onClick={() => setVivereSubTab(card.id)}
-                className="bg-white border border-boston-gray-100 rounded-sm px-4 py-3 flex items-center justify-between w-full text-left"
+                className="bg-white border border-boston-gray-100 rounded-sm p-3 flex items-center gap-3 w-full text-left"
               >
-                <div>
+                <div className={`shrink-0 w-14 h-14 rounded-sm flex items-center justify-center ${card.tileClass} ${card.iconClass}`}>
+                  {card.icon}
+                </div>
+                <div className="flex-1 min-w-0">
                   <p className="text-xs font-black uppercase tracking-widest t-sans-navy">{card.title}</p>
                   <p className="text-xs italic t-serif-gray mt-0.5">{card.description}</p>
                 </div>
-                <span className="text-lg t-sans-gray ml-3">›</span>
+                <span className="text-lg t-sans-gray ml-1">›</span>
               </button>
             ))}
           </div>
@@ -501,23 +546,23 @@ export function VivereTab() {
           <div className="px-4 py-4 flex flex-col gap-2">
             <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
               <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Metro</h4>
-              <p className="text-xs t-serif-body mt-1">Line B (blue) → <a href="https://maps.google.com/?q=Piramide+Metro+Station+Rome" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrlInMiniApp("https://maps.google.com/?q=Piramide+Metro+Station+Rome"); }} className="underline cursor-pointer"><strong>Piramide</strong></a> is the closest stop to the venue, a 5 min walk. A 100-minute ticket costs €1.50 and works across bus, tram, and metro. Apps: <a href="https://moovit.com" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrlInMiniApp("https://moovit.com"); }} className="underline cursor-pointer">Moovit</a> or <a href="https://www.romamobilita.it" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrlInMiniApp("https://www.romamobilita.it"); }} className="underline cursor-pointer">Roma Mobilità</a> for live routes.</p>
+              <p className="text-xs t-serif-body mt-1">Line B (blue) → <a href="https://maps.google.com/?q=Piramide+Metro+Station+Rome" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrl("https://maps.google.com/?q=Piramide+Metro+Station+Rome"); }} className="underline cursor-pointer"><strong>Piramide</strong></a> is the closest stop to the venue, a 5 min walk. A 100-minute ticket costs €1.50 and works across bus, tram, and metro. Apps: <a href="https://moovit.com" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrl("https://moovit.com"); }} className="underline cursor-pointer">Moovit</a> or <a href="https://www.romamobilita.it" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrl("https://www.romamobilita.it"); }} className="underline cursor-pointer">Roma Mobilità</a> for live routes.</p>
             </article>
             <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
               <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Bus</h4>
-              <p className="text-xs t-serif-body mt-1">Lines near the venue: <a href="https://www.romamobilita.it" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrlInMiniApp("https://www.romamobilita.it"); }} className="underline cursor-pointer"><strong>23, 77, 83, 96, 715, 716, 780</strong></a>. On foot from Testaccio ~5 min, Garbatella ~15 min, Trastevere ~20 min.</p>
+              <p className="text-xs t-serif-body mt-1">Lines near the venue: <a href="https://www.romamobilita.it" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrl("https://www.romamobilita.it"); }} className="underline cursor-pointer"><strong>23, 77, 83, 96, 715, 716, 780</strong></a>. On foot from Testaccio ~5 min, Garbatella ~15 min, Trastevere ~20 min.</p>
             </article>
             <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
               <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Scooters & Bikes</h4>
-              <p className="text-xs t-serif-body mt-1">The area is well covered by electric scooters: <a href="https://www.li.me" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrlInMiniApp("https://www.li.me"); }} className="underline cursor-pointer"><strong>Lime</strong></a>, <a href="https://www.bird.co" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrlInMiniApp("https://www.bird.co"); }} className="underline cursor-pointer"><strong>Bird</strong></a>, <a href="https://ridedott.com" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrlInMiniApp("https://ridedott.com"); }} className="underline cursor-pointer"><strong>Dott</strong></a>, <a href="https://www.ecooltra.com" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrlInMiniApp("https://www.ecooltra.com"); }} className="underline cursor-pointer"><strong>eCooltra</strong></a>. Convenient for short hops between Ostiense and Testaccio.</p>
+              <p className="text-xs t-serif-body mt-1">The area is well covered by electric scooters: <a href="https://www.li.me" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrl("https://www.li.me"); }} className="underline cursor-pointer"><strong>Lime</strong></a>, <a href="https://www.bird.co" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrl("https://www.bird.co"); }} className="underline cursor-pointer"><strong>Bird</strong></a>, <a href="https://ridedott.com" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrl("https://ridedott.com"); }} className="underline cursor-pointer"><strong>Dott</strong></a>, <a href="https://www.ecooltra.com" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrl("https://www.ecooltra.com"); }} className="underline cursor-pointer"><strong>eCooltra</strong></a>. Convenient for short hops between Ostiense and Testaccio.</p>
             </article>
             <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
               <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">Taxi / Rideshare</h4>
-              <p className="text-xs t-serif-body mt-1">Apps: <a href="https://www.ittaxi.it" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrlInMiniApp("https://www.ittaxi.it"); }} className="underline cursor-pointer"><strong>itTaxi</strong></a> or <a href="https://free-now.com" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrlInMiniApp("https://free-now.com"); }} className="underline cursor-pointer"><strong>FreeNow</strong></a>. Avoid unlicensed taxis at tourist spots. Tell the driver: <em>&quot;Industrie Fluviali, Via del Porto Fluviale 35.&quot;</em></p>
+              <p className="text-xs t-serif-body mt-1">Apps: <a href="https://www.ittaxi.it" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrl("https://www.ittaxi.it"); }} className="underline cursor-pointer"><strong>itTaxi</strong></a> or <a href="https://free-now.com" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrl("https://free-now.com"); }} className="underline cursor-pointer"><strong>FreeNow</strong></a>. Avoid unlicensed taxis at tourist spots. Tell the driver: <em>"Industrie Fluviali, Via del Porto Fluviale 35."</em></p>
             </article>
             <article className="bg-white border border-boston-gray-100 rounded-sm p-3">
               <h4 className="text-xs font-black uppercase tracking-widest t-sans-blue">From the Airport</h4>
-              <p className="text-xs t-serif-body mt-1"><a href="https://www.adr.it/fiumicino" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrlInMiniApp("https://www.adr.it/fiumicino"); }} className="underline cursor-pointer"><strong>Fiumicino:</strong></a> Leonardo Express train to Termini (~30 min, €14) or direct to Roma Ostiense (~30 min, €8). <a href="https://www.adr.it/ciampino" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrlInMiniApp("https://www.adr.it/ciampino"); }} className="underline cursor-pointer"><strong>Ciampino:</strong></a> Shuttle bus to Termini (~40 min, €6), then Metro B to Piramide.</p>
+              <p className="text-xs t-serif-body mt-1"><a href="https://www.adr.it/fiumicino" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrl("https://www.adr.it/fiumicino"); }} className="underline cursor-pointer"><strong>Fiumicino:</strong></a> Leonardo Express train to Termini (~30 min, €14) or direct to Roma Ostiense (~30 min, €8). <a href="https://www.adr.it/ciampino" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrl("https://www.adr.it/ciampino"); }} className="underline cursor-pointer"><strong>Ciampino:</strong></a> Shuttle bus to Termini (~40 min, €6), then Metro B to Piramide.</p>
             </article>
           </div>
         )}
@@ -595,7 +640,7 @@ export function VivereTab() {
             <div className="flex flex-col gap-2">
               <a
                 href="https://www.gasometerurbansuites.com/"
-                onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrlInMiniApp("https://www.gasometerurbansuites.com/"); }}
+                onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrl("https://www.gasometerurbansuites.com/"); }}
                 className="bg-white border border-boston-gray-100 rounded-sm p-3 flex items-center justify-between cursor-pointer"
               >
                 <div>
@@ -606,7 +651,7 @@ export function VivereTab() {
               </a>
               <a
                 href="https://www.h10hotels.com/it/hotel-roma/h10-roma-citta"
-                onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrlInMiniApp("https://www.h10hotels.com/it/hotel-roma/h10-roma-citta"); }}
+                onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrl("https://www.h10hotels.com/it/hotel-roma/h10-roma-citta"); }}
                 className="bg-white border border-boston-gray-100 rounded-sm p-3 flex items-center justify-between cursor-pointer"
               >
                 <div>
@@ -617,7 +662,7 @@ export function VivereTab() {
               </a>
               <a
                 href="https://www.crossroadhotel.it/indexita.html"
-                onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrlInMiniApp("https://www.crossroadhotel.it/indexita.html"); }}
+                onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrl("https://www.crossroadhotel.it/indexita.html"); }}
                 className="bg-white border border-boston-gray-100 rounded-sm p-3 flex items-center justify-between cursor-pointer"
               >
                 <div>
@@ -628,7 +673,7 @@ export function VivereTab() {
               </a>
               <a
                 href="https://www.booking.com/hotel/it/b-amp-b-city-lights-rome.it.html"
-                onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrlInMiniApp("https://www.booking.com/hotel/it/b-amp-b-city-lights-rome.it.html"); }}
+                onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrl("https://www.booking.com/hotel/it/b-amp-b-city-lights-rome.it.html"); }}
                 className="bg-white border border-boston-gray-100 rounded-sm p-3 flex items-center justify-between cursor-pointer"
               >
                 <div>
@@ -639,7 +684,7 @@ export function VivereTab() {
               </a>
               <a
                 href="https://www.abitarthotel.com/"
-                onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrlInMiniApp("https://www.abitarthotel.com/"); }}
+                onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrl("https://www.abitarthotel.com/"); }}
                 className="bg-white border border-boston-gray-100 rounded-sm p-3 flex items-center justify-between cursor-pointer"
               >
                 <div>
@@ -649,8 +694,8 @@ export function VivereTab() {
                 <span className="shrink-0 px-2 py-0.5 rounded-sm border border-boston-gray-200 t-sans-navy text-xs font-bold uppercase tracking-widest">TBC</span>
               </a>
             </div>
-            <p className="text-xs italic t-serif-gray mt-3">Discount codes and booking instructions coming soon. Join the <a href="https://t.me/+0eVCwB_glXY3ZTU0" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrlInMiniApp("https://t.me/+0eVCwB_glXY3ZTU0"); }} className="underline cursor-pointer">FarCon Telegram</a> for updates.</p>
-            <a href="https://farconeu.notion.site/farcon-rome-staying" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrlInMiniApp("https://farconeu.notion.site/farcon-rome-staying"); }} className="mt-2 block text-xs font-bold uppercase tracking-widest t-sans-blue underline cursor-pointer">→ FarCon Rome Staying Guide (Notion)</a>
+            <p className="text-xs italic t-serif-gray mt-3">Discount codes and booking instructions coming soon. Join the <a href="https://t.me/+0eVCwB_glXY3ZTU0" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrl("https://t.me/+0eVCwB_glXY3ZTU0"); }} className="underline cursor-pointer">FarCon Telegram</a> for updates.</p>
+            <a href="https://farconeu.notion.site/farcon-rome-staying" onClick={(e) => { if (!shouldUseMiniAppNavigation()) return; e.preventDefault(); openExternalUrl("https://farconeu.notion.site/farcon-rome-staying"); }} className="mt-2 block text-xs font-bold uppercase tracking-widest t-sans-blue underline cursor-pointer">→ FarCon Rome Staying Guide (Notion)</a>
           </div>
         )}
 
