@@ -2,24 +2,16 @@
 
 import { FormEvent, MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useFarcasterUser } from "@/neynar-farcaster-sdk/mini";
-import { getRomeAttendees, getRomeAttendeeByFid, upsertRomeAttendee } from "@/db/actions/rome-actions";
+import { getRomeAttendeeByFid, upsertRomeAttendee } from "@/db/actions/rome-actions";
 import { openFarcasterProfile, shouldUseMiniAppNavigation } from "@/features/rome/utils/share";
 import { buildProfileUrl } from "@/lib/farcaster-urls";
 import type { RomeAttendee } from "@/features/rome/types";
 
 type Filter = "all" | "verified" | "self";
 
-type AttendeeSyncResponse = {
-  success?: boolean;
-  status?: string;
-  error?: string;
-  message?: string;
-  holdersFound?: number;
-  mappedUsers?: number;
-  mappedFids?: number;
-  inserted?: number;
-  updated?: number;
-  unmappedWallets?: number;
+type AttendeesResponse = {
+  attendees?: RomeAttendee[];
+  error?: string | null;
 };
 
 type AttendeesTabProps = {
@@ -32,92 +24,39 @@ export function AttendeesTab({ onMeaningfulActionSuccess }: AttendeesTabProps) {
   const [attendees, setAttendees] = useState<RomeAttendee[]>([]);
   const [showSelfAdd, setShowSelfAdd] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [syncingTickets, setSyncingTickets] = useState(false);
-  const [syncError, setSyncError] = useState<string | null>(null);
-  const [syncSummary, setSyncSummary] = useState("Press 'Sync tickets' to refresh verified holders.");
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
     setLoading(true);
+    setLoadError(null);
     try {
-      const rows = await getRomeAttendees(filter);
-      setAttendees(rows as RomeAttendee[]);
+      const response = await fetch("/api/rome-attendees", { cache: "no-store" });
+      const payload = (await response.json()) as AttendeesResponse;
+      if (!response.ok) {
+        throw new Error(payload.error || "Unable to load attendees.");
+      }
+      setAttendees(payload.attendees ?? []);
+      if (payload.error) setLoadError(payload.error);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unable to load attendees.";
+      setLoadError(message);
+      setAttendees([]);
     } finally {
       setLoading(false);
     }
-  }, [filter]);
-
-  const syncTicketHolders = useCallback(async () => {
-    setSyncingTickets(true);
-    setSyncError(null);
-
-    try {
-      const response = await fetch("/api/rome-attendees/sync", {
-        method: "POST",
-      });
-      const payload = (await response.json()) as AttendeeSyncResponse;
-
-      if (!response.ok || payload.success === false || payload.status === "error") {
-        throw new Error(payload.error || payload.message || "Unable to sync ticket holders right now.");
-      }
-
-      const mappedUsers = payload.mappedUsers ?? payload.mappedFids ?? 0;
-      const inserted = payload.inserted ?? 0;
-      const updated = payload.updated ?? 0;
-      const unmapped = payload.unmappedWallets ?? 0;
-      const baseSummary = `${payload.holdersFound ?? 0} holders found • ${mappedUsers} mapped • ${inserted} added • ${updated} updated`;
-
-      setSyncSummary(unmapped > 0 ? `${baseSummary} • ${unmapped} not linked to Farcaster` : baseSummary);
-      await refresh();
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Unable to sync ticket holders right now.";
-      setSyncError(message);
-      setSyncSummary("Verified holder sync unavailable.");
-    } finally {
-      setSyncingTickets(false);
-    }
-  }, [refresh]);
+  }, []);
 
   useEffect(() => {
     refresh();
   }, [refresh]);
 
-  // Auto-sync verified ticket holders if the last sync is stale (>10 min) or never run.
-  useEffect(() => {
-    const STALE_MS = 10 * 60 * 1000;
-    const STORAGE_KEY = "rome:attendees:lastSync";
+  const filteredAttendees = useMemo(() => {
+    if (filter === "verified") return attendees.filter((a) => a.ticketVerified);
+    if (filter === "self") return attendees.filter((a) => a.selfAdded);
+    return attendees;
+  }, [attendees, filter]);
 
-    let lastSync = 0;
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
-      lastSync = raw ? Number(raw) : 0;
-    } catch {
-      // localStorage unavailable; treat as stale.
-    }
-
-    if (Date.now() - lastSync < STALE_MS) {
-      return;
-    }
-
-    let cancelled = false;
-    (async () => {
-      await syncTicketHolders();
-      if (cancelled) return;
-      try {
-        window.localStorage.setItem(STORAGE_KEY, String(Date.now()));
-      } catch {
-        // ignore storage errors
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-    // Run once on mount; syncTicketHolders is stable enough that we intentionally
-    // don't list it as a dep to avoid re-firing on every filter change.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const countLabel = useMemo(() => `${attendees.length} attending`, [attendees.length]);
+  const countLabel = useMemo(() => `${filteredAttendees.length} attending`, [filteredAttendees.length]);
 
   const handleProfileLinkClick = useCallback(
     (event: MouseEvent<HTMLAnchorElement>, attendee: RomeAttendee, profileUrl: string) => {
@@ -171,19 +110,9 @@ export function AttendeesTab({ onMeaningfulActionSuccess }: AttendeesTabProps) {
           ))}
         </div>
 
-        <div className="mt-3 p-2 rounded-sm border border-boston-gray-100 bg-white flex items-start justify-between gap-2">
-          <p className={`text-xs leading-tight ${syncError ? "t-sans-red" : "t-sans-gray"}`}>
-            {syncingTickets ? "Syncing verified ticket holders..." : syncError ?? syncSummary}
-          </p>
-          <button
-            type="button"
-            onClick={syncTicketHolders}
-            disabled={syncingTickets}
-            className="shrink-0 px-2 py-2 rounded-sm text-xs font-bold uppercase tracking-widest border border-boston-gray-200 t-sans-navy disabled:opacity-60"
-          >
-            {syncingTickets ? "Syncing" : "Sync tickets"}
-          </button>
-        </div>
+        {loadError && (
+          <p className="mt-3 text-xs t-sans-red">{loadError}</p>
+        )}
       </section>
 
       <section className="p-4">
@@ -191,7 +120,7 @@ export function AttendeesTab({ onMeaningfulActionSuccess }: AttendeesTabProps) {
           <div className="animate-pulse h-20 rounded-sm bg-boston-gray-100" />
         ) : (
           <div className="grid grid-cols-2 gap-2">
-            {attendees.map((attendee) => (
+            {filteredAttendees.map((attendee) => (
               <article key={attendee.id} className="bg-white border border-boston-gray-100 rounded-sm p-3">
                 <div className="flex items-center gap-2">
                   {attendee.pfpUrl ? (
