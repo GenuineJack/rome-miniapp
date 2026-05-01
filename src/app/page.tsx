@@ -1,11 +1,17 @@
 import { publicConfig } from "@/config/public-config";
 import { MiniApp } from "@/features/app/mini-app";
-import { isActiveTab } from "@/features/rome/app/mini-app";
 import { getFarcasterPageMetadata } from "@/neynar-farcaster-sdk/src/nextjs/get-farcaster-page-metadata";
 import { db } from "@/neynar-db-sdk/db";
 import { romeSpots as spotsTable } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { Metadata } from "next";
+
+const VALID_TABS = ["explore", "vivere", "today", "attendees", "dispatch"] as const;
+type ActiveTab = (typeof VALID_TABS)[number];
+
+function isActiveTab(value: unknown): value is ActiveTab {
+  return typeof value === "string" && (VALID_TABS as readonly string[]).includes(value);
+}
 
 export async function generateMetadata({
   searchParams,

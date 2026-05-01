@@ -15,18 +15,6 @@ import type { RomeSpot } from "@/features/rome/types";
 
 type ActiveTab = "explore" | "vivere" | "today" | "attendees" | "dispatch";
 
-const VALID_TABS: ReadonlySet<ActiveTab> = new Set([
-  "explore",
-  "vivere",
-  "today",
-  "attendees",
-  "dispatch",
-]);
-
-export function isActiveTab(value: unknown): value is ActiveTab {
-  return typeof value === "string" && VALID_TABS.has(value as ActiveTab);
-}
-
 const TABS: { id: ActiveTab; label: string; icon: LucideIcon; isCenter?: boolean }[] = [
   { id: "explore", label: "Explore", icon: Map },
   { id: "vivere", label: "Vivere", icon: Plane },
