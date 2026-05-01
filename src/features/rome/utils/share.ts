@@ -306,12 +306,19 @@ export async function openFarcasterProfile(options: {
   }
 }
 
-export async function shareToFarcaster(text: string) {
+export async function shareToFarcaster(
+  text: string,
+  options?: { embedUrl?: string },
+) {
+  const embedUrl = options?.embedUrl;
   try {
-    await sdk.actions.composeCast({ text });
+    await sdk.actions.composeCast({
+      text,
+      ...(embedUrl ? { embeds: [embedUrl] as [string] } : {}),
+    });
     return { success: true, method: "sdk" as const };
   } catch {
-    const url = buildComposeUrl(text);
+    const url = buildComposeUrl(text, embedUrl ? [embedUrl] : undefined);
     if (typeof window !== "undefined") {
       window.open(url, "_blank", "noopener,noreferrer");
     }
