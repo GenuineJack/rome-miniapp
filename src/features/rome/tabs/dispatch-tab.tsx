@@ -7,6 +7,7 @@ import {
   shouldUseMiniAppNavigation,
 } from "@/features/rome/utils/share";
 import { buildCastUrl } from "@/lib/farcaster-urls";
+import { publicConfig } from "@/config/public-config";
 
 type DispatchPayload = {
   masthead: { date: string; localTime: string; weather: string };
@@ -254,7 +255,8 @@ export function DispatchTab({ onOpenSpot }: DispatchTabProps) {
           type="button"
           onClick={() =>
             shareToFarcaster(
-              `The Dispatch Rome is live for ${dispatch.masthead.date}. Check it in the Rome Miniapp #FarconRome`,
+              `The Dispatch · Rome is live for ${dispatch.masthead.date}. #FarconRome`,
+              { embedUrl: `${publicConfig.homeUrl}/dispatch/${dispatch.masthead.date}` },
             )
           }
           className="mt-3 w-full py-2.5 rounded-sm bg-navy text-white text-xs font-bold uppercase tracking-widest"

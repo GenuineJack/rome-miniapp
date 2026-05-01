@@ -41,8 +41,14 @@ export function buildChannelUrl(channelId: string): string | null {
   return `${BASE}/~/channel/${id}`;
 }
 
-export function buildComposeUrl(text: string): string {
-  return `${BASE}/~/compose?text=${encodeURIComponent(text)}`;
+export function buildComposeUrl(text: string, embeds?: string[]): string {
+  const params = new URLSearchParams({ text });
+  if (embeds) {
+    for (const embed of embeds) {
+      if (embed) params.append("embeds[]", embed);
+    }
+  }
+  return `${BASE}/~/compose?${params.toString()}`;
 }
 
 export function buildDmUrl(username: string): string | null {
