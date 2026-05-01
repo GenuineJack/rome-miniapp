@@ -1,5 +1,6 @@
 import { publicConfig } from "@/config/public-config";
 import { MiniApp } from "@/features/app/mini-app";
+import { isActiveTab } from "@/features/rome/app/mini-app";
 import { getFarcasterPageMetadata } from "@/neynar-farcaster-sdk/src/nextjs/get-farcaster-page-metadata";
 import { db } from "@/neynar-db-sdk/db";
 import { romeSpots as spotsTable } from "@/db/schema";
@@ -23,12 +24,20 @@ export async function generateMetadata({
   });
 }
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const params = await searchParams;
+  const rawTab = Array.isArray(params.tab) ? params.tab[0] : params.tab;
+  const initialTab = isActiveTab(rawTab) ? rawTab : undefined;
+
   let initialSpots: (typeof spotsTable.$inferSelect)[] = [];
 
   const canQuery = typeof (db as unknown as { select?: unknown }).select === "function";
   if (!canQuery) {
-    return <MiniApp initialSpots={initialSpots} />;
+    return <MiniApp initialSpots={initialSpots} initialTab={initialTab} />;
   }
 
   try {
@@ -41,5 +50,5 @@ export default async function Home() {
   } catch (e) {
     console.error("[page] Failed to load initial spots:", e);
   }
-  return <MiniApp initialSpots={initialSpots} />;
+  return <MiniApp initialSpots={initialSpots} initialTab={initialTab} />;
 }

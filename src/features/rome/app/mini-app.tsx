@@ -15,6 +15,18 @@ import type { RomeSpot } from "@/features/rome/types";
 
 type ActiveTab = "explore" | "vivere" | "today" | "attendees" | "dispatch";
 
+const VALID_TABS: ReadonlySet<ActiveTab> = new Set([
+  "explore",
+  "vivere",
+  "today",
+  "attendees",
+  "dispatch",
+]);
+
+export function isActiveTab(value: unknown): value is ActiveTab {
+  return typeof value === "string" && VALID_TABS.has(value as ActiveTab);
+}
+
 const TABS: { id: ActiveTab; label: string; icon: LucideIcon; isCenter?: boolean }[] = [
   { id: "explore", label: "Explore", icon: Map },
   { id: "vivere", label: "Vivere", icon: Plane },
@@ -23,9 +35,15 @@ const TABS: { id: ActiveTab; label: string; icon: LucideIcon; isCenter?: boolean
   { id: "dispatch", label: "Dispatch", icon: Newspaper },
 ];
 
-export function MiniApp({ initialSpots = [] }: { initialSpots?: RomeSpot[] }) {
+export function MiniApp({
+  initialSpots = [],
+  initialTab = "today",
+}: {
+  initialSpots?: RomeSpot[];
+  initialTab?: ActiveTab;
+}) {
   const sdkReady = useSDKReady();
-  const [activeTab, setActiveTab] = useState<ActiveTab>("today");
+  const [activeTab, setActiveTab] = useState<ActiveTab>(initialTab);
   const [spots, setSpots] = useState<RomeSpot[]>(initialSpots);
   const [loadingSpots, setLoadingSpots] = useState(initialSpots.length === 0);
   const [selectedSpot, setSelectedSpot] = useState<RomeSpot | null>(null);

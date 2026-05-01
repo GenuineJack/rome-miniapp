@@ -31,6 +31,7 @@ type DispatchTabProps = {
 
 export function DispatchTab({ onOpenSpot }: DispatchTabProps) {
   const [dispatch, setDispatch] = useState<DispatchPayload | null>(null);
+  const [dispatchDate, setDispatchDate] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [showTriviaAnswer, setShowTriviaAnswer] = useState(false);
   const [pollResults, setPollResults] = useState<PollResults>({});
@@ -42,6 +43,7 @@ export function DispatchTab({ onOpenSpot }: DispatchTabProps) {
       .then((response) => response.json())
       .then((data) => {
         setDispatch((data.dispatch ?? null) as DispatchPayload | null);
+        setDispatchDate((data.date ?? null) as string | null);
         setPollResults((data.pollResults ?? {}) as PollResults);
         setIsPreviousEdition(Boolean(data.isPreviousEdition));
       })
@@ -72,13 +74,13 @@ export function DispatchTab({ onOpenSpot }: DispatchTabProps) {
   );
 
   async function vote(option: string) {
-    if (!dispatch || selectedOption) return;
+    if (!dispatch || !dispatchDate || selectedOption) return;
     setSelectedOption(option);
 
     const response = await fetch("/api/rome-dispatch/poll", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ date: dispatch.masthead.date, option }),
+      body: JSON.stringify({ date: dispatchDate, option }),
     });
 
     const data = await response.json();
@@ -253,13 +255,15 @@ export function DispatchTab({ onOpenSpot }: DispatchTabProps) {
         <p className="text-sm italic t-serif-body">{dispatch.untilTomorrow}</p>
         <button
           type="button"
-          onClick={() =>
+          disabled={!dispatchDate}
+          onClick={() => {
+            if (!dispatchDate) return;
             shareToFarcaster(
               `The Dispatch · Rome is live for ${dispatch.masthead.date}. #FarconRome`,
-              { embedUrl: `${publicConfig.homeUrl}/dispatch/${dispatch.masthead.date}` },
-            )
-          }
-          className="mt-3 w-full py-2.5 rounded-sm bg-navy text-white text-xs font-bold uppercase tracking-widest"
+              { embedUrl: `${publicConfig.homeUrl}/dispatch/${dispatchDate}` },
+            );
+          }}
+          className="mt-3 w-full py-2.5 rounded-sm bg-navy text-white text-xs font-bold uppercase tracking-widest disabled:opacity-50"
         >
           Share today&apos;s dispatch
         </button>
